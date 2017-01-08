@@ -1,8 +1,18 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "index";
 }
-<div>
-    @Html.ActionLink("Получить строку подключения", "Index", "CsDispatcher")
+<div class="wrapper">
+    <div class="rowElement left-option">
+        @Html.ActionLink("Получить строку подключения", "Index", "CsDispatcher")
+    </div>
+    <div class="rowElement center-option">
+        @Html.ActionLink("Получить строку подключения", "Index", "CsDispatcher")
+    </div>
+    <div class="rowElement right-option">
+        @Html.ActionLink("Получить строку подключения", "Index", "CsDispatcher")
+    </div>
 </div>
 
+@section Styles{
+    <link href="~/Content/Styles/LandingPage.css" rel="stylesheet" type="text/css" />
+}

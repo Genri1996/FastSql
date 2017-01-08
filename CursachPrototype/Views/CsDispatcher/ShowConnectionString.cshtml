@@ -4,10 +4,16 @@
     ViewBag.Title = "Строка подключения";
 }
 
-<h2>Скопируйте строку подключения</h2>
+<h2>Используйте строку подключения</h2>
+<p style="font-size: 18pt" id="connectionString">@Model</p>
+<button onclick="copyToClipboard('connectionString')">Скопировать</button>
 
-<p style="font-size: 18pt">@Model</p>
 
 <div>
-   @Html.Partial(@"~\Views\Query\QueryExecutor.cshtml", Model)
+    @Html.Partial(@"~\Views\Query\QueryExecutor.cshtml", Model)
 </div>
+
+
+@section Scripts{
+    <script src="~/Scripts/CopyToClipboard.js"></script>
+}

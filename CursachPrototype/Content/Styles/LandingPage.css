@@ -1,0 +1,24 @@
+﻿.wrapper {
+    margin-left: 12.5%;
+    margin-right: 12.5%;
+    border: 3px solid black; 
+}
+
+.rowElement {
+    display: inline-block;
+    height: 400px;
+    width: 33%;
+    border: 1px solid white;
+}
+
+.left-option {
+    background-color: pink; 
+}
+
+.center-option {
+    background-color: darkolivegreen;
+}
+
+.right-option {
+    background-color: lightblue;
+}
