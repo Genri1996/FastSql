@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CursachPrototype", "CursachPrototype\CursachPrototype.csproj", "{F53308D7-E9AA-4CE7-868A-DB7B5FD19CE6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CursachPrototype.Tests", "CursachPrototype.Tests\CursachPrototype.Tests.csproj", "{7E4DC6E3-5F2D-4BE8-AAB2-F7F9B2B13505}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataProxy", "DataProxy\DataProxy.csproj", "{27052D2E-B54D-4C93-8C7D-40FBC7AFBCA9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F53308D7-E9AA-4CE7-868A-DB7B5FD19CE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F53308D7-E9AA-4CE7-868A-DB7B5FD19CE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F53308D7-E9AA-4CE7-868A-DB7B5FD19CE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F53308D7-E9AA-4CE7-868A-DB7B5FD19CE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E4DC6E3-5F2D-4BE8-AAB2-F7F9B2B13505}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E4DC6E3-5F2D-4BE8-AAB2-F7F9B2B13505}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E4DC6E3-5F2D-4BE8-AAB2-F7F9B2B13505}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E4DC6E3-5F2D-4BE8-AAB2-F7F9B2B13505}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27052D2E-B54D-4C93-8C7D-40FBC7AFBCA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27052D2E-B54D-4C93-8C7D-40FBC7AFBCA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27052D2E-B54D-4C93-8C7D-40FBC7AFBCA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27052D2E-B54D-4C93-8C7D-40FBC7AFBCA9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

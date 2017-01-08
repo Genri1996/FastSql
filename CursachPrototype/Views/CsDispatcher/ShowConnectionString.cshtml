@@ -1,0 +1,13 @@
+﻿@model String
+
+@{
+    ViewBag.Title = "Строка подключения";
+}
+
+<h2>Скопируйте строку подключения</h2>
+
+<p style="font-size: 18pt">@Model</p>
+
+<div>
+   @Html.Partial(@"~\Views\Query\QueryExecutor.cshtml", Model)
+</div>
