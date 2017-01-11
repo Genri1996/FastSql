@@ -8,6 +8,14 @@
 <p style="font-size: 18pt" id="connectionString">@Model</p>
 <button onclick="copyToClipboard('connectionString')">Скопировать</button>
 
+<!--Popup with message that connection string was copied-->
+<div class="b-popup" id="popup1" style="display: none">
+    <div class="b-popup-content">
+        <strong>
+            Скопированно в <br/>  буфер обмена
+        </strong>
+    </div>
+</div>
 
 <div>
     @Html.Partial(@"~\Views\Query\QueryExecutor.cshtml", Model)
@@ -15,5 +23,10 @@
 
 
 @section Scripts{
+    <script src="~/Scripts/Popup.js"></script>
     <script src="~/Scripts/CopyToClipboard.js"></script>
+}
+
+@section Styles{
+    <link href="~/Content/Styles/Popup.css" rel="stylesheet" type="text/css">
 }

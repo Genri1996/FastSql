@@ -28,11 +28,17 @@ namespace DataProxy.Executors
                     reader = command.ExecuteReader();
                     if (reader.HasRows)
                         while (reader.Read())
+                        {
                             for (int i = 0; i < reader.VisibleFieldCount; i++)
                                 builder.AppendLine(reader[i] + " ");
+                            builder.AppendLine();
+                        }
                     else
                         while (reader.Read())
+                        {
                             builder.AppendLine(reader[0] + " ");
+                            builder.AppendLine();
+                        }
                 }
                 catch (SqlException exception)
                 {

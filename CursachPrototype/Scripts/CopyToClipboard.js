@@ -5,4 +5,7 @@
     aux.select();
     document.execCommand("copy");
     document.body.removeChild(aux);
+
+    PopUpShow(500);
 }
+
