@@ -152,6 +152,7 @@
     <Content Include="Views\CsDispatcher\ShowConnectionString.cshtml" />
     <Content Include="Views\Query\QueryExecutor.cshtml" />
     <Content Include="Views\Query\ExecuteQuery.cshtml" />
+    <Content Include="Views\CsDispatcher\CustomError.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

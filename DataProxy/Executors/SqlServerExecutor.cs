@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -50,6 +51,32 @@ namespace DataProxy.Executors
                 }
             }
             return builder.ToString();
+        }
+
+        public DataTable ExecuteQuery(SqlCommand command)
+        {
+            DataTable dt = new DataTable();
+            SqlConnection con = new SqlConnection(_connectionString);
+            SqlDataAdapter sda = new SqlDataAdapter();
+            command.CommandType = CommandType.Text;
+            command.Connection = con;
+            try
+            {
+                con.Open();
+                sda.SelectCommand = command;
+                sda.Fill(dt);
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            finally
+            {
+                con.Close();
+                sda.Dispose();
+                con.Dispose();
+            }
         }
     }
 }

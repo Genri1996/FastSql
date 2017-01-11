@@ -11,7 +11,7 @@
     <fieldset>
         @Html.AntiForgeryToken()
         @Html.ValidationSummary()
-        @Html.LabelFor(m => m.DataBaseName, "Введите название базы данных")<br/>
+        @Html.LabelFor(m => m.DataBaseName , "Введите название базы данных")<br/>
         @Html.TextBoxFor(m => m.DataBaseName)
         @Html.ValidationMessageFor(m => m.DataBaseName)
         <br/>
