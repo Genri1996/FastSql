@@ -6,17 +6,24 @@
 
 <h2>Выберите необходимую СУБД</h2>
 
-@using (Html.BeginForm("CreateDb","CsDispatcher",FormMethod.Post))
+@using (Html.BeginForm("CreateDb", "CsDispatcher", FormMethod.Post))
 {
-    @Html.LabelFor(m => m.DataBaseName, "Введите название базы данных")<br/>
-    @Html.TextBoxFor(m => m.DataBaseName)<br/>
-    foreach (string server in Model.AvailableServers)
-    {
-        @Html.RadioButtonFor(m => m.SelectedServer,server)
-        @Html.LabelFor(m=>m.SelectedServer,server)
-    }
+    <fieldset>
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary()
+        @Html.LabelFor(m => m.DataBaseName, "Введите название базы данных")<br/>
+        @Html.TextBoxFor(m => m.DataBaseName)
+        @Html.ValidationMessageFor(m => m.DataBaseName)
+        <br/>
+        @foreach (string server in Model.AvailableServers)
+        {
+            @Html.RadioButtonFor(m => m.SelectedServer, server)
+            @Html.LabelFor(m => m.SelectedServer, server)
+            @Html.ValidationMessageFor(m => m.SelectedServer)
+        }
 
-    <div>
-        <input type="submit" />
-    </div>
+        <div>
+            <input type="submit"/>
+        </div>
+    </fieldset>
 }

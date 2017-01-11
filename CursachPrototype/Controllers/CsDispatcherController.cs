@@ -10,22 +10,26 @@ namespace CursachPrototype.Controllers
 {
     public class CsDispatcherController : Controller
     {
-        private readonly DataService ds = new DataService();
+        private readonly DataService _dataService = new DataService();
 
         [HttpGet]
         public ActionResult Index()
         {
-            return View(new ServerSelectionVM {AvailableServers = ds.AvailableServers});
+            return View(new ServerSelectionVM {AvailableServers = _dataService.AvailableServers});
         }
 
         [HttpPost]
         public ActionResult CreateDb(ServerSelectionVM s)
         {
-            String connectionString = ds.GetConnectionString(s.SelectedServer, s.DataBaseName);
+            s.AvailableServers = _dataService.AvailableServers;
+            if (!ModelState.IsValid)
+                return View("Index", s);
+
+            //TODO: Валидация на существование уже этой базы данных
+
+            String connectionString = _dataService.GetConnectionString(s.SelectedServer, s.DataBaseName);
             ViewBag.ConnectionString = connectionString;
-            return View("ShowConnectionString", (object)connectionString);
+            return View("ShowConnectionString", (object) connectionString);
         }
-
-
     }
 }

@@ -119,6 +119,7 @@
   <ItemGroup>
     <Content Include="Content\Styles\LandingPage.css" />
     <Content Include="Content\Styles\Popup.css" />
+    <Content Include="Content\Styles\Site.css" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\CopyToClipboard.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
