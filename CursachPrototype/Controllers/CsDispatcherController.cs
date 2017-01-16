@@ -15,11 +15,11 @@ namespace CursachPrototype.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            return View(new ServerSelectionVM {AvailableServers = _dataService.AvailableServers});
+            return View(new ServerSelectionVm {AvailableServers = _dataService.AvailableServers});
         }
 
         [HttpPost]
-        public ActionResult CreateDb(ServerSelectionVM s)
+        public ActionResult CreateDb(ServerSelectionVm s)
         {
             s.AvailableServers = _dataService.AvailableServers;
             if (!ModelState.IsValid)

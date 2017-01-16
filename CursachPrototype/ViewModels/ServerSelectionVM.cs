@@ -8,17 +8,18 @@ using System.Web.UI.WebControls;
 
 namespace CursachPrototype.ViewModels
 {
-    public class ServerSelectionVM
+    public class ServerSelectionVm
     {
         [HiddenInput(DisplayValue = false)]
         public List<String>  AvailableServers { get; set; }
 
-        [Required(ErrorMessage = "Поле должно быть установленно.")]
+        [Required(ErrorMessage = "Поле должно быть выбрано.")]
         [Display(Name = "Тип СУБД")]
         public String SelectedServer { get; set; }
 
-        [Required(ErrorMessage = "Имя БД должно быть установленно")]
+        [Required(ErrorMessage = "Название БД должно быть установленно.")]
         [Display(Name = "Название")]
+        [RegularExpression(@"[A-z]{3,40}", ErrorMessage = "Некорректное имя БД")]
         public String DataBaseName { get; set; }
     }
 }
