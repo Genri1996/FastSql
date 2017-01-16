@@ -1,0 +1,13 @@
+﻿.horizontal-container {
+    overflow: hidden;
+    padding-bottom: 50px;
+}
+
+.horizontal-container .item {
+    display: inline-block;
+}
+
+.right {
+    float: right;
+    padding-right: 10px;
+}

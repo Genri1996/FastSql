@@ -1,4 +1,6 @@
-﻿.field-validation-error {
+﻿/*Errors*/
+
+.field-validation-error {
     color: #b94a48;
     margin-left: 5px;
 }
@@ -17,3 +19,6 @@ input[type="checkbox"].input-validation-error {
 .validation-summary-valid {
     display: none;
 }
+
+/*Global*/
+

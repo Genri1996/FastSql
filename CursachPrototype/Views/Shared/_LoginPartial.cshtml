@@ -1,0 +1,20 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    <div class="horizontal-container">
+        @Html.ActionLink("Привет " + User.Identity.GetUserName() + "!", "Index", "UserRoom", routeValues: null, htmlAttributes: new { @class = "item right" })
+        @Html.ActionLink("Выход", "Logout", "Account", routeValues: null, htmlAttributes: new { @class = "item right" })
+    </div>
+}
+else
+{
+    <div class="horizontal-container">
+        @Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { @class = "item right" })
+        @Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { @class = "item right" })
+    </div>
+}
+
+@section Styles
+{
+    <link href="~/Content/Styles/LoginPartial.css" rel="stylesheet" type="text/css">
+}

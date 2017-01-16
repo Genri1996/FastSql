@@ -168,6 +168,7 @@
     <Content Include="Content\Styles\LandingPage.css" />
     <Content Include="Content\Styles\Popup.css" />
     <Content Include="Content\Styles\Site.css" />
+    <Content Include="Content\Styles\LoginPartial.css" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\CopyToClipboard.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
@@ -183,6 +184,7 @@
     <Compile Include="Controllers\CsDispatcherController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\QueryController.cs" />
+    <Compile Include="Controllers\UserRoomController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -210,6 +212,8 @@
     <Content Include="Views\CsDispatcher\CustomError.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <None Include="Views\UserRoom\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
