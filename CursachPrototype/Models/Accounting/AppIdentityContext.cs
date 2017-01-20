@@ -1,7 +1,6 @@
-﻿using System.Data.Entity;
-using Microsoft.AspNet.Identity.EntityFramework;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
 
-namespace CursachPrototype.Models
+namespace CursachPrototype.Models.Accounting
 {
     public class AppIdentityContext:IdentityDbContext<AppUser>
     {

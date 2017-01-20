@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿using System.Collections.Generic;
+using Microsoft.AspNet.Identity.EntityFramework;
 
-namespace CursachPrototype.Models
+namespace CursachPrototype.Models.Accounting
 {
     public class AppUser : IdentityUser
     {
-
+        public string UserDbSuffix { get; set; }
+        
+        public List<DataBaseInfo> UserDbs { get; set; } = new List<DataBaseInfo>(); 
     }
 }

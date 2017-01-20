@@ -1,6 +1,7 @@
 ﻿using Microsoft.Owin;
 using Owin;
 using CursachPrototype.Models;
+using CursachPrototype.Models.Accounting;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.AspNet.Identity;
 

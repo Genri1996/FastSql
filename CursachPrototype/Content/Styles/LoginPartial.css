@@ -11,3 +11,8 @@
     float: right;
     padding-right: 10px;
 }
+
+.left-option {
+    float: left;
+    padding-left: 10px;
+}

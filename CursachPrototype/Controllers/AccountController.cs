@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using CursachPrototype.Models;
+using CursachPrototype.Models.Accounting;
 using CursachPrototype.ViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -35,7 +36,7 @@ namespace CursachPrototype.Controllers
         {
             if (ModelState.IsValid)
             {
-                AppUser user = new AppUser { UserName = vm.Email, Email = vm.Email };
+                AppUser user = new AppUser { UserName = vm.Email, Email = vm.Email, UserDbSuffix = vm.NickName};
                 IdentityResult result = UserManager.Create(user, vm.Password);
                 if (result.Succeeded)
                     return RedirectToAction("Login", "Account");

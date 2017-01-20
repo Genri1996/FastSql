@@ -1,27 +1,27 @@
 ﻿@model CursachPrototype.ViewModels.LoginVm
 
-    @{
-        ViewBag.Title = "Вход";
-    }
+@{
+    ViewBag.Title = "Вход";
+}
 
-    <h2>Вход на сайт</h2>
+<h2>Вход на сайт</h2>
+<p><i>@ViewData["FromInfo"]</i></p>
 
+@using (Html.BeginForm("Login", "Account"))
+{
+    @Html.AntiForgeryToken()
 
-    @using (Html.BeginForm("Login", "Account"))
-    {
-        @Html.AntiForgeryToken()
-
-        <div>
-            @Html.ValidationSummary()
-            <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
-            <p>
-                <label>Email</label><br />
-                @Html.EditorFor(x => x.Email)
-            </p>
-            <p>
-                <label>Пароль</label><br />
-                @Html.EditorFor(x => x.Password)
-            </p>
-            <p><button type="submit">Войти</button></p>
-        </div>
-    }
+    <div>
+        @Html.ValidationSummary()
+        <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
+        <p>
+            <label>Email</label><br />
+            @Html.EditorFor(x => x.Email)
+        </p>
+        <p>
+            <label>Пароль</label><br />
+            @Html.EditorFor(x => x.Password)
+        </p>
+        <p><button type="submit">Войти</button></p>
+    </div>
+}
