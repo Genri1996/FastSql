@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -16,9 +17,9 @@ namespace DataProxy.Helpers
     {
         private string _masterConnectionString;
 
-        public SqlServerHelper(string masterConnectionString)
+        public SqlServerHelper()
         {
-            _masterConnectionString = masterConnectionString;
+            _masterConnectionString = ConfigurationManager.ConnectionStrings["SqlServerMaster"].ConnectionString;
         }
 
         public bool IsDataBaseExists(string dbName)

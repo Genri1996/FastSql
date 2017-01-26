@@ -13,9 +13,6 @@ namespace DataProxy
 {
     public class DataService
     {
-        private const string MasterConnectionString =
-            "Data Source=AMDFXPC\\SQLEXPRESS;Initial Catalog=master;Integrated security=True";
-
         public List<DbmsType> AvailableServers { get; } = new List<DbmsType> { DbmsType.SqlServer };
 
         public String GetConnectionString(DbmsType selectedDbms, String DataBaseName)
@@ -36,7 +33,7 @@ namespace DataProxy
             switch (selectedDbm)
             {
                 case DbmsType.SqlServer:
-                    helper = new SqlServerHelper(MasterConnectionString);
+                    helper = new SqlServerHelper();
                     break;
             }
 
