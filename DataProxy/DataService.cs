@@ -7,12 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 using DataProxy.Creators;
 using DataProxy.Executors;
+using DataProxy.Helpers;
 
 namespace DataProxy
 {
     public class DataService
     {
-        private const string SqlServer = "MS SQL Server";
+        public const string SqlServer = "MS SQL Server";
 
         private const string MasterConnectionString =
             "Data Source=AMDFXPC\\SQLEXPRESS;Initial Catalog=master;Integrated security=True";
@@ -33,21 +34,15 @@ namespace DataProxy
 
         public bool CheckDataBaseExists(String selectedServer, String dataBaseName)
         {
-            IQueryExecutor executor = null;
+            IHelper helper = null;
             switch (selectedServer)
             {
                 case SqlServer:
-                    executor = new SqlServerExecutor(MasterConnectionString);
+                    helper = new SqlServerHelper(MasterConnectionString);
                     break;
             }
 
-            string strQuery = @"select [dbo].[DatabaseExists]('@databasename') as [exists]";
-
-            SqlCommand cmd = new SqlCommand(strQuery);
-            cmd.Parameters.AddWithValue("@databasename", dataBaseName);
-            DataTable dt = executor.ExecuteQuery(cmd);
-
-            return (bool)dt.Rows[0]["exists"];
+            return helper.IsDataBaseExists(dataBaseName);
         }
     }
 }

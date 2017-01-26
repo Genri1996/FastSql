@@ -1,0 +1,24 @@
+﻿@model CursachPrototype.Models.DataBaseInfo
+
+@{
+    ViewBag.Title = "Подтвердите удаление";
+}
+
+<h2>Подтвердите удаление</h2>
+
+<p>
+    Вы уверены, что хотите удалить базу данных
+    <strong>@Model.Name</strong>?<br/>
+    <i style="color: red;">Все подключения будут разорваны.<br/>Данные безвозвратно уничтожены.</i>
+</p>
+
+@using (Html.BeginForm())
+{
+    <p>
+        <input type="submit" value="Delete" />
+    </p>
+    <p>
+        @Html.ActionLink("Назад к списку", "Index")
+    </p>
+
+}

@@ -1,6 +1,33 @@
-﻿
+﻿@model List<CursachPrototype.Models.DataBaseInfo>
+
 @{
     ViewBag.Title = "Личный кабинет";
 }
 
 <h2>Личный профиль</h2>
+
+<table>
+    <tr>
+        <th>
+            Имя
+        </th>
+        <th>
+            Дата создания
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfCreating)
+            </td>
+            <td>
+                @Html.ActionLink("Удалить", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+</table>

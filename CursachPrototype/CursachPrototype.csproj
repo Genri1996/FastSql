@@ -192,6 +192,10 @@
     <Compile Include="Migrations\201701201725299_DataMigration.Designer.cs">
       <DependentUpon>201701201725299_DataMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701202121406_DataMigration2.cs" />
+    <Compile Include="Migrations\201701202121406_DataMigration2.Designer.cs">
+      <DependentUpon>201701202121406_DataMigration2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accounting\AppIdentityContext.cs" />
     <Compile Include="Models\Accounting\AppUser.cs" />
@@ -220,6 +224,7 @@
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <None Include="Properties\PublishProfiles\IISPub.pubxml" />
+    <Content Include="Views\UserRoom\Delete.cshtml" />
     <None Include="Views\UserRoom\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -241,6 +246,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201701201725299_DataMigration.resx">
       <DependentUpon>201701201725299_DataMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701202121406_DataMigration2.resx">
+      <DependentUpon>201701202121406_DataMigration2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
