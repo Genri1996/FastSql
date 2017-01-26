@@ -41,7 +41,13 @@ namespace CursachPrototype.Controllers
         public ActionResult Index()
         {
             ViewBag.FromInfo = "Необходимо войти для создания персональной базы данных";
-            return View(new ServerSelectionVm { AvailableServers = _dataService.AvailableServers });
+
+            ServerSelectionVm vm = new ServerSelectionVm
+            {
+                AvailableServers = GetAvailableDbmsAsListString()
+            };
+         
+            return View(vm);
         }
 
         /// <summary>
@@ -49,10 +55,10 @@ namespace CursachPrototype.Controllers
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        [HttpGet, Authorize]
+        [HttpPost, Authorize]
         public ActionResult CreateDb(ServerSelectionVm s)
         {
-            s.AvailableServers = _dataService.AvailableServers;
+            s.AvailableServers = GetAvailableDbmsAsListString();//Почему не приходит из представления??
 
             if (!ModelState.IsValid)
                 return View("Index", s);
@@ -61,8 +67,9 @@ namespace CursachPrototype.Controllers
             AppUser user = _userManager.FindById(User.Identity.GetUserId());
             s.DataBaseName += "_" + user.UserDbSuffix;
 
+            DbmsType selectedDbm = (DbmsType)Enum.Parse(typeof (DbmsType), s.SelectedServer);
 
-            if (_dataService.CheckDataBaseExists(s.SelectedServer, s.DataBaseName))
+            if (_dataService.CheckDataBaseExists(selectedDbm, s.DataBaseName))
             {
                 string errorMessage = "База данных с таким именем уже существует в вашем профиле.";
                 ModelState.AddModelError("err", errorMessage);
@@ -73,9 +80,18 @@ namespace CursachPrototype.Controllers
             
             _userManager.Update(user);
 
-            String connectionString = _dataService.GetConnectionString(s.SelectedServer, s.DataBaseName);
+            String connectionString = _dataService.GetConnectionString(selectedDbm, s.DataBaseName);
             ViewBag.ConnectionString = connectionString;
             return View("ShowConnectionString", (object)connectionString);
+        }
+
+        private List<String> GetAvailableDbmsAsListString()
+        {
+            var list = new List<String>();
+            foreach (var dbmsType in _dataService.AvailableServers)
+                list.Add(dbmsType.ToString());
+
+            return list;
         }
     }
 }

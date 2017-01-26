@@ -37,7 +37,7 @@ namespace CursachPrototype.Controllers
         /// </summary>
         /// <param name="id">Id of selected Db</param>
         /// <returns></returns>
-        [HttpGet, Authorize]
+        [HttpPost, Authorize]
         public ActionResult Delete(int id)
         {
 

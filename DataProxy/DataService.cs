@@ -13,31 +13,29 @@ namespace DataProxy
 {
     public class DataService
     {
-        public const string SqlServer = "MS SQL Server";
-
         private const string MasterConnectionString =
             "Data Source=AMDFXPC\\SQLEXPRESS;Initial Catalog=master;Integrated security=True";
 
-        public List<String> AvailableServers { get; } = new List<string> { SqlServer };
+        public List<DbmsType> AvailableServers { get; } = new List<DbmsType> { DbmsType.SqlServer };
 
-        public String GetConnectionString(String selectedServer, String DataBaseName)
+        public String GetConnectionString(DbmsType selectedDbms, String DataBaseName)
         {
             IDbCreator creator=null;
-            switch (selectedServer)
+            switch (selectedDbms)
             {
-                case SqlServer:
+                case DbmsType.SqlServer:
                     creator = new SqlServerCreator(DataBaseName);
                     break;
             }
             return creator.CreateNewDatabase();
         }
 
-        public bool CheckDataBaseExists(String selectedServer, String dataBaseName)
+        public bool CheckDataBaseExists(DbmsType selectedDbm, String dataBaseName)
         {
             IHelper helper = null;
-            switch (selectedServer)
+            switch (selectedDbm)
             {
-                case SqlServer:
+                case DbmsType.SqlServer:
                     helper = new SqlServerHelper(MasterConnectionString);
                     break;
             }
