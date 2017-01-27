@@ -9,6 +9,7 @@ using CursachPrototype.ViewModels;
 using DataProxy;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using CursachPrototype.ExtensionMethods;
 
 namespace CursachPrototype.Controllers
 {
@@ -51,36 +52,36 @@ namespace CursachPrototype.Controllers
         }
 
         /// <summary>
-        /// Creates Database according to user`s selection
+        /// Creates Database according to user`vm selection
         /// </summary>
-        /// <param name="s"></param>
+        /// <param name="vm"></param>
         /// <returns></returns>
         [HttpPost, Authorize]
-        public ActionResult CreateDb(ServerSelectionVm s)
+        public ActionResult CreateDb(ServerSelectionVm vm)
         {
-            s.AvailableServers = GetAvailableDbmsAsListString();//Почему не приходит из представления??
+            vm.AvailableServers = GetAvailableDbmsAsListString();//Почему не приходит из представления??
 
             if (!ModelState.IsValid)
-                return View("Index", s);
+                return View("Index", vm);
 
             //Add prefix
             AppUser user = _userManager.FindById(User.Identity.GetUserId());
-            s.DataBaseName += "_" + user.UserDbSuffix;
+            vm.DataBaseName += "_" + user.UserNickName;
 
-            DbmsType selectedDbm = (DbmsType)Enum.Parse(typeof (DbmsType), s.SelectedServer);
-
-            if (_dataService.CheckDataBaseExists(selectedDbm, s.DataBaseName))
+            //Check Db Exists
+            DbmsType selectedDbm = (DbmsType)Enum.Parse(typeof (DbmsType), vm.SelectedServer);
+            if (_dataService.CheckDataBaseExists(selectedDbm, vm.DataBaseName))
             {
                 string errorMessage = "База данных с таким именем уже существует в вашем профиле.";
                 ModelState.AddModelError("err", errorMessage);
-                return View("Index", s);
+                return View("Index", vm);
             }
 
-            user.UserDbs.Add(new DataBaseInfo { Name = s.DataBaseName, DateOfCreating = DateTime.Now});
-            
+            //Add new info to user
+            user.UserDbs.Add(new DataBaseInfo { Name = vm.DataBaseName, DateOfCreating = DateTime.Now});
             _userManager.Update(user);
 
-            String connectionString = _dataService.GetConnectionString(selectedDbm, s.DataBaseName);
+            String connectionString = _dataService.CreateDatabase(vm.ToCreateDatabaseObject());
             ViewBag.ConnectionString = connectionString;
             return View("ShowConnectionString", (object)connectionString);
         }

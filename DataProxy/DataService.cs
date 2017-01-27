@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using DataProxy.Creators;
 using DataProxy.Executors;
 using DataProxy.Helpers;
+using DataProxy.Models;
 
 namespace DataProxy
 {
@@ -15,16 +16,19 @@ namespace DataProxy
     {
         public List<DbmsType> AvailableServers { get; } = new List<DbmsType> { DbmsType.SqlServer };
 
-        public String GetConnectionString(DbmsType selectedDbms, String DataBaseName)
+        public String CreateDatabase(CreateDatabaseObject obj)
         {
-            IDbCreator creator=null;
-            switch (selectedDbms)
+            IDbCreator creator = null;
+            switch (obj.SelectedDbms)
             {
                 case DbmsType.SqlServer:
-                    creator = new SqlServerCreator(DataBaseName);
+                    creator = new SqlServerCreator(obj.DataBaseName);
                     break;
             }
-            return creator.CreateNewDatabase();
+            if (!obj.IsProtectionRequired)
+                return creator.CreateNewDatabase();
+            else
+                return creator.CreateNewDatabaseWithProtection(obj.DataBaseLogin, obj.DataBasePassword);
         }
 
         public bool CheckDataBaseExists(DbmsType selectedDbm, String dataBaseName)

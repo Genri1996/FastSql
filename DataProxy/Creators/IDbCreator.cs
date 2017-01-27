@@ -9,5 +9,7 @@ namespace DataProxy.Creators
         /// </summary>
         /// <returns></returns>
         String CreateNewDatabase();
+
+        String CreateNewDatabaseWithProtection(String login, String password);
     }
 }

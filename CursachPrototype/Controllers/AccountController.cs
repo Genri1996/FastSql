@@ -36,7 +36,7 @@ namespace CursachPrototype.Controllers
         {
             if (ModelState.IsValid)
             {
-                AppUser user = new AppUser { UserName = vm.Email, Email = vm.Email, UserDbSuffix = vm.NickName};
+                AppUser user = new AppUser { UserName = vm.Email, Email = vm.Email, UserNickName = vm.NickName};
                 IdentityResult result = UserManager.Create(user, vm.Password);
                 if (result.Succeeded)
                     return RedirectToAction("Login", "Account");

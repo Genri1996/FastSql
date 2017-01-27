@@ -3,7 +3,7 @@
 @if (Request.IsAuthenticated)
 {
     <div class="horizontal-container">
-        @Html.ActionLink("Привет " + User.Identity.GetUserName() + "!", "Index", "UserRoom", routeValues: null, htmlAttributes: new { @class = "item right" })
+        @Html.ActionLink("Личный кабинет", "Index", "UserRoom", routeValues: null, htmlAttributes: new { @class = "item right" })
         @Html.ActionLink("Выход", "Logout", "Account", routeValues: null, htmlAttributes: new { @class = "item right" })
     </div>
 }
