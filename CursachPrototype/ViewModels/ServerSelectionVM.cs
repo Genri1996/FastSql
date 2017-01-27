@@ -22,6 +22,9 @@ namespace CursachPrototype.ViewModels
         [RegularExpression(@"[A-z]{3,40}", ErrorMessage = "Некорректное имя БД")]
         public String DataBaseName { get; set; }
 
+        [Display(Name = "Публичная база данных")]
+        public bool IsDataBasePublic { get; set; } = true;
+
         [Display(Name = "Пароль к базе данных")]
         public String DataBasePassword { get; set; }
     }

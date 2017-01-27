@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using DataProxy.Executors;
 
 namespace DataProxy.Creators
 {
@@ -20,9 +21,9 @@ namespace DataProxy.Creators
 
         public string CreateNewDatabase()
         {
-            String str = $"Create database {_dataBaseName};";
+            String query = $"Create database {_dataBaseName};";
             SqlConnection myConn = new SqlConnection(_masterConnectionString);
-            SqlCommand myCommand = new SqlCommand(str, myConn);
+            SqlCommand myCommand = new SqlCommand(query, myConn);
 
             myConn.Open();
             myCommand.ExecuteNonQuery();
@@ -34,9 +35,13 @@ namespace DataProxy.Creators
             return $"Data Source={LocalSqlServerName};Initial Catalog={_dataBaseName};Integrated security=True";
         }
 
+        
         public string CreateNewDatabaseWithProtection(string login, string password)
         {
-            throw new NotImplementedException();
+            SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString);
+            String query1 = @"Create database @databasename;";
+            //TODO Дописать
+            return null;
         }
     }
 }

@@ -11,9 +11,11 @@ namespace DataProxy.Executors
     /// <summary>
     /// Provides interface for raw queries
     /// </summary>
-    interface IQueryExecutor
+    public interface IQueryExecutor:IDisposable
     {
-        String ExecuteQuery(String query);
-        DataTable ExecuteQuery(SqlCommand command);
+        String ExecuteQueryAsString(String command);
+        DataTable ExecuteCommandAsDataTable(SqlCommand command);
+
+        void Open();
     }
 }

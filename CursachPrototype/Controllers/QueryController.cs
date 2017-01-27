@@ -10,8 +10,12 @@ namespace CursachPrototype.Controllers
         {
             String connectionString = Request.Form["connectionString"];
             String query = Request.Form["query"];
+            String queryResult;
 
-            String queryResult = new SqlServerExecutor(connectionString).ExecuteQuery(query);
+            using (IQueryExecutor executor = new SqlServerExecutor(connectionString))
+            {
+                queryResult = executor.ExecuteQueryAsString(query);
+            }
             return View((object)queryResult);
         }
     }

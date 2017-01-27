@@ -16,6 +16,13 @@
         @Html.TextBoxFor(m => m.DataBaseName)
         @Html.ValidationMessageFor(m => m.DataBaseName)
         <br/>
+
+        <!--TODO Добавить ajax появление-отелючение поля с паролем-->
+
+        @Html.CheckBoxFor(m => m.IsDataBasePublic)
+        @Html.LabelFor(m => m.IsDataBasePublic)
+        @Html.ValidationMessageFor(m => m.DataBasePassword)
+        <br/>
         @Html.LabelFor(m => m.DataBaseName, "Введите пароль для базы данных")<br />
         @Html.TextBoxFor(m => m.DataBasePassword)
         @Html.ValidationMessageFor(m => m.DataBasePassword)
