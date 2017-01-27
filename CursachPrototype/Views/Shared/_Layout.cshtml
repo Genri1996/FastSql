@@ -1,11 +1,11 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <link href="~/Content/Styles/Site.css" type="text/css" rel="stylesheet"/>
-    <link href="~/Content/Styles/LoginPartial.css" rel="stylesheet" type="text/css">
+    <meta name="viewport" content="width=device-width"/>
+    <link href="@Url.Content("~/Content/Styles/Site.css")" type="text/css" rel="stylesheet"/>
+    <link href="@Url.Content("~/Content/Styles/LoginPartial.css")" rel="stylesheet" type="text/css">
     @RenderSection("Styles", false)
-    <script src="~/Scripts/jquery-3.1.1.min.js"></script>
+    <script src="@Url.Content("~/Scripts/jquery-3.1.1.min.js")"></script>
     @RenderSection("Scripts", false)
 
     <title>@ViewBag.Title</title>
