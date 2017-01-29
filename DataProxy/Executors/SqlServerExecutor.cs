@@ -15,6 +15,12 @@ namespace DataProxy.Executors
             Open();
         }
 
+        public DataTable ExecuteQueryAsDataTable(string command)
+        {
+            SqlCommand cmd = new SqlCommand(command);
+            return ExecuteCommandAsDataTable(cmd);
+        }
+
         public string ExecuteQueryAsString(String command)
         {
             SqlCommand cmd = new SqlCommand(command);

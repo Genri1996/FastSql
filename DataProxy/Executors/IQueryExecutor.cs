@@ -13,6 +13,7 @@ namespace DataProxy.Executors
     /// </summary>
     public interface IQueryExecutor:IDisposable
     {
+        DataTable ExecuteQueryAsDataTable(String command);
         String ExecuteQueryAsString(String command);
         String ExecuteCommandAsString(SqlCommand cmd);
         DataTable ExecuteCommandAsDataTable(SqlCommand command);
