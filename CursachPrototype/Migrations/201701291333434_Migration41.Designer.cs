@@ -7,13 +7,13 @@ namespace CursachPrototype.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.0-30225")]
-    public sealed partial class DataMigration : IMigrationMetadata
+    public sealed partial class Migration41 : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(DataMigration));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Migration41));
         
         string IMigrationMetadata.Id
         {
-            get { return "201701201725299_DataMigration"; }
+            get { return "201701291333434_Migration41"; }
         }
         
         string IMigrationMetadata.Source

@@ -36,6 +36,10 @@ namespace CursachPrototype.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (!IsNickNameUnic(vm.NickName))
+                {
+                    ModelState.AddModelError("", "Такой логин уже зарегестрирован.");
+                }
                 AppUser user = new AppUser { UserName = vm.Email, Email = vm.Email, UserNickName = vm.NickName};
                 IdentityResult result = UserManager.Create(user, vm.Password);
                 if (result.Succeeded)
@@ -43,10 +47,18 @@ namespace CursachPrototype.Controllers
                 else
                     foreach (string error in result.Errors)
                     {
-                        ModelState.AddModelError("", error);
+                        if (error.Contains("is already taken"))
+                            ModelState.AddModelError("", "Такой email уже зарегестрирован.");
+                        else
+                            ModelState.AddModelError("", error);
                     }
             }
             return View(vm);
+        }
+
+        private bool IsNickNameUnic(string nickName)
+        {
+            return !UserManager.Users.Select(user => user.UserNickName).Any(nick => string.Compare(nickName, nick)==0);
         }
 
         /// <summary>

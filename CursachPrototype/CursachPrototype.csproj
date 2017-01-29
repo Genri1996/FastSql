@@ -203,18 +203,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201701201725299_DataMigration.cs" />
-    <Compile Include="Migrations\201701201725299_DataMigration.Designer.cs">
-      <DependentUpon>201701201725299_DataMigration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201701202121406_DataMigration2.cs" />
-    <Compile Include="Migrations\201701202121406_DataMigration2.Designer.cs">
-      <DependentUpon>201701202121406_DataMigration2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201701270037540_DataMigration3.cs" />
-    <Compile Include="Migrations\201701270037540_DataMigration3.Designer.cs">
-      <DependentUpon>201701270037540_DataMigration3.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accounting\AppIdentityContext.cs" />
     <Compile Include="Models\Accounting\AppUser.cs" />
@@ -261,17 +249,6 @@
       <Project>{27052d2e-b54d-4c93-8c7d-40fbc7afbca9}</Project>
       <Name>DataProxy</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201701201725299_DataMigration.resx">
-      <DependentUpon>201701201725299_DataMigration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201701202121406_DataMigration2.resx">
-      <DependentUpon>201701202121406_DataMigration2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201701270037540_DataMigration3.resx">
-      <DependentUpon>201701270037540_DataMigration3.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

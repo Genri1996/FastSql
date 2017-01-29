@@ -10,6 +10,7 @@ using DataProxy;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using CursachPrototype.ExtensionMethods;
+using DataProxy.Models;
 
 namespace CursachPrototype.Controllers
 {
@@ -65,21 +66,32 @@ namespace CursachPrototype.Controllers
                 return View("Index", vm);
 
             AppUser user = _userManager.FindById(User.Identity.GetUserId());
+            CreateDatabaseObject tempObj = vm.ToCreateDatabaseObject(user.UserNickName);
             //Check Db Exists
             DbmsType selectedDbm = (DbmsType)Enum.Parse(typeof (DbmsType), vm.SelectedServer);
-            if (_dataService.CheckDataBaseExists(selectedDbm, vm.DataBaseName))
+            if (_dataService.CheckDataBaseExists(selectedDbm, tempObj.DataBaseName))
             {
                 string errorMessage = "База данных с таким именем уже существует в вашем профиле.";
                 ModelState.AddModelError("err", errorMessage);
                 return View("Index", vm);
             }
 
+            String connectionString = null;
+            try
+            {
+                connectionString = _dataService.CreateDatabase(vm.ToCreateDatabaseObject(user.UserNickName));
+            }
+            catch (Exception e)
+            {
+                string errorMessage = "Не удалось создать базу данных.";
+                return View("CustomError", (object)errorMessage);
+            }
+
             //Add new info to user
-            user.UserDbs.Add(new DataBaseInfo { Name = vm.DataBaseName, DateOfCreating = DateTime.Now});
+            user.UserDbs.Add(new DataBaseInfo { Name = vm.DataBaseName, DateOfCreating = DateTime.Now, ConnectionString = connectionString});
             _userManager.Update(user);
 
-            String connectionString = _dataService.CreateDatabase(vm.ToCreateDatabaseObject(user.UserNickName));
-            ViewBag.ConnectionString = connectionString;
+         
             return View("ShowConnectionString", (object)connectionString);
         }
 

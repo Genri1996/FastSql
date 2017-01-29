@@ -3,16 +3,16 @@ namespace CursachPrototype.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class DataMigration2 : DbMigration
+    public partial class Migration4 : DbMigration
     {
         public override void Up()
         {
-            AddColumn("dbo.DataBaseInfoes", "DateOfCreating", c => c.DateTime(nullable: false));
+            DropColumn("dbo.AspNetUsers", "UserNickName");
         }
         
         public override void Down()
         {
-            DropColumn("dbo.DataBaseInfoes", "DateOfCreating");
+            AddColumn("dbo.AspNetUsers", "UserNickName", c => c.String());
         }
     }
 }
