@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 using DataProxy.Executors;
+using DataProxy.Helpers;
 
 namespace DataProxy.Creators
 {
@@ -39,26 +40,22 @@ namespace DataProxy.Creators
         
         public string CreateNewDatabaseWithProtection(string login, string password)
         {
-            StringBuilder result = new StringBuilder();
-            
-            //Create Database
-            String query1 =$"use master create database {_dataBaseName}";
-
-            //Create Login TODO: Добавить проверку на существование логина
-            String query2 = $"create login {login} with password = '{password}'";
-
-            //Create User for login
-            String query3 = $"use {_dataBaseName} create user {login} for login {login}";
-
-            //Grant permission for user
-            String query4 = $"EXEC sp_addrolemember 'db_owner', {login}";
+            StringBuilder result = new StringBuilder();      
 
             using (SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString))
             {
-                result.Append(executor.ExecuteQueryAsString(query1));
-                result.Append(executor.ExecuteQueryAsString(query2));
-                result.Append(executor.ExecuteQueryAsString(query3));
-                result.Append(executor.ExecuteQueryAsString(query4));
+                if (new SqlServerHelper().IsLoginExists(login) == false)
+                {
+                    String createLoginQuery = $"use master create login {login} with password = '{password}'";
+                    result.Append(executor.ExecuteQueryAsString(createLoginQuery));
+                }
+                String createDbQuery = $"use master create database {_dataBaseName}";
+                String createUserQuery = $"use {_dataBaseName} create user {login} for login {login}";
+                String grantPermissionQuery = $"use {_dataBaseName} EXEC sp_addrolemember 'db_owner', {login}";
+
+                result.Append(executor.ExecuteQueryAsString(createDbQuery));
+                result.Append(executor.ExecuteQueryAsString(createUserQuery));
+                result.Append(executor.ExecuteQueryAsString(grantPermissionQuery));
             }
 
             if(result.ToString()!=string.Empty)

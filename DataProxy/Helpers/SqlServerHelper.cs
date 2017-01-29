@@ -48,5 +48,18 @@ namespace DataProxy.Helpers
 
             return false;
         }
+
+        public bool IsLoginExists(string login)
+        {
+            string strQuery = $"use master select [dbo].[LoginExists]('{login}') as [exists]";
+            DataTable dt;
+
+            using (SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString))
+            {
+                dt = executor.ExecuteQueryAsDataTable(strQuery);
+            }
+            return (bool)dt.Rows[0]["exists"];
+
+        }
     }
 }
