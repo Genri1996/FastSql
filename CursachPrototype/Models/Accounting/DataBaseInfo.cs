@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CursachPrototype.Models
+namespace CursachPrototype.Models.Accounting
 {
     public class DataBaseInfo
     {
