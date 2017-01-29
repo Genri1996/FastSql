@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using CursachPrototype.ExtensionMethods;
 using CursachPrototype.Models;
 using CursachPrototype.Models.Accounting;
 using Microsoft.AspNet.Identity;
@@ -29,7 +30,7 @@ namespace CursachPrototype.Controllers
                     .FindById(User.Identity.GetUserId());
 
       
-            return View(user.UserDbs);
+            return View(user.UserDbs());
         }
 
         /// <summary>
@@ -46,7 +47,7 @@ namespace CursachPrototype.Controllers
                     .GetUserManager<AppUserManager>()
                     .FindById(User.Identity.GetUserId());
 
-            DataBaseInfo foundDb = user.UserDbs.Single(db => db.Id == id);
+            DataBaseInfo foundDb = user.UserDbs().Single(db => db.Id == id);
             return View(foundDb);
         }
 
@@ -63,8 +64,8 @@ namespace CursachPrototype.Controllers
                    .GetUserManager<AppUserManager>()
                    .FindById(User.Identity.GetUserId());
 
-            DataBaseInfo foundDb = user.UserDbs.Single(db => db.Id == id);
-            user.UserDbs.Remove(foundDb);
+            DataBaseInfo foundDb = user.UserDbs().Single(db => db.Id == id);
+            user.UserDbs().Remove(foundDb);
 
 
 

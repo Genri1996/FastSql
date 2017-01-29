@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace CursachPrototype.Models
 {
@@ -12,7 +9,7 @@ namespace CursachPrototype.Models
         public string Name { get; set; }
 
         public DateTime DateOfCreating { get; set; }
-        public string ConnectionString { get; internal set; }
-    }
 
+        public string ConnectionString { get; set; }
+    }
 }
