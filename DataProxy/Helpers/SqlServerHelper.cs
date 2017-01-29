@@ -24,9 +24,8 @@ namespace DataProxy.Helpers
 
         public bool IsDataBaseExists(string dbName)
         {
-            string strQuery = @"select [dbo].[DatabaseExists]('@databasename') as [exists]";
+            string strQuery = $"use master select [dbo].[DatabaseExists]('{dbName}') as [exists]";
             SqlCommand cmd = new SqlCommand(strQuery);
-            cmd.Parameters.AddWithValue("@databasename", dbName);
             DataTable dt;
 
             using (SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString))
