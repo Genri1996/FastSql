@@ -88,7 +88,7 @@ namespace CursachPrototype.Controllers
             }
 
             //Add new info to user
-            user.UserDbs().Add(new DataBaseInfo { Name = vm.DataBaseName, DateOfCreating = DateTime.Now, ConnectionString = connectionString});
+            DataBaseInfoManager.AddDbInfo(new DataBaseInfo { Name = vm.DataBaseName, DateOfCreating = DateTime.Now, ConnectionString = connectionString}, user);
             _userManager.Update(user);
 
          

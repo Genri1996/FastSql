@@ -8,22 +8,10 @@ namespace DataProxy.DataBaseReaders
 {
     public class OleDbDataBaseReader : IDataBaseReader
     {
-        private DbmsType _dbmsType;
         private readonly OleDbConnection _connection;
 
-        public OleDbDataBaseReader(DbmsType type)
+        public OleDbDataBaseReader(string connectionString)
         {
-            _dbmsType = type;
-
-            string connectionStringName = string.Empty;
-            switch (type)
-            {
-                case DbmsType.SqlServer:
-                    connectionStringName = "SqlServerMasterOleDb";
-                    break;
-            }
-
-            string connectionString = ConfigurationManager.ConnectionStrings[connectionStringName].ConnectionString;
             _connection = new OleDbConnection(connectionString);
             _connection.Open();
         }
@@ -42,12 +30,11 @@ namespace DataProxy.DataBaseReaders
             foreach (var tableName in tableNames)
             {
                 query.Append(" SELECT * FROM " + tableName + ";");
-
             }
 
             OleDbDataAdapter adapter = new OleDbDataAdapter(query.ToString(), _connection);
             adapter.Fill(ds);
-
+            
             return ds;
         }
 

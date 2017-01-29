@@ -10,14 +10,11 @@ namespace CursachPrototype.Models.Accounting
         public AppIdentityContext() : base("IdentityDb")
         {
             Database.CreateIfNotExists();
+            DataBaseInfoManager.CreateTableIfNotExists();
         }
 
         public static AppIdentityContext Create()
         { 
-            //Create users table
-        
-
-
             return new AppIdentityContext();
         }
     }
