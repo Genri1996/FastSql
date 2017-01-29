@@ -14,8 +14,7 @@ namespace DataProxy.Executors
     public interface IQueryExecutor:IDisposable
     {
         String ExecuteQueryAsString(String command);
+        String ExecuteCommandAsString(SqlCommand cmd);
         DataTable ExecuteCommandAsDataTable(SqlCommand command);
-
-        void Open();
     }
 }

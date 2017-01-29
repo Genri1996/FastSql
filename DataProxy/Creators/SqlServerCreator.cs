@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Text;
 using DataProxy.Executors;
 
 namespace DataProxy.Creators
@@ -38,10 +39,32 @@ namespace DataProxy.Creators
         
         public string CreateNewDatabaseWithProtection(string login, string password)
         {
-            SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString);
-            String query1 = @"Create database @databasename;";
-            //TODO Дописать
-            return null;
+            StringBuilder result = new StringBuilder();
+            
+            //Create Database
+            String query1 =$"use master create database {_dataBaseName}";
+
+            //Create Login TODO: Добавить проверку на существование логина
+            String query2 = $"create login {login} with password = '{password}'";
+
+            //Create User for login
+            String query3 = $"use {_dataBaseName} create user {login} for login {login}";
+
+            //Grant permission for user
+            String query4 = $"EXEC sp_addrolemember 'db_owner', {login}";
+
+            using (SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString))
+            {
+                result.Append(executor.ExecuteQueryAsString(query1));
+                result.Append(executor.ExecuteQueryAsString(query2));
+                result.Append(executor.ExecuteQueryAsString(query3));
+                result.Append(executor.ExecuteQueryAsString(query4));
+            }
+
+            if(result.ToString()!=string.Empty)
+                throw new Exception("Создание базы данных провалилось.", new Exception(result.ToString()));
+
+            return $"Data Source={LocalSqlServerName};Initial Catalog={_dataBaseName};User Id={login};Password={password}";
         }
     }
 }

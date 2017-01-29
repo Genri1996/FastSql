@@ -15,29 +15,18 @@ namespace DataProxy.Executors
             Open();
         }
 
-        public void Open()
-        {
-            try
-            {
-                _connection.Open();
-            }
-            catch (SqlException ex)
-            {
-                _connection.Dispose();
-                throw new Exception("Unable to open _connection.", ex);
-            }
-        }
-
-        public void Dispose()
-        {
-            _connection.Close();
-            _connection.Dispose();
-        }
-
         public string ExecuteQueryAsString(String command)
         {
+            SqlCommand cmd = new SqlCommand(command);
+            return ExecuteCommandAsString(cmd);
+        }
+
+        public String ExecuteCommandAsString(SqlCommand cmd)
+        {
             StringBuilder builder = new StringBuilder();
-            SqlCommand cmd = new SqlCommand(command, _connection);
+            cmd.Connection = _connection;
+            cmd.CommandType = CommandType.Text;
+
             SqlDataReader reader = null;
             try
             {
@@ -91,9 +80,23 @@ namespace DataProxy.Executors
             }
         }
 
-        public String ExecuteCommandAsString(SqlCommand cmd)
+        private void Open()
         {
-            return ExecuteQueryAsString(cmd.CommandText);
+            try
+            {
+                _connection.Open();
+            }
+            catch (SqlException ex)
+            {
+                _connection.Dispose();
+                throw new Exception("Unable to open _connection.", ex);
+            }
+        }
+
+        public void Dispose()
+        {
+            _connection.Close();
+            _connection.Dispose();
         }
     }
 }
