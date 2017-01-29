@@ -12,7 +12,8 @@ namespace CursachPrototype.Models
         public string Name { get; set; }
 
         public DateTime DateOfCreating { get; set; }
-        public string ConnectionString { get; internal set; }
+
+        public string ConnectionString { get; set; }
     }
 
 }
