@@ -16,6 +16,7 @@ namespace CursachPrototype.Controllers
             {
                 queryResult = executor.ExecuteQueryAsString(query);
             }
+
             return View((object)queryResult);
         }
     }

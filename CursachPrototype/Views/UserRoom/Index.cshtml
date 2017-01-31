@@ -11,8 +11,6 @@
 <br />
 <br />
 
-
-
 <div class="horizontal-container">
     <div class="left">
         <table>
@@ -54,10 +52,7 @@
         </table>
     </div>
 
-    <div class="right">
-        @Html.Partial(@"~\Views\Query\QueryExecutor.cshtml", Model)
+    <div class="left">
+        @Html.Partial(@"~\Views\Query\QueryExecutor.cshtml")
     </div>
 </div>
-@section Styles{
-    <link href="@Url.Content("~/Content/Styles/Site.css")" rel="stylesheet" type="text/css">
-}

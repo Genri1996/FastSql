@@ -1,10 +1,8 @@
-﻿@model String
-
-<h4>Введите тестовый запрос к базе данных</h4>
+﻿<h4>Введите тестовый запрос к базе данных Model.Name</h4>
 @using (Html.BeginForm("ExecuteQuery", "Query"))
 {
     @Html.Label("Строка подключения: ")
-    @Html.TextBox("connectionString", Model)
+    @Html.TextBox("connectionString")
     <br />
     @Html.Label("Запрос: ")<br />
     @Html.TextArea("query")
