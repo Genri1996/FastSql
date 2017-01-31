@@ -1,39 +1,63 @@
-﻿@model IList<CursachPrototype.Models.Accounting.DataBaseInfo>
+﻿@using System.Web.Optimization
+@model IList<CursachPrototype.Models.Accounting.DataBaseInfo>
 
 @{
     ViewBag.Title = "Личный кабинет";
 }
 
 <h2>Личный профиль</h2>
+<strong>Вам доступно @Model.Count баз данных</strong>
 
-<table>
-    <tr>
-        <th>
-            Имя
-        </th>
-        <th>
-            Дата создания
-        </th>
-    </tr>
+<br />
+<br />
 
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateOfCreating)
-            </td>
-            <td>
-                @item.DbmsType.ToString()
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ConnectionString)
-            </td>
-            <td>
-                @Html.ActionLink("Удалить", "Delete", new { id = item.Id })
-            </td>
-        </tr>
-    }
-</table>
+
+
+<div class="horizontal-container">
+    <div class="left">
+        <table>
+            <tr>
+                <th>
+                    Имя
+                </th>
+                <th>
+                    Дата создания
+                </th>
+                <th>
+                    СУБД
+                </th>
+                <th>
+                    Строка подключения
+                </th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateOfCreating)
+                    </td>
+                    <td>
+                        @item.DbmsType.ToString()
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ConnectionString)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Удалить", "Delete", new {id = item.Id})
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+
+    <div class="right">
+        @Html.Partial(@"~\Views\Query\QueryExecutor.cshtml", Model)
+    </div>
+</div>
+@section Styles{
+    <link href="@Url.Content("~/Content/Styles/Site.css")" rel="stylesheet" type="text/css">
+}

@@ -22,3 +22,21 @@ input[type="checkbox"].input-validation-error {
 
 /*Global*/
 
+.horizontal-container {
+    overflow: hidden;
+    padding-bottom: 50px;
+}
+
+.horizontal-container .item {
+    display: inline-block;
+}
+
+.right {
+    float: right;
+    padding-right: 10px;
+}
+
+.left {
+    float: left;
+    padding-left: 10px;
+}
