@@ -76,7 +76,7 @@ namespace CursachPrototype.Controllers
                 return View("Index", vm);
             }
 
-            String connectionString = null;
+            String connectionString;
             try
             {
                 connectionString = _dataService.CreateDatabase(vm.ToCreateDatabaseObject(user.UserNickName));
@@ -88,7 +88,7 @@ namespace CursachPrototype.Controllers
             }
 
             //Add new info to user
-            DataBaseInfoManager.AddDbInfo(new DataBaseInfo { Name = vm.DataBaseName, DateOfCreating = DateTime.Now, ConnectionString = connectionString}, user);
+            DataBaseInfoManager.AddDbInfo(new DataBaseInfo { Name = tempObj.DataBaseName, DateOfCreating = DateTime.Now, ConnectionString = connectionString}, user);
             _userManager.Update(user);
 
          

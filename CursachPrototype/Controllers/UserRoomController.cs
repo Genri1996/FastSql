@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using CursachPrototype.ExtensionMethods;
 using CursachPrototype.Models;
 using CursachPrototype.Models.Accounting;
+using DataProxy.Helpers;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 
@@ -38,7 +39,7 @@ namespace CursachPrototype.Controllers
         /// </summary>
         /// <param name="id">Id of selected Db</param>
         /// <returns></returns>
-        [HttpPost, Authorize]
+        [HttpGet, Authorize]
         public ActionResult Delete(int id)
         {
 
@@ -66,6 +67,10 @@ namespace CursachPrototype.Controllers
 
             DataBaseInfo foundDb = DataBaseInfoManager.GetDbInfos(user).Single(db => db.Id == id);
             DataBaseInfoManager.RemoveDbInfo(foundDb);
+
+            //TODO Depends on type of DBMS
+            IHelper helper = new SqlServerHelper();
+            helper.DropDataBase(foundDb.Name);
 
             return RedirectToAction("Index");
         }

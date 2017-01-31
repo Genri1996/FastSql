@@ -76,6 +76,14 @@ namespace CursachPrototype.Models.Accounting
             }
         }
 
-        public static void RemoveDbInfo(DataBaseInfo info) { }
+        public static void RemoveDbInfo(DataBaseInfo info)
+        {
+            string query = $"USE {DbName}  DELETE FROM {TableName} WHERE DbInfos.Id={info.Id};";
+
+            using (SqlServerExecutor executor = new SqlServerExecutor(ConfigurationManager.ConnectionStrings["IdentityDb"].ConnectionString))
+            {
+                executor.ExecuteQueryAsString(query);
+            }
+        }
     }
 }
