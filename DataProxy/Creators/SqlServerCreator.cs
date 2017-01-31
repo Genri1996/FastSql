@@ -8,50 +8,64 @@ using DataProxy.Helpers;
 
 namespace DataProxy.Creators
 {
-    
+    /// <summary>
+    /// Implementation for SQL Server
+    /// </summary>
     class SqlServerCreator : IDbCreator
     {
+        //TODO: After publishing to another server should be changed.
         private const string  LocalSqlServerName = @"AMDFXPC\SQLEXPRESS";
-        private string _masterConnectionString;
+        //Full access to server
+        private readonly string _masterConnectionString;
         private readonly string _dataBaseName;
 
-        public SqlServerCreator(String dataBaseName)
+        public SqlServerCreator(string dataBaseName)
         {
             _dataBaseName = dataBaseName;
             _masterConnectionString = ConfigurationManager.ConnectionStrings["SqlServerMaster"].ConnectionString;
         }
 
+        /// <summary>
+        /// Creates database without ptotection
+        /// </summary>
+        /// <returns></returns>
         public string CreateNewDatabase()
         {
-            String query = $"Create database {_dataBaseName};";
-            SqlConnection myConn = new SqlConnection(_masterConnectionString);
-            SqlCommand myCommand = new SqlCommand(query, myConn);
-
-            myConn.Open();
-            myCommand.ExecuteNonQuery();
-
-            if (myConn.State == ConnectionState.Open)
+            string query = $"CREATE DATABASE {_dataBaseName};";
+            string error;
+            using (SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString))
             {
-                myConn.Close();
+                error = executor.ExecuteQueryAsString(query);
             }
+            if(error!=string.Empty)
+                throw new Exception("Создание базы данных провалилось.", new Exception(error));
+
             return $"Data Source={LocalSqlServerName};Initial Catalog={_dataBaseName};Integrated security=True";
         }
 
-        
+        /// <summary>
+        /// Creates private database with selected login and password
+        /// </summary>
+        /// <param name="login"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public string CreateNewDatabaseWithProtection(string login, string password)
         {
+            //errors collector
             StringBuilder result = new StringBuilder();      
 
             using (SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString))
             {
+                //couldn't create login, if it is already exists
                 if (new SqlServerHelper().IsLoginExists(login) == false)
                 {
-                    String createLoginQuery = $"use master create login {login} with password = '{password}'";
+                    string createLoginQuery = $"USE MASTER CREATE LOGIN {login} WITH PASSWORD = '{password}'";
                     result.Append(executor.ExecuteQueryAsString(createLoginQuery));
                 }
-                String createDbQuery = $"use master create database {_dataBaseName}";
-                String createUserQuery = $"use {_dataBaseName} create user {login} for login {login}";
-                String grantPermissionQuery = $"use {_dataBaseName} EXEC sp_addrolemember 'db_owner', {login}";
+                string createDbQuery = $"USE MASTER CREATE DATABASE {_dataBaseName}";
+                string createUserQuery = $"USE {_dataBaseName} CREATE USER {login} FOR LOGIN {login}";
+                //Apply protection rules
+                string grantPermissionQuery = $"USE {_dataBaseName} EXEC sp_addrolemember 'db_owner', {login}";
 
                 result.Append(executor.ExecuteQueryAsString(createDbQuery));
                 result.Append(executor.ExecuteQueryAsString(createUserQuery));

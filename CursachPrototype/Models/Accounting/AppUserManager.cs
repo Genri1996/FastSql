@@ -5,6 +5,10 @@ using Microsoft.Owin;
 
 namespace CursachPrototype.Models.Accounting
 {
+    /// <summary>
+    /// From metanit.com. 
+    /// Custom app user manager
+    /// </summary>
     public class AppUserManager : UserManager<AppUser>
     {
         public AppUserManager(IUserStore<AppUser> store) : base(store)

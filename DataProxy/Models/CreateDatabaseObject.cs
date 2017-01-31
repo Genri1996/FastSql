@@ -1,21 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DataProxy.Models
+﻿namespace DataProxy.Models
 {
+    /// <summary>
+    /// Encapsulates information about Db creation
+    /// </summary>
     public class CreateDatabaseObject
     {
         public DbmsType SelectedDbms { get; set; }
     
-        public String DataBaseName { get; set; }
+        public string DataBaseName { get; set; }
 
-        public bool IsProtectionRequired { get; set; } = false;
+        /// <summary>
+        /// Flag that ask for protection
+        /// </summary>
+        public bool IsProtectionRequired { get; set; }
 
-        public String DataBaseLogin { get; set; }
+        public string DataBaseLogin { get; set; }
 
-        public String DataBasePassword { get; set; }
+        /// <summary>
+        /// Only of protection required
+        /// </summary>
+        public string DataBasePassword { get; set; }
     }
 }

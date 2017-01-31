@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DataProxy.Executors;
 
 namespace DataProxy.Helpers
@@ -15,16 +9,21 @@ namespace DataProxy.Helpers
     /// </summary>
     public class SqlServerHelper:IHelper
     {
-        private string _masterConnectionString;
+        private readonly string _masterConnectionString;
 
         public SqlServerHelper()
         {
             _masterConnectionString = ConfigurationManager.ConnectionStrings["SqlServerMaster"].ConnectionString;
         }
 
+        /// <summary>
+        /// Checks if database exists
+        /// </summary>
+        /// <param name="dbName">name of database</param>
+        /// <returns></returns>
         public bool IsDataBaseExists(string dbName)
         {
-            string strQuery = $"use master select [dbo].[DatabaseExists]('{dbName}') as [exists]";
+            string strQuery = $"USE MASTER SELECT [dbo].[DatabaseExists]('{dbName}') AS [exists]";
             DataTable dt;
 
             using (SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString))
@@ -34,9 +33,14 @@ namespace DataProxy.Helpers
             return (bool)dt.Rows[0]["exists"];
         }
 
+        /// <summary>
+        /// Drops database from SQL server
+        /// </summary>
+        /// <param name="dbName">Name of database</param>
+        /// <returns></returns>
         public bool DropDataBase(string dbName)
         {
-            string strQuery = $" USE master; ALTER DATABASE[{dbName}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;  DROP DATABASE[{dbName}];";
+            string strQuery = $" USE MASTER ALTER DATABASE[{dbName}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;  DROP DATABASE[{dbName}];";
 
             string queryResult;
             using (SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString))
@@ -49,9 +53,14 @@ namespace DataProxy.Helpers
             return true;
         }
 
+        /// <summary>
+        /// Checks if login exists
+        /// </summary>
+        /// <param name="login">login name</param>
+        /// <returns></returns>
         public bool IsLoginExists(string login)
         {
-            string strQuery = $"use master select [dbo].[LoginExists]('{login}') as [exists]";
+            string strQuery = $"USE MASTER SELECT [dbo].[LoginExists]('{login}') AS [exists]";
             DataTable dt;
 
             using (SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString))

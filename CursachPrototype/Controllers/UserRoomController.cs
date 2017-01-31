@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CursachPrototype.ExtensionMethods;
-using CursachPrototype.Models;
 using CursachPrototype.Models.Accounting;
 using DataProxy;
-using DataProxy.Helpers;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-
 
 namespace CursachPrototype.Controllers
 {
@@ -20,18 +14,19 @@ namespace CursachPrototype.Controllers
     public class UserRoomController : Controller
     {
         /// <summary>
+        /// Reference to current user.
+        /// </summary>
+        private AppUserManager _userManager => System.Web.HttpContext.Current.GetOwinContext()
+            .GetUserManager<AppUserManager>();
+
+        /// <summary>
         /// Returns a table with available databases to current user
         /// </summary>
         /// <returns></returns>
         [HttpGet, Authorize]
         public ActionResult Index()
         {
-            AppUser user =
-                System.Web.HttpContext.Current.GetOwinContext()
-                    .GetUserManager<AppUserManager>()
-                    .FindById(User.Identity.GetUserId());
-
-
+            AppUser user = _userManager.FindById(User.Identity.GetUserId());
             return View(DataBaseInfoManager.GetDbInfos(user));
         }
 
@@ -43,33 +38,27 @@ namespace CursachPrototype.Controllers
         [HttpGet, Authorize]
         public ActionResult Delete(int id)
         {
-
-            AppUser user =
-                System.Web.HttpContext.Current.GetOwinContext()
-                    .GetUserManager<AppUserManager>()
-                    .FindById(User.Identity.GetUserId());
-
+            AppUser user = _userManager.FindById(User.Identity.GetUserId());
             DataBaseInfo foundDb = DataBaseInfoManager.GetDbInfos(user).Single(db => db.Id == id);
             return View(foundDb);
         }
 
         /// <summary>
-        /// Removes Database
+        /// Removes Database after confiramtion
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)
         {
-            AppUser user =
-               System.Web.HttpContext.Current.GetOwinContext()
-                   .GetUserManager<AppUserManager>()
-                   .FindById(User.Identity.GetUserId());
-
+            //Find user
+            AppUser user = _userManager.FindById(User.Identity.GetUserId());
+            //Find DB
             DataBaseInfo foundDb = DataBaseInfoManager.GetDbInfos(user).Single(db => db.Id == id);
+            //Remove db info from DbInfos
             DataBaseInfoManager.RemoveDbInfo(foundDb);
-
-            DataService.DropDataBase(foundDb.DbmsType,foundDb.Name);
+            //Delete database
+            DataService.DropDataBase(foundDb.DbmsType, foundDb.Name);
 
             return RedirectToAction("Index");
         }

@@ -5,51 +5,66 @@ using System.Text;
 
 namespace DataProxy.Executors
 {
+    /// <summary>
+    /// Provides an ability to execute query to SQL server
+    /// </summary>
     public class SqlServerExecutor : IQueryExecutor
     {
         private readonly SqlConnection _connection;
 
-        public SqlServerExecutor(String connectionString)
+        /// <summary>
+        /// Opens connection imeddiately.
+        /// </summary>
+        /// <param name="connectionString"></param>
+        public SqlServerExecutor(string connectionString)
         {
             _connection = new SqlConnection(connectionString);
             Open();
         }
 
+        /// <summary>
+        /// Executes string query and return result as datatable.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
         public DataTable ExecuteQueryAsDataTable(string command)
         {
             SqlCommand cmd = new SqlCommand(command);
             return ExecuteCommandAsDataTable(cmd);
         }
 
-        public string ExecuteQueryAsString(String command)
+        /// <summary>
+        /// Executes string query and return result as string.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        public string ExecuteQueryAsString(string command)
         {
             SqlCommand cmd = new SqlCommand(command);
             return ExecuteCommandAsString(cmd);
         }
 
-        public String ExecuteCommandAsString(SqlCommand cmd)
+        /// <summary>
+        /// Executes SqlCommand query and return result as string.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        public string ExecuteCommandAsString(SqlCommand command)
         {
             StringBuilder builder = new StringBuilder();
-            cmd.Connection = _connection;
-            cmd.CommandType = CommandType.Text;
+            command.Connection = _connection;
 
+            //Result collector
             SqlDataReader reader = null;
             try
             {
-                reader = cmd.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                    {
-                        for (int i = 0; i < reader.VisibleFieldCount; i++)
-                            builder.AppendLine(reader[i] + " ");
-                        builder.AppendLine();
-                    }
-                else
-                    while (reader.Read())
-                    {
-                        builder.AppendLine(reader[0] + " ");
-                        builder.AppendLine();
-                    }
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    for (int i = 0; i < reader.VisibleFieldCount; i++)
+                        builder.AppendLine(reader[i] + " ");
+                    builder.AppendLine();
+                }
             }
             catch (SqlException exception)
             {
@@ -59,11 +74,16 @@ namespace DataProxy.Executors
             {
                 reader?.Close();
                 reader?.Dispose();
-                cmd.Dispose();
+                command.Dispose();
             }
             return builder.ToString();
         }
 
+        /// <summary>
+        /// Executes SqlCommand query and return result as datatable.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
         public DataTable ExecuteCommandAsDataTable(SqlCommand command)
         {
             DataTable dt = new DataTable();
@@ -76,7 +96,7 @@ namespace DataProxy.Executors
                 sda.Fill(dt);
                 return dt;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
@@ -95,7 +115,7 @@ namespace DataProxy.Executors
             catch (SqlException ex)
             {
                 _connection.Dispose();
-                throw new Exception("Unable to open _connection.", ex);
+                throw new Exception("Unable to open connection.", ex);
             }
         }
 

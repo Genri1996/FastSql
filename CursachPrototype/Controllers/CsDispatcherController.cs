@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CursachPrototype.Models;
 using CursachPrototype.Models.Accounting;
 using CursachPrototype.ViewModels;
 using DataProxy;
@@ -38,7 +37,7 @@ namespace CursachPrototype.Controllers
             {
                 AvailableServers = GetAvailableDbmsAsListString()
             };
-         
+
             return View(vm);
         }
 
@@ -55,10 +54,12 @@ namespace CursachPrototype.Controllers
             if (!ModelState.IsValid)
                 return View("Index", vm);
 
+            //Receives info
             AppUser user = _userManager.FindById(User.Identity.GetUserId());
             CreateDatabaseObject tempObj = vm.ToCreateDatabaseObject(user.UserNickName);
+
             //Check Db Exists
-            DbmsType selectedDbmsType = (DbmsType)Enum.Parse(typeof (DbmsType), vm.SelectedServer);
+            DbmsType selectedDbmsType = (DbmsType)Enum.Parse(typeof(DbmsType), vm.SelectedServer);
             if (DataService.CheckDataBaseExists(selectedDbmsType, tempObj.DataBaseName))
             {
                 string errorMessage = "База данных с таким именем уже существует в этой СУБД.";
@@ -66,6 +67,7 @@ namespace CursachPrototype.Controllers
                 return View("Index", vm);
             }
 
+            //Try to create database
             String connectionString;
             try
             {
@@ -77,15 +79,20 @@ namespace CursachPrototype.Controllers
                 return View("CustomError", (object)errorMessage);
             }
 
-            //Add new info to user
-            DataBaseInfoManager.AddDbInfo(new DataBaseInfo { Name = tempObj.DataBaseName, DateOfCreating = DateTime.Now, ConnectionString = connectionString}, user);
+            //Save action to database
+            //Add new info to user. No ID and foreighn Key (!)
+            DataBaseInfoManager.AddDbInfo(new DataBaseInfo { Name = tempObj.DataBaseName, DateOfCreating = DateTime.Now, ConnectionString = connectionString }, user);
             _userManager.Update(user);
 
-         
             return View("ShowConnectionString", (object)connectionString);
         }
 
-        private List<String> GetAvailableDbmsAsListString()
+        //TODO: Use Enum List instead
+        /// <summary>
+        /// Returns all available Dbms As String List.
+        /// </summary>
+        /// <returns></returns>
+        private List<string> GetAvailableDbmsAsListString()
         {
             return DataService.AvailableServers.Select(dbmsType => dbmsType.ToString()).ToList();
         }

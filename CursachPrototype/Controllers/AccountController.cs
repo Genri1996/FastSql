@@ -1,30 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using CursachPrototype.Models;
 using CursachPrototype.Models.Accounting;
 using CursachPrototype.ViewModels;
-using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Host.SystemWeb;
 using Microsoft.Owin.Security;
 
 namespace CursachPrototype.Controllers
 {
+    /// <summary>
+    /// Perfoms actions with accounting. Mostly from metanit.com
+    /// </summary>
     public class AccountController : Controller
     {
-        private AppUserManager UserManager
-        {
-            get
-            {
-                return HttpContext.GetOwinContext().GetUserManager<AppUserManager>();
-            }
-        }
+        /// <summary>
+        /// Returns user manager
+        /// </summary>
+        private AppUserManager UserManager => HttpContext.GetOwinContext().GetUserManager<AppUserManager>();
+
+        private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
 
         [HttpGet]
         public ActionResult Register()
@@ -37,17 +34,19 @@ namespace CursachPrototype.Controllers
         {
             if (ModelState.IsValid)
             {
+                //Check if nick name is also unic. (Along with email)
                 if (!IsNickNameUnic(vm.NickName))
                 {
                     ModelState.AddModelError("", "Такой логин уже зарегестрирован.");
                 }
-                AppUser user = new AppUser { UserName = vm.Email, Email = vm.Email, UserNickName = vm.NickName};
+                AppUser user = new AppUser { UserName = vm.Email, Email = vm.Email, UserNickName = vm.NickName };
                 IdentityResult result = UserManager.Create(user, vm.Password);
                 if (result.Succeeded)
                     return RedirectToAction("Login", "Account");
                 else
                     foreach (string error in result.Errors)
                     {
+                        //Russian translation. Defaul is english
                         if (error.Contains("is already taken"))
                             ModelState.AddModelError("", "Такой email уже зарегестрирован.");
                         else
@@ -57,23 +56,16 @@ namespace CursachPrototype.Controllers
             return View(vm);
         }
 
+        /// <summary>
+        /// Check if nick name is unic
+        /// </summary>
+        /// <param name="nickName"></param>
+        /// <returns></returns>
         private bool IsNickNameUnic(string nickName)
         {
             if (UserManager.Users != null)
                 return true;
-            return !UserManager.Users.Select(user => user.UserNickName).Any(nick => string.Compare(nickName, nick)==0);
-        }
-
-        /// <summary>
-        /// ///////////////////
-        /// </summary>
-
-        private IAuthenticationManager AuthenticationManager
-        {
-            get
-            {
-                return HttpContext.GetOwinContext().Authentication;
-            }
+            return !UserManager.Users.Select(user => user.UserNickName).Any(nick => string.Compare(nickName, nick) == 0);
         }
 
         public ActionResult Login(string returnUrl)
@@ -82,8 +74,7 @@ namespace CursachPrototype.Controllers
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public ActionResult Login(LoginVm model, string returnUrl)
         {
             if (ModelState.IsValid)
@@ -95,14 +86,13 @@ namespace CursachPrototype.Controllers
                 }
                 else
                 {
-                    ClaimsIdentity claim = UserManager.CreateIdentity(user,
-                    DefaultAuthenticationTypes.ApplicationCookie);
+                    ClaimsIdentity claim = UserManager.CreateIdentity(user,DefaultAuthenticationTypes.ApplicationCookie);
                     AuthenticationManager.SignOut();
                     AuthenticationManager.SignIn(new AuthenticationProperties
                     {
                         IsPersistent = true
                     }, claim);
-                    if (String.IsNullOrEmpty(returnUrl))
+                    if (string.IsNullOrEmpty(returnUrl))
                         return RedirectToAction("Index", "Home");
                     return Redirect(returnUrl);
                 }
@@ -110,6 +100,7 @@ namespace CursachPrototype.Controllers
             ViewBag.returnUrl = returnUrl;
             return View(model);
         }
+
         public ActionResult Logout()
         {
             AuthenticationManager.SignOut();

@@ -1,22 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DataProxy.Creators;
-using DataProxy.Executors;
 using DataProxy.Helpers;
 using DataProxy.Models;
 
 namespace DataProxy
 {
+    /// <summary>
+    /// Mediator between some functions and client.
+    /// Used for DBMS independence.
+    /// </summary>
     public static class DataService
     {
         public static List<DbmsType> AvailableServers { get; } = new List<DbmsType> { DbmsType.SqlServer };
 
-        public static String CreateDatabase(CreateDatabaseObject obj)
+        /// <summary>
+        /// Creates DB according CDBObject
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string CreateDatabase(CreateDatabaseObject obj)
         {
             IDbCreator creator = null;
             switch (obj.SelectedDbms)

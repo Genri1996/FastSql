@@ -15,7 +15,7 @@ namespace DataProxy.Executors
     {
         DataTable ExecuteQueryAsDataTable(String command);
         String ExecuteQueryAsString(String command);
-        String ExecuteCommandAsString(SqlCommand cmd);
+        String ExecuteCommandAsString(SqlCommand command);
         DataTable ExecuteCommandAsDataTable(SqlCommand command);
     }
 }

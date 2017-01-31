@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
 
 namespace CursachPrototype.ViewModels
 {
     public class RegisterVm
     {
         [Required]
+        [EmailAddress]
         public string Email { get; set; }
 
         [Required]

@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DataProxy.Helpers
+﻿namespace DataProxy.Helpers
 {
+    /// <summary>
+    /// Different additional  functions
+    /// </summary>
     public interface IHelper
     {
-        bool IsDataBaseExists(String dbName);
+        bool IsDataBaseExists(string dbName);
 
-        bool DropDataBase(String dbName);
+        bool DropDataBase(string dbName);
 
-        bool IsLoginExists(String login);
+        bool IsLoginExists(string login);
     }
 }

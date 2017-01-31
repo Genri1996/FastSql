@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DataProxy
+﻿namespace DataProxy
 {
+    /// <summary>
+    /// Available DBMSs
+    /// </summary>
     public enum DbmsType
     {
         SqlServer
