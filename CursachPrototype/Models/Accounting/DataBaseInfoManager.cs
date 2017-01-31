@@ -37,6 +37,7 @@ namespace CursachPrototype.Models.Accounting
                                    + "DATEOFCREATING DATETIME NOT NULL, "
                                    + "CONNECTIONSTRING NVARCHAR(500) NOT NULL, "
                                    + "USERKEY NVARCHAR(128), "
+                                   + "DBMSTYPE NVARCHAR(128), "
                                    + "FOREIGN KEY (USERKEY) REFERENCES dbo.AspNetUsers(Id)"
                                    + ")";
 
@@ -55,10 +56,11 @@ namespace CursachPrototype.Models.Accounting
                           select new DataBaseInfo
                           { 
                               Id = dbInfo.Field<int>("Id"),
+                              Name = dbInfo.Field<string>("NAME"),
                               ConnectionString = dbInfo.Field<string>("CONNECTIONSTRING"),
                               DateOfCreating = dbInfo.Field<DateTime>("DATEOFCREATING"),
-                              ForeignKey = dbInfo.Field<string>("USERKEY"),
-                              Name = dbInfo.Field<string>("NAME")
+                              DbmsType = (DbmsType)Enum.Parse(typeof (DbmsType), dbInfo.Field<string>("DBMSTYPE")),
+                              ForeignKey = dbInfo.Field<string>("USERKEY")
                           }).ToList();
 
             return result;
@@ -67,8 +69,8 @@ namespace CursachPrototype.Models.Accounting
         public static void AddDbInfo(DataBaseInfo info, AppUser user)
         {
             string query = $"USE {DbName} INSERT INTO {TableName} "
-                           + "(NAME, DATEOFCREATING, CONNECTIONSTRING, USERKEY) "
-                           + $"VALUES('{info.Name}', CONVERT(DATETIME, '{info.DateOfCreating.ToString("yyyy-MM-dd hh:mm:ss")}', 120), '{info.ConnectionString}', '{user.Id}');";
+                           + "(NAME, DATEOFCREATING, CONNECTIONSTRING, DBMSTYPE, USERKEY) "
+                           + $"VALUES('{info.Name}', CONVERT(DATETIME, '{info.DateOfCreating.ToString("yyyy-MM-dd hh:mm:ss")}', 120), '{info.ConnectionString}','{info.DbmsType.ToString()}', '{user.Id}');";
 
             using ( SqlServerExecutor executor = new SqlServerExecutor(ConfigurationManager.ConnectionStrings["IdentityDb"].ConnectionString))
             {

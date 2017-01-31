@@ -1,4 +1,5 @@
 ﻿using System;
+using DataProxy;
 
 namespace CursachPrototype.Models.Accounting
 {
@@ -11,6 +12,8 @@ namespace CursachPrototype.Models.Accounting
         public DateTime DateOfCreating { get; set; }
 
         public string ConnectionString { get; set; }
+
+        public DbmsType DbmsType { get; set; }
 
         public string ForeignKey { get; set; }
     }

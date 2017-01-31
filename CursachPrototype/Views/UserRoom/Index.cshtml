@@ -26,6 +26,12 @@
                 @Html.DisplayFor(modelItem => item.DateOfCreating)
             </td>
             <td>
+                @item.DbmsType.ToString()
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ConnectionString)
+            </td>
+            <td>
                 @Html.ActionLink("Удалить", "Delete", new { id = item.Id })
             </td>
         </tr>
