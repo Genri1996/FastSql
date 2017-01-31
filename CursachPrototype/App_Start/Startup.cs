@@ -14,7 +14,7 @@ namespace CursachPrototype
         public void Configuration(IAppBuilder app)
         {
             // настраиваем контекст и менеджер
-            app.CreatePerOwinContext<AppIdentityContext>(AppIdentityContext.Create);
+            app.CreatePerOwinContext<AppIdentityContext>(AppIdentityContext.Create );
             app.CreatePerOwinContext<AppUserManager>(AppUserManager.Create);
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {

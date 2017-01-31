@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using CursachPrototype.Models;
 using CursachPrototype.Models.Accounting;
 using CursachPrototype.ViewModels;
+using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Host.SystemWeb;
@@ -58,6 +59,8 @@ namespace CursachPrototype.Controllers
 
         private bool IsNickNameUnic(string nickName)
         {
+            if (UserManager.Users != null)
+                return true;
             return !UserManager.Users.Select(user => user.UserNickName).Any(nick => string.Compare(nickName, nick)==0);
         }
 

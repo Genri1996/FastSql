@@ -36,17 +36,30 @@ namespace DataProxy.Helpers
 
         public bool DropDataBase(string dbName)
         {
-            string strQuery = @" USE master; ALTER DATABASE[@databasename] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;  DROP DATABASE[@databasename]";
-            SqlCommand cmd = new SqlCommand(strQuery);
-            cmd.Parameters.AddWithValue("@databasename", dbName);
+            string strQuery = $" USE master; ALTER DATABASE[{dbName}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;  DROP DATABASE[{dbName}];";
+
+            string queryResult;
+            using (SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString))
+            {
+                queryResult=executor.ExecuteQueryAsString(strQuery);
+            }
+            if (queryResult != string.Empty)
+                return false;
+
+            return true;
+        }
+
+        public bool IsLoginExists(string login)
+        {
+            string strQuery = $"use master select [dbo].[LoginExists]('{login}') as [exists]";
+            DataTable dt;
 
             using (SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString))
             {
-                executor.ExecuteCommandAsDataTable(cmd);
-            }   
-            //TODO Доделать
+                dt = executor.ExecuteQueryAsDataTable(strQuery);
+            }
+            return (bool)dt.Rows[0]["exists"];
 
-            return false;
         }
     }
 }

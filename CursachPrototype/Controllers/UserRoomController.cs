@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using CursachPrototype.ExtensionMethods;
 using CursachPrototype.Models;
 using CursachPrototype.Models.Accounting;
+using DataProxy.Helpers;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 
@@ -29,7 +31,7 @@ namespace CursachPrototype.Controllers
                     .FindById(User.Identity.GetUserId());
 
       
-            return View(user.UserDbs);
+            return View(DataBaseInfoManager.GetDbInfos(user));
         }
 
         /// <summary>
@@ -37,7 +39,7 @@ namespace CursachPrototype.Controllers
         /// </summary>
         /// <param name="id">Id of selected Db</param>
         /// <returns></returns>
-        [HttpPost, Authorize]
+        [HttpGet, Authorize]
         public ActionResult Delete(int id)
         {
 
@@ -46,7 +48,7 @@ namespace CursachPrototype.Controllers
                     .GetUserManager<AppUserManager>()
                     .FindById(User.Identity.GetUserId());
 
-            DataBaseInfo foundDb = user.UserDbs.Single(db => db.Id == id);
+            DataBaseInfo foundDb = DataBaseInfoManager.GetDbInfos(user).Single(db => db.Id == id);
             return View(foundDb);
         }
 
@@ -63,10 +65,12 @@ namespace CursachPrototype.Controllers
                    .GetUserManager<AppUserManager>()
                    .FindById(User.Identity.GetUserId());
 
-            DataBaseInfo foundDb = user.UserDbs.Single(db => db.Id == id);
-            user.UserDbs.Remove(foundDb);
+            DataBaseInfo foundDb = DataBaseInfoManager.GetDbInfos(user).Single(db => db.Id == id);
+            DataBaseInfoManager.RemoveDbInfo(foundDb);
 
-
+            //TODO Depends on type of DBMS
+            IHelper helper = new SqlServerHelper();
+            helper.DropDataBase(foundDb.Name);
 
             return RedirectToAction("Index");
         }

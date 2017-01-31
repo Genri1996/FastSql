@@ -11,5 +11,7 @@ namespace DataProxy.Helpers
         bool IsDataBaseExists(String dbName);
 
         bool DropDataBase(String dbName);
+
+        bool IsLoginExists(String login);
     }
 }

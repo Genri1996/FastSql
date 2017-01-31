@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataBaseReaders\IDataBaseReader.cs" />
+    <Compile Include="DataBaseReaders\OleDbDataBaseReader.cs" />
     <Compile Include="DataService.cs" />
     <Compile Include="Creators\IDbCreator.cs" />
     <Compile Include="DbmsType.cs" />

@@ -53,14 +53,14 @@ namespace CursachPrototype.Controllers
         }
 
         /// <summary>
-        /// Creates Database according to user`vm selection
+        /// Creates Database according to user`s vm selection
         /// </summary>
         /// <param name="vm"></param>
         /// <returns></returns>
         [HttpPost, Authorize]
         public ActionResult CreateDb(ServerSelectionVm vm)
         {
-            vm.AvailableServers = GetAvailableDbmsAsListString();//Почему не приходит из представления??
+            vm.AvailableServers = GetAvailableDbmsAsListString();
 
             if (!ModelState.IsValid)
                 return View("Index", vm);
@@ -76,7 +76,7 @@ namespace CursachPrototype.Controllers
                 return View("Index", vm);
             }
 
-            String connectionString = null;
+            String connectionString;
             try
             {
                 connectionString = _dataService.CreateDatabase(vm.ToCreateDatabaseObject(user.UserNickName));
@@ -88,7 +88,7 @@ namespace CursachPrototype.Controllers
             }
 
             //Add new info to user
-            user.UserDbs.Add(new DataBaseInfo { Name = vm.DataBaseName, DateOfCreating = DateTime.Now, ConnectionString = connectionString});
+            DataBaseInfoManager.AddDbInfo(new DataBaseInfo { Name = tempObj.DataBaseName, DateOfCreating = DateTime.Now, ConnectionString = connectionString}, user);
             _userManager.Update(user);
 
          
