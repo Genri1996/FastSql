@@ -1,13 +1,15 @@
 ﻿<h4>Введите тестовый запрос к базе данных Model.Name</h4>
 @using (Html.BeginForm("ExecuteQuery", "Query"))
 {
-    @Html.Label("Строка подключения: ")
-    @Html.TextBox("connectionString")
-    <br />
-    @Html.Label("Запрос: ")<br />
-    @Html.TextArea("query")
+    <fieldset>
+        @Html.Label("Строка подключения: ")
+        @Html.TextBox("connectionString")
+        <br />
+        @Html.Label("Запрос: ")<br />
+        @Html.TextArea("query")
 
-    <div>
-       <input type="submit" value="Отправить" />
-    </div>
+        <div>
+            <input type="submit" value="Отправить" />
+        </div>
+    </fieldset>
 }

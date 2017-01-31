@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
@@ -42,19 +41,25 @@ namespace CursachPrototype.Controllers
                 AppUser user = new AppUser { UserName = vm.Email, Email = vm.Email, UserNickName = vm.NickName };
                 IdentityResult result = UserManager.Create(user, vm.Password);
                 if (result.Succeeded)
-                    return RedirectToAction("Login", "Account");
-                else
-                    foreach (string error in result.Errors)
-                    {
-                        //Russian translation. Defaul is english
-                        if (error.Contains("is already taken"))
-                            ModelState.AddModelError("", "Такой email уже зарегестрирован.");
-                        else
-                            ModelState.AddModelError("", error);
-                    }
+                {
+                    //Immediate sign in
+                    SignIn(user);
+                    return RedirectToAction("Index", "Home");
+                }
+
+                foreach (string error in result.Errors)
+                {
+                    //Russian translation. Defaul is english
+                    if (error.Contains("is already taken"))
+                        ModelState.AddModelError("", "Такой email уже зарегестрирован.");
+                    else
+                        ModelState.AddModelError("", error);
+                }
             }
             return View(vm);
         }
+
+
 
         /// <summary>
         /// Check if nick name is unic
@@ -86,12 +91,7 @@ namespace CursachPrototype.Controllers
                 }
                 else
                 {
-                    ClaimsIdentity claim = UserManager.CreateIdentity(user,DefaultAuthenticationTypes.ApplicationCookie);
-                    AuthenticationManager.SignOut();
-                    AuthenticationManager.SignIn(new AuthenticationProperties
-                    {
-                        IsPersistent = true
-                    }, claim);
+                    SignIn(user);
                     if (string.IsNullOrEmpty(returnUrl))
                         return RedirectToAction("Index", "Home");
                     return Redirect(returnUrl);
@@ -105,6 +105,16 @@ namespace CursachPrototype.Controllers
         {
             AuthenticationManager.SignOut();
             return RedirectToAction("Login");
+        }
+
+        private void SignIn(AppUser user)
+        {
+            ClaimsIdentity claim = UserManager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
+            AuthenticationManager.SignOut();
+            AuthenticationManager.SignIn(new AuthenticationProperties
+            {
+                IsPersistent = true
+            }, claim);
         }
     }
 }
