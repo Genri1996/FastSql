@@ -23,7 +23,7 @@ namespace CursachPrototype.Models.Accounting
 
             try
             {
-                reader.LoadTables(TableName);
+               reader.LoadTables(TableName);
             }
             // if table DbInfos exists
             catch (OleDbException)
@@ -34,7 +34,7 @@ namespace CursachPrototype.Models.Accounting
                     string query = $"use {DbName} CREATE TABLE {TableName} ("
                                    + "Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY, "
                                    + "NAME NVARCHAR(200) NOT NULL, "
-                                   + "DATEOFCREATING DATE NOT NULL, "
+                                   + "DATEOFCREATING DATETIME NOT NULL, "
                                    + "CONNECTIONSTRING NVARCHAR(500) NOT NULL, "
                                    + "USERKEY NVARCHAR(128), "
                                    + "FOREIGN KEY (USERKEY) REFERENCES dbo.AspNetUsers(Id)"
@@ -53,7 +53,7 @@ namespace CursachPrototype.Models.Accounting
             var result = (from dbInfo in set.Tables[TableName].AsEnumerable()
                           where dbInfo.Field<string>("USERKEY") == user.Id
                           select new DataBaseInfo
-                          {
+                          { 
                               Id = dbInfo.Field<int>("Id"),
                               ConnectionString = dbInfo.Field<string>("CONNECTIONSTRING"),
                               DateOfCreating = dbInfo.Field<DateTime>("DATEOFCREATING"),

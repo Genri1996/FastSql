@@ -28,13 +28,14 @@ namespace DataProxy.DataBaseReaders
             StringBuilder query = new StringBuilder();
 
             foreach (var tableName in tableNames)
-            {
-                query.Append(" SELECT * FROM " + tableName + ";");
-            }
+                query.Append($" SELECT * FROM {tableName};");
 
             OleDbDataAdapter adapter = new OleDbDataAdapter(query.ToString(), _connection);
+            for (int i = 0; i < tableNames.Length; i++)
+                adapter.TableMappings.Add("Table" + (i != 0 ? i.ToString() : ""), tableNames[i]);
+
             adapter.Fill(ds);
-            
+
             return ds;
         }
 
