@@ -17,7 +17,5 @@ namespace DataProxy.Models
         public String DataBaseLogin { get; set; }
 
         public String DataBasePassword { get; set; }
-
-       
     }
 }

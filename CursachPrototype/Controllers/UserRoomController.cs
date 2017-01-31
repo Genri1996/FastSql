@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using CursachPrototype.ExtensionMethods;
 using CursachPrototype.Models;
 using CursachPrototype.Models.Accounting;
+using DataProxy;
 using DataProxy.Helpers;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -30,7 +31,7 @@ namespace CursachPrototype.Controllers
                     .GetUserManager<AppUserManager>()
                     .FindById(User.Identity.GetUserId());
 
-      
+
             return View(DataBaseInfoManager.GetDbInfos(user));
         }
 
@@ -68,9 +69,7 @@ namespace CursachPrototype.Controllers
             DataBaseInfo foundDb = DataBaseInfoManager.GetDbInfos(user).Single(db => db.Id == id);
             DataBaseInfoManager.RemoveDbInfo(foundDb);
 
-            //TODO Depends on type of DBMS
-            IHelper helper = new SqlServerHelper();
-            helper.DropDataBase(foundDb.Name);
+            DataService.DropDataBase(foundDb.DbmsType,foundDb.Name);
 
             return RedirectToAction("Index");
         }

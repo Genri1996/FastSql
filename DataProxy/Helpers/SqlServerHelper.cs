@@ -59,7 +59,6 @@ namespace DataProxy.Helpers
                 dt = executor.ExecuteQueryAsDataTable(strQuery);
             }
             return (bool)dt.Rows[0]["exists"];
-
         }
     }
 }

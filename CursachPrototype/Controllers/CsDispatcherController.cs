@@ -20,20 +20,10 @@ namespace CursachPrototype.Controllers
     public class CsDispatcherController : Controller
     {
         /// <summary>
-        /// Proxy to work with databases indirectly
-        /// </summary>
-        private readonly DataService _dataService = new DataService();
-        /// <summary>
         /// Reference to current user.
         /// </summary>
-        private AppUserManager _userManager
-        {
-            get
-            {
-                return System.Web.HttpContext.Current.GetOwinContext()
-                    .GetUserManager<AppUserManager>();
-            }
-        }
+        private AppUserManager _userManager => System.Web.HttpContext.Current.GetOwinContext()
+            .GetUserManager<AppUserManager>();
 
         /// <summary>
         /// Returns menu for creating database in some selected DBMS
@@ -68,10 +58,10 @@ namespace CursachPrototype.Controllers
             AppUser user = _userManager.FindById(User.Identity.GetUserId());
             CreateDatabaseObject tempObj = vm.ToCreateDatabaseObject(user.UserNickName);
             //Check Db Exists
-            DbmsType selectedDbm = (DbmsType)Enum.Parse(typeof (DbmsType), vm.SelectedServer);
-            if (_dataService.CheckDataBaseExists(selectedDbm, tempObj.DataBaseName))
+            DbmsType selectedDbmsType = (DbmsType)Enum.Parse(typeof (DbmsType), vm.SelectedServer);
+            if (DataService.CheckDataBaseExists(selectedDbmsType, tempObj.DataBaseName))
             {
-                string errorMessage = "База данных с таким именем уже существует в вашем профиле.";
+                string errorMessage = "База данных с таким именем уже существует в этой СУБД.";
                 ModelState.AddModelError("err", errorMessage);
                 return View("Index", vm);
             }
@@ -79,9 +69,9 @@ namespace CursachPrototype.Controllers
             String connectionString;
             try
             {
-                connectionString = _dataService.CreateDatabase(vm.ToCreateDatabaseObject(user.UserNickName));
+                connectionString = DataService.CreateDatabase(vm.ToCreateDatabaseObject(user.UserNickName));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 string errorMessage = "Не удалось создать базу данных.";
                 return View("CustomError", (object)errorMessage);
@@ -97,11 +87,7 @@ namespace CursachPrototype.Controllers
 
         private List<String> GetAvailableDbmsAsListString()
         {
-            var list = new List<String>();
-            foreach (var dbmsType in _dataService.AvailableServers)
-                list.Add(dbmsType.ToString());
-
-            return list;
+            return DataService.AvailableServers.Select(dbmsType => dbmsType.ToString()).ToList();
         }
     }
 }
