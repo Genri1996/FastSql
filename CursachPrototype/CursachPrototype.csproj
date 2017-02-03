@@ -234,9 +234,9 @@
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\UserRoom\Delete.cshtml" />
-    <None Include="Properties\PublishProfiles\IISPub.pubxml" />
     <Content Include="Views\CsDispatcher\IndexAnonymous.cshtml" />
-    <None Include="Views\UserRoom\Index.cshtml" />
+	<Content Include="Views\UserRoom\Index.cshtml" />
+    <None Include="Properties\PublishProfiles\IISPub.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

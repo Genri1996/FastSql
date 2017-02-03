@@ -14,6 +14,14 @@ namespace CursachPrototype.Models.Accounting
 
         public DateTime DateOfCreating { get; set; }
 
+        public DateTime DateOfDeleting { get; set; }
+
+        public bool IsPublic { get; set; }
+
+        public bool IsAnonymous { get; set; }
+
+        public bool IsAutoName { get; set; }
+
         public string ConnectionString { get; set; }
 
         public DbmsType DbmsType { get; set; }

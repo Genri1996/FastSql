@@ -20,5 +20,7 @@ namespace CursachPrototype.ViewModels
 
         [Range(1, 72, ErrorMessage = "От 1 до 72 часа")]
         public int? StoreHours{ get; set; }
+        
+           
     }
 }

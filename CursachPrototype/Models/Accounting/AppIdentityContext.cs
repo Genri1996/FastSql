@@ -8,7 +8,7 @@ namespace CursachPrototype.Models.Accounting
         {
             Database.CreateIfNotExists();
             //Create table DbInfos
-            DataBaseInfoManager.CreateTableIfNotExists();
+            DataBaseInfoManager.CreateTablesIfNotExists();
         }
 
         public static AppIdentityContext Create()

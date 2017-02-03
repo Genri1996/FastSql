@@ -10,7 +10,14 @@
         public string DataBaseName { get; set; }
 
         /// <summary>
-        /// Flag that ask for protection
+        /// Anonymous database
+        /// </summary>
+        public bool IsDataBaseAnonymous { get; set; }
+
+        public int HoursToBeStored { get; set; }
+
+        /// <summary>
+        /// Protected Database
         /// </summary>
         public bool IsProtectionRequired { get; set; }
 

@@ -14,7 +14,7 @@ namespace CursachPrototype.ExtensionMethods
         /// <param name="vm"></param>
         /// <param name="userNickName">User nickname. Need for unic db name</param>
         /// <returns></returns>
-        public static CreateDatabaseObject ToCreateDatabaseObject(this CreateDbVm vm, string userNickName)
+        public static CreateDatabaseObject ToCreateDatabaseObject(this CreateDbVm vm, string userNickName = null)
         {
             CreateDatabaseObject obj = new CreateDatabaseObject
             {
@@ -32,5 +32,16 @@ namespace CursachPrototype.ExtensionMethods
             }
             return obj;
         }
+        public static CreateDatabaseObject ToAnonymousCreateDatabaseObject(this CreateDbVm vm)
+        {
+            CreateDatabaseObject obj = new CreateDatabaseObject
+            {
+                //TODO: get rid of strings
+                SelectedDbms = (DbmsType)Enum.Parse(typeof(DbmsType), vm.SelectedServer),
+                DataBaseName = vm.DataBaseName + "_" + "Anon",//Adds suffix
+            };
+            return obj;
+        }
+
     }
 }

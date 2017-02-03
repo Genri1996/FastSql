@@ -107,6 +107,9 @@ namespace CursachPrototype.Controllers
             vm.AvailableServers = GetAvailableDbmsAsListString();
             if (!ModelState.IsValid)
                 return View("IndexAnonymous", vm);
+
+
+
             return null;
         }
 
