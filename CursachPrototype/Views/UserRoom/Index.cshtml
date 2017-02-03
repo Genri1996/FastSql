@@ -1,4 +1,4 @@
-﻿@model IList<CursachPrototype.Models.Accounting.DataBaseInfo>
+﻿@model IList<DataProxy.DbManangment.DataBaseInfo>
 
 @{
     ViewBag.Title = "Личный кабинет";
@@ -47,19 +47,17 @@
                         @Html.ActionLink("Удалить", "Delete", new {id = item.Id})
                     </td>
                     <td>
-                        @Ajax.ActionLink("Запрос", "ExecuteQuery", new {item.Id}, new AjaxOptions {UpdateTargetId = "queryResult"})
+                        @Ajax.ActionLink("Запрос", "ExecuteQuery", new {item.Id}, new AjaxOptions {UpdateTargetId = "queryExecutor"})
                     </td>
                 </tr>
             }
         </table>
     </div>
 
-    <div class="left" id="queryResult">
-       
+    <div class="left" id="queryExecutor">
     </div>
 </div>
 
 @section Scripts{
-    <script src="@Url.Content("~/Scripts/jquery-3.1.1.min.js")"></script>
     <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿using DataProxy.DbManangment;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace CursachPrototype.Models.Accounting
 {

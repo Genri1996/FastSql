@@ -45,12 +45,13 @@
     <Compile Include="DataBaseReaders\OleDbDataBaseReader.cs" />
     <Compile Include="DataService.cs" />
     <Compile Include="Creators\IDbCreator.cs" />
+    <Compile Include="DbManangment\DataBaseInfo.cs" />
+    <Compile Include="DbManangment\DataBaseInfoManager.cs" />
     <Compile Include="DbmsType.cs" />
     <Compile Include="Executors\IQueryExecutor.cs" />
     <Compile Include="Executors\SqlServerExecutor.cs" />
     <Compile Include="Helpers\IHelper.cs" />
     <Compile Include="Helpers\SqlServerHelper.cs" />
-    <Compile Include="Models\CreateDatabaseObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Creators\SqlServerCreator.cs" />
   </ItemGroup>

@@ -1,22 +1,26 @@
 ﻿@model CursachPrototype.ViewModels.QueryExecutorVm
 
-<h4>Введите тестовый запрос к базе данных @Model.DbName</h4>
-@using (Ajax.BeginForm("ExecuteQuery", "Query", new AjaxOptions { UpdateTargetId = "results" }))
+@using (Ajax.BeginForm("QueryExecutor", "Query", new AjaxOptions { UpdateTargetId = "results" }))
 {
+    @Html.HiddenFor(m => m.DbId)
     <fieldset>
-        @Html.LabelFor(m => m.DbName, "Строка подключения: ")
+        @Html.LabelFor(m => m.DbName, "База данных: ")
         @Html.DisplayFor(m => m.DbName)
         <br />
         @Html.LabelFor(m => m.Query, "Запрос: ")<br />
         @Html.TextArea("query")
 
         <div>
-            <input type="submit" value="Отправить" />
+            <input type="submit" />
         </div>
     </fieldset>
-
-        <div id="results">
-            @Html.DisplayFor(m => m.QueryResult)
-        </div>
 }
 
+<div id="results">
+    @Html.DisplayFor(m => m.QueryResult)
+</div>
+
+
+@section Scripts{
+    <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+}

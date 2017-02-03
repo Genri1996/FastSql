@@ -3,13 +3,13 @@
 }
 <div class="wrapper">
     <div class="rowElement left-option">
-        @Html.ActionLink("Получить строку подключения", "Index", "CsDispatcher")
+        @Html.ActionLink("Создать публичную базу данных", "CreatePublicDb", "CsDispatcher")
     </div>
     <div class="rowElement center-option">
-        @Html.ActionLink("Получить строку подключения", "Index", "CsDispatcher")
+        @Html.ActionLink("Создать личную базу данных", "CreateProtectedDb", "CsDispatcher")
     </div>
     <div class="rowElement right-option">
-        @Html.ActionLink("Получить строку подключения анонимно", "IndexAnonymous", "CsDispatcher")
+        @Html.ActionLink("Создать временную публичную базу данных анонимно", "CreateAnonymousDb", "CsDispatcher")
     </div>
 </div>
 

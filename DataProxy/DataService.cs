@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using DataProxy.Creators;
+using DataProxy.DbManangment;
 using DataProxy.Helpers;
-using DataProxy.Models;
 
 namespace DataProxy
 {
@@ -19,19 +19,20 @@ namespace DataProxy
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static string CreateDatabase(CreateDatabaseObject obj)
+        public static string CreateDatabase(DataBaseInfo obj, string login = null, string password = null)
         {
             IDbCreator creator = null;
-            switch (obj.SelectedDbms)
+            switch (obj.DbmsType)
             {
                 case DbmsType.SqlServer:
-                    creator = new SqlServerCreator(obj.DataBaseName);
+                    creator = new SqlServerCreator(obj.Name);
                     break;
             }
-            if (!obj.IsProtectionRequired)
+            if (obj.IsPublic)
                 return creator.CreateNewDatabase();
-            else
-                return creator.CreateNewDatabaseWithProtection(obj.DataBaseLogin, obj.DataBasePassword);
+            if (!string.IsNullOrEmpty(login) && !string.IsNullOrEmpty(password))
+                return creator.CreateNewDatabaseWithProtection(login, password);
+            throw new ArgumentException("Lack of arguments.");
         }
 
         public static bool CheckDataBaseExists(DbmsType selectedDbms, String dataBaseName)

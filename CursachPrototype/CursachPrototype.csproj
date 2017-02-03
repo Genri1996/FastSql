@@ -207,14 +207,13 @@
     <Compile Include="Models\Accounting\AppIdentityContext.cs" />
     <Compile Include="Models\Accounting\AppUser.cs" />
     <Compile Include="Models\Accounting\AppUserManager.cs" />
-    <Compile Include="Models\Accounting\DataBaseInfo.cs" />
-    <Compile Include="Models\Accounting\DataBaseInfoManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModels\CreateAnonymouslyDbVm.cs" />
+    <Compile Include="ViewModels\AnonymousDbVm.cs" />
+    <Compile Include="ViewModels\DbVm.cs" />
     <Compile Include="ViewModels\LoginVm.cs" />
     <Compile Include="ViewModels\QueryExecutorVm.cs" />
     <Compile Include="ViewModels\RegisterVm.cs" />
-    <Compile Include="ViewModels\CreateDbVm.cs" />
+    <Compile Include="ViewModels\ProtectedDbVm.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -225,18 +224,19 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\CsDispatcher\Index.cshtml" />
+    <Content Include="Views\CsDispatcher\CreateProtectedDb.cshtml" />
     <Content Include="Views\CsDispatcher\ShowConnectionString.cshtml" />
     <Content Include="Views\Query\QueryExecutor.cshtml" />
-    <Content Include="Views\Query\ExecuteQuery.cshtml" />
     <Content Include="Views\CsDispatcher\CustomError.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\UserRoom\Delete.cshtml" />
-    <Content Include="Views\CsDispatcher\IndexAnonymous.cshtml" />
-	<Content Include="Views\UserRoom\Index.cshtml" />
+    <Content Include="Views\CsDispatcher\CreateAnonymousDb.cshtml" />
+    <Content Include="Views\UserRoom\Index.cshtml" />
     <None Include="Properties\PublishProfiles\IISPub.pubxml" />
+    <Content Include="Views\CsDispatcher\CreatePublicDb.cshtml" />
+    <Content Include="Views\Query\QueryResults.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

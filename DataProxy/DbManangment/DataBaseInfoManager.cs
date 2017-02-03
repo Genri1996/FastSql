@@ -4,11 +4,10 @@ using System.Configuration;
 using System.Data;
 using System.Data.OleDb;
 using System.Linq;
-using DataProxy;
 using DataProxy.DataBaseReaders;
 using DataProxy.Executors;
 
-namespace CursachPrototype.Models.Accounting
+namespace DataProxy.DbManangment
 {
     /// <summary>
     /// Manages the list of user`s databases.
@@ -25,19 +24,18 @@ namespace CursachPrototype.Models.Accounting
         /// </summary>
         public static void CreateTablesIfNotExists()
         {
-            OleDbDataBaseReader reader = new OleDbDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString);
             //TODO: Do not use bicycle. Use real check for tables persistence.
             //Try to read the table. if success, than table exists, else - no
-            CreateDbInfosIfNoExists(reader);
-            CreateAnonDbInfosIfNoExists(reader);
+            CreateDbInfosIfNoExists();
+            CreateAnonDbInfosIfNoExists();
         }
    
         /// <summary>
         /// Returns list of user`s database, orienting his ID.
         /// </summary>
-        /// <param name="user"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-        public static List<DataBaseInfo> GetDbInfos(AppUser user)
+        public static List<DataBaseInfo> GetDbInfos(string userId)
         {
             //TODO Add public, add anonymous
             OleDbDataBaseReader reader = new OleDbDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString);
@@ -45,7 +43,7 @@ namespace CursachPrototype.Models.Accounting
 
             //Selects DBInfos, that belongs to user
             var result = (from dbInfo in set.Tables[DbInfosTableName].AsEnumerable()
-                          where dbInfo.Field<string>("USERKEY") == user.Id
+                          where dbInfo.Field<string>("USERKEY") == userId
                           select new DataBaseInfo
                           {
                               Id = dbInfo.Field<int>("Id"),
@@ -85,12 +83,12 @@ namespace CursachPrototype.Models.Accounting
         /// </summary>
         /// <param name="info"></param>
         /// <param name="user"></param>
-        public static void AddDbInfo(DataBaseInfo info, AppUser user)
+        public static void AddDbInfo(DataBaseInfo info)
         {
             string query = $"USE {DbName} INSERT INTO {DbInfosTableName} "
                            + "(NAME, DATEOFCREATING, CONNECTIONSTRING, DBMSTYPE, USERKEY) "
                            + $"VALUES('{info.Name}', CONVERT(DATETIME, '{info.DateOfCreating.ToString("yyyy-MM-dd hh:mm:ss")}', 120), "
-                           + $"'{info.ConnectionString}','{info.DbmsType}', '{user.Id}');";
+                           + $"'{info.ConnectionString}','{info.DbmsType}', '{info.ForeignKey}');";
 
             using (SqlServerExecutor executor = new SqlServerExecutor(ConfigurationManager.ConnectionStrings["IdentityDb"].ConnectionString))
             {
@@ -138,8 +136,9 @@ namespace CursachPrototype.Models.Accounting
         /// Checks existance and creates if required
         /// </summary>
         /// <param name="reader"></param>
-        private static void CreateDbInfosIfNoExists(OleDbDataBaseReader reader)
+        private static void CreateDbInfosIfNoExists()
         {
+            OleDbDataBaseReader reader = new OleDbDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString);
             try
             {
                 reader.LoadTables(DbInfosTableName);
@@ -166,8 +165,9 @@ namespace CursachPrototype.Models.Accounting
                 }
             }
         }
-        private static void CreateAnonDbInfosIfNoExists(OleDbDataBaseReader reader)
+        private static void CreateAnonDbInfosIfNoExists()
         {
+            OleDbDataBaseReader reader = new OleDbDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString);
             try
             {
                 reader.LoadTables(AnonDbInfosTableName);
@@ -183,7 +183,7 @@ namespace CursachPrototype.Models.Accounting
                                    + "ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY, "
                                    + "NAME NVARCHAR(200) NOT NULL, "
                                    + "DATEOFCREATING DATETIME NOT NULL, "
-                                   + "DATEOFDELETING DATERIME NOT NULL, "
+                                   + "DATEOFDELETING DATETIME NOT NULL, "
                                    + "CONNECTIONSTRING NVARCHAR(500) NOT NULL, "
                                    + "DBMSTYPE NVARCHAR(128), "
                                    + ")";

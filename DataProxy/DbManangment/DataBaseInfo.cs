@@ -1,7 +1,6 @@
 ﻿using System;
-using DataProxy;
 
-namespace CursachPrototype.Models.Accounting
+namespace DataProxy.DbManangment
 {
     /// <summary>
     /// Information about user`s database
@@ -19,8 +18,6 @@ namespace CursachPrototype.Models.Accounting
         public bool IsPublic { get; set; }
 
         public bool IsAnonymous { get; set; }
-
-        public bool IsAutoName { get; set; }
 
         public string ConnectionString { get; set; }
 

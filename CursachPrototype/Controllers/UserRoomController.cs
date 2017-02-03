@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using CursachPrototype.Models.Accounting;
 using CursachPrototype.ViewModels;
 using DataProxy;
+using DataProxy.DbManangment;
 using DataProxy.Executors;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -29,7 +30,7 @@ namespace CursachPrototype.Controllers
         public ActionResult Index()
         {
             AppUser user = _userManager.FindById(User.Identity.GetUserId());
-            return View(DataBaseInfoManager.GetDbInfos(user));
+            return View(DataBaseInfoManager.GetDbInfos(user.Id));
         }
 
         /// <summary>
@@ -41,7 +42,7 @@ namespace CursachPrototype.Controllers
         public ActionResult Delete(int id)
         {
             AppUser user = _userManager.FindById(User.Identity.GetUserId());
-            DataBaseInfo foundDb = DataBaseInfoManager.GetDbInfos(user).Single(db => db.Id == id);
+            DataBaseInfo foundDb = DataBaseInfoManager.GetDbInfos(user.Id).Single(db => db.Id == id);
             return View(foundDb);
         }
 
@@ -56,7 +57,7 @@ namespace CursachPrototype.Controllers
             //Find user
             AppUser user = _userManager.FindById(User.Identity.GetUserId());
             //Find DB
-            DataBaseInfo foundDb = DataBaseInfoManager.GetDbInfos(user).Single(db => db.Id == id);
+            DataBaseInfo foundDb = DataBaseInfoManager.GetDbInfos(user.Id).Single(db => db.Id == id);
             //Remove db info from DbInfos
             DataBaseInfoManager.RemoveDbInfo(foundDb);
             //Delete database
@@ -68,9 +69,15 @@ namespace CursachPrototype.Controllers
         [HttpGet]
         public ActionResult ExecuteQuery(int id)
         {
+            //Find user
+            AppUser user = _userManager.FindById(User.Identity.GetUserId());
+            //Find DB
+            DataBaseInfo foundDb = DataBaseInfoManager.GetDbInfos(user.Id).Single(db => db.Id == id);
+
             QueryExecutorVm vm = new QueryExecutorVm
             {
-                DbId = id
+                DbId = id,
+                DbName = foundDb.Name
             };
 
             return PartialView("~/Views/Query/QueryExecutor.cshtml", vm);

@@ -1,0 +1,31 @@
+﻿@model CursachPrototype.ViewModels.DbVm
+
+@{
+    ViewBag.Title = "Создание БД";
+}
+<h2>Созданиние публичной базы данных</h2>
+<p>Укажите параметры базы данных</p>
+
+@using (Html.BeginForm("CreatePublicDb", "CsDispatcher", FormMethod.Post))
+{
+    <fieldset>
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary()
+
+        @Html.LabelFor(m => m.DataBaseName, "Введите название базы данных")<br />
+        @Html.TextBoxFor(m => m.DataBaseName)
+        @Html.ValidationMessageFor(m => m.DataBaseName)
+        <br />
+
+        @foreach (string server in Model.AvailableServers)
+        {
+            @Html.RadioButtonFor(m => m.SelectedServer, server)
+            @Html.LabelFor(m => m.SelectedServer, server)
+            @Html.ValidationMessageFor(m => m.SelectedServer)
+        }
+
+        <div>
+            <input type="submit" />
+        </div>
+    </fieldset>
+}
