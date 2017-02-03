@@ -31,13 +31,27 @@ namespace CursachPrototype.Controllers
         [HttpGet, Authorize]
         public ActionResult Index()
         {
-            ViewBag.FromInfo = "Необходимо войти для создания персональной базы данных";
-
-            ServerSelectionVm vm = new ServerSelectionVm
+            CreateDbVm vm = new CreateDbVm
             {
                 AvailableServers = GetAvailableDbmsAsListString()
             };
+            return View(vm);
+        }
 
+        /// <summary>
+        /// /// <summary>
+        /// Returns menu for creating anonymous database in some selected DBMS
+        /// </summary>
+        /// <returns></returns>
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult IndexAnonymous()
+        {
+            CreateAnonymouslyDbVm vm = new CreateAnonymouslyDbVm
+            {
+                AvailableServers = GetAvailableDbmsAsListString()
+            };
             return View(vm);
         }
 
@@ -47,7 +61,7 @@ namespace CursachPrototype.Controllers
         /// <param name="vm"></param>
         /// <returns></returns>
         [HttpPost, Authorize]
-        public ActionResult CreateDb(ServerSelectionVm vm)
+        public ActionResult CreateDb(CreateDbVm vm)
         {
             vm.AvailableServers = GetAvailableDbmsAsListString();
 
@@ -85,6 +99,15 @@ namespace CursachPrototype.Controllers
             _userManager.Update(user);
 
             return View("ShowConnectionString", (object)connectionString);
+        }
+
+        [HttpPost]
+        public ActionResult CreateDbAnonymously(CreateAnonymouslyDbVm vm)
+        {
+            vm.AvailableServers = GetAvailableDbmsAsListString();
+            if (!ModelState.IsValid)
+                return View("IndexAnonymous", vm);
+            return null;
         }
 
         //TODO: Use Enum List instead

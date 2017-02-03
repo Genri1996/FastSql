@@ -1,12 +1,12 @@
-﻿@model CursachPrototype.ViewModels.CreateDbVm
-
+﻿@model CursachPrototype.ViewModels.CreateAnonymouslyDbVm
 @{
-    ViewBag.Title = "Создание БД";
+    ViewBag.Title = "Анонимное создание БД";
 }
-<h2>Созданиние базы данных</h2>
+
+<h2>Созданиние анонимной базы данных</h2>
 <p>Укажите параметры базы данных</p>
 
-@using (Html.BeginForm("CreateDb", "CsDispatcher", FormMethod.Post))
+@using (Html.BeginForm("CreateDbAnonymously", "CsDispatcher", FormMethod.Post))
 {
     <fieldset>
         @Html.AntiForgeryToken()
@@ -17,15 +17,9 @@
         @Html.ValidationMessageFor(m => m.DataBaseName)
         <br/>
 
-        <!--TODO Добавить ajax появление-отелючение поля с паролем-->
-
-        @Html.CheckBoxFor(m => m.IsDataBasePublic)
-        @Html.LabelFor(m => m.IsDataBasePublic)
-        @Html.ValidationMessageFor(m => m.DataBasePassword)
-        <br/>
-        @Html.LabelFor(m => m.DataBaseName, "Введите пароль для базы данных")<br />
-        @Html.TextBoxFor(m => m.DataBasePassword)
-        @Html.ValidationMessageFor(m => m.DataBasePassword)
+        @Html.LabelFor(m => m.StoreHours, "Время жизни базы данных (в днях)")<br />
+        @Html.EditorFor(m => m.StoreHours)
+        @Html.ValidationMessageFor(m => m.StoreHours)
         <br />
         @foreach (string server in Model.AvailableServers)
         {
@@ -39,3 +33,4 @@
         </div>
     </fieldset>
 }
+

@@ -4,10 +4,10 @@ using System.Web.Mvc;
 
 namespace CursachPrototype.ViewModels
 {
-    public class ServerSelectionVm
+    public class CreateAnonymouslyDbVm
     {
         [HiddenInput(DisplayValue = false)]
-        public List<string>  AvailableServers { get; set; }
+        public List<string> AvailableServers { get; set; }
 
         [Required(ErrorMessage = "Поле должно быть выбрано.")]
         [Display(Name = "Тип СУБД")]
@@ -18,10 +18,7 @@ namespace CursachPrototype.ViewModels
         [RegularExpression(@"[A-z]{3,40}", ErrorMessage = "Некорректное имя БД")]
         public string DataBaseName { get; set; }
 
-        [Display(Name = "Публичная база данных")]
-        public bool IsDataBasePublic { get; set; } = true;
-
-        [Display(Name = "Пароль к базе данных")]
-        public string DataBasePassword { get; set; }
+        [Range(1, 72, ErrorMessage = "От 1 до 72 часа")]
+        public int? StoreHours{ get; set; }
     }
 }

@@ -8,13 +8,13 @@ namespace CursachPrototype.ExtensionMethods
     public static class FromServerSelectionVmToCreateDbObj
     {
         /// <summary>
-        /// Converts ServerSelectionVm to ToCreateDatabaseObject. 
+        /// Converts CreateDbVm to ToCreateDatabaseObject. 
         /// For easier DB creation.
         /// </summary>
         /// <param name="vm"></param>
         /// <param name="userNickName">User nickname. Need for unic db name</param>
         /// <returns></returns>
-        public static CreateDatabaseObject ToCreateDatabaseObject(this ServerSelectionVm vm, string userNickName)
+        public static CreateDatabaseObject ToCreateDatabaseObject(this CreateDbVm vm, string userNickName)
         {
             CreateDatabaseObject obj = new CreateDatabaseObject
             {
