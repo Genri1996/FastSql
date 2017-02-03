@@ -47,12 +47,20 @@
                     <td>
                         @Html.ActionLink("Удалить", "Delete", new {id = item.Id})
                     </td>
+                    <td>
+                        @Ajax.ActionLink("Запрос", "ExecuteQuery", new {item.Id}, new AjaxOptions {UpdateTargetId = "queryResult"})
+                    </td>
                 </tr>
             }
         </table>
     </div>
 
-    <div class="left">
-        @Html.Partial(@"~\Views\Query\QueryExecutor.cshtml")
+    <div class="left" id="queryResult">
+       
     </div>
 </div>
+
+@section Scripts{
+    <script src="@Url.Content("~/Scripts/jquery-3.1.1.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+}

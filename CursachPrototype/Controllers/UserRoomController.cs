@@ -2,7 +2,9 @@
 using System.Web;
 using System.Web.Mvc;
 using CursachPrototype.Models.Accounting;
+using CursachPrototype.ViewModels;
 using DataProxy;
+using DataProxy.Executors;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 
@@ -61,6 +63,17 @@ namespace CursachPrototype.Controllers
             DataService.DropDataBase(foundDb.DbmsType, foundDb.Name);
 
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public ActionResult ExecuteQuery(int id)
+        {
+            QueryExecutorVm vm = new QueryExecutorVm
+            {
+                DbId = id
+            };
+
+            return PartialView("~/Views/Query/QueryExecutor.cshtml", vm);
         }
     }
 }

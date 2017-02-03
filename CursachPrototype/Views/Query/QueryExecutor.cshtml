@@ -1,15 +1,23 @@
-﻿<h4>Введите тестовый запрос к базе данных Model.Name</h4>
-@using (Html.BeginForm("ExecuteQuery", "Query"))
-{
-    <fieldset>
-        @Html.Label("Строка подключения: ")
-        @Html.TextBox("connectionString")
-        <br />
-        @Html.Label("Запрос: ")<br />
-        @Html.TextArea("query")
+﻿@model CursachPrototype.ViewModels.QueryExecutorVm
 
-        <div>
-            <input type="submit" value="Отправить" />
+    <h4>Введите тестовый запрос к базе данных @Model.DbName</h4>
+    @using (Ajax.BeginForm("ExecuteQuery", "Query", new AjaxOptions { UpdateTargetId = "results" }))
+    {
+        <fieldset>
+            @Html.LabelFor(m => m.DbName, "Строка подключения: ")
+            @Html.DisplayFor(m => m.DbName)
+            <br />
+            @Html.LabelFor(m => m.Query, "Запрос: ")<br />
+            @Html.TextArea("query")
+
+            <div>
+                <input type="submit" value="Отправить" />
+            </div>
+        </fieldset>
+
+        <div id="results">
+            @Html.DisplayFor(m => m.QueryResult)
         </div>
-    </fieldset>
-}
+    }
+
+  
