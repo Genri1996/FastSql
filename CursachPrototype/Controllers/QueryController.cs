@@ -26,7 +26,7 @@ namespace CursachPrototype.Controllers
         {
             //Find user
             AppUser user = _userManager.FindById(User.Identity.GetUserId());
-            DataBaseInfo foundDb = DataBaseInfoManager.GetDbInfos(user.Id).Single(m => m.Id == vm.DbId);
+            DataBaseInfo foundDb = DataBasesManager.GetDbInfos(user.Id).Single(m => m.Id == vm.DbId);
 
             //TODO: Think, if i need different executors for each DBMS or not
 

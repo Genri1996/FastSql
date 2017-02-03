@@ -46,7 +46,7 @@
     <Compile Include="DataService.cs" />
     <Compile Include="Creators\IDbCreator.cs" />
     <Compile Include="DbManangment\DataBaseInfo.cs" />
-    <Compile Include="DbManangment\DataBaseInfoManager.cs" />
+    <Compile Include="DbManangment\DataBasesManager.cs" />
     <Compile Include="DbmsType.cs" />
     <Compile Include="Executors\IQueryExecutor.cs" />
     <Compile Include="Executors\SqlServerExecutor.cs" />

@@ -106,7 +106,7 @@ namespace CursachPrototype.Controllers
             tempObj.ConnectionString = connectionString;
             //Save action to database
             //Add new info to user. No ID and foreighn Key (!)
-            DataBaseInfoManager.AddDbInfo(tempObj);
+            DataBasesManager.AddDbInfo(tempObj);
             _userManager.Update(user);
 
             return View("ShowConnectionString", (object)connectionString);
@@ -153,7 +153,7 @@ namespace CursachPrototype.Controllers
             tempObj.ConnectionString = connectionString;
             //Save action to database
             //Add new info to user. No ID and foreighn Key (!)
-            DataBaseInfoManager.AddDbInfo(tempObj);
+            DataBasesManager.AddDbInfo(tempObj);
             _userManager.Update(user);
 
             return View("ShowConnectionString", (object)connectionString);
@@ -189,7 +189,7 @@ namespace CursachPrototype.Controllers
                 return View("CustomError", (object)errorMessage);
             }
             tempObj.ConnectionString = connectionString;
-            DataBaseInfoManager.AddAnonymousDbInfo(tempObj);
+            DataBasesManager.AddAnonymousDbInfo(tempObj);
 
             return View("ShowConnectionString", (object)connectionString);
         }

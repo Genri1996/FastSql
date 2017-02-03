@@ -12,7 +12,7 @@ namespace DataProxy.DbManangment
     /// <summary>
     /// Manages the list of user`s databases.
     /// </summary>
-    public static class DataBaseInfoManager
+    public static class DataBasesManager
     {
         private const string DbInfosTableName = "DbInfos";
         private const string AnonDbInfosTableName = "AnonDbInofs";

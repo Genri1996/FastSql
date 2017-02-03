@@ -30,7 +30,7 @@ namespace CursachPrototype.Controllers
         public ActionResult Index()
         {
             AppUser user = _userManager.FindById(User.Identity.GetUserId());
-            return View(DataBaseInfoManager.GetDbInfos(user.Id));
+            return View(DataBasesManager.GetDbInfos(user.Id));
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace CursachPrototype.Controllers
         public ActionResult Delete(int id)
         {
             AppUser user = _userManager.FindById(User.Identity.GetUserId());
-            DataBaseInfo foundDb = DataBaseInfoManager.GetDbInfos(user.Id).Single(db => db.Id == id);
+            DataBaseInfo foundDb = DataBasesManager.GetDbInfos(user.Id).Single(db => db.Id == id);
             return View(foundDb);
         }
 
@@ -57,9 +57,9 @@ namespace CursachPrototype.Controllers
             //Find user
             AppUser user = _userManager.FindById(User.Identity.GetUserId());
             //Find DB
-            DataBaseInfo foundDb = DataBaseInfoManager.GetDbInfos(user.Id).Single(db => db.Id == id);
+            DataBaseInfo foundDb = DataBasesManager.GetDbInfos(user.Id).Single(db => db.Id == id);
             //Remove db info from DbInfos
-            DataBaseInfoManager.RemoveDbInfo(foundDb);
+            DataBasesManager.RemoveDbInfo(foundDb);
             //Delete database
             DataService.DropDataBase(foundDb.DbmsType, foundDb.Name);
 
@@ -72,7 +72,7 @@ namespace CursachPrototype.Controllers
             //Find user
             AppUser user = _userManager.FindById(User.Identity.GetUserId());
             //Find DB
-            DataBaseInfo foundDb = DataBaseInfoManager.GetDbInfos(user.Id).Single(db => db.Id == id);
+            DataBaseInfo foundDb = DataBasesManager.GetDbInfos(user.Id).Single(db => db.Id == id);
 
             QueryExecutorVm vm = new QueryExecutorVm
             {
