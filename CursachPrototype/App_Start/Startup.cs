@@ -2,6 +2,7 @@
 using Owin;
 using CursachPrototype.Models;
 using CursachPrototype.Models.Accounting;
+using Hangfire;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.AspNet.Identity;
 
@@ -13,8 +14,13 @@ namespace CursachPrototype
     {
         public void Configuration(IAppBuilder app)
         {
-            // настраиваем контекст и менеджер
-            app.CreatePerOwinContext<AppIdentityContext>(AppIdentityContext.Create);
+            GlobalConfiguration.Configuration.UseSqlServerStorage("Hangfire");
+
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
+
+            // настраиваем контекст и менеджер
+            app.CreatePerOwinContext<AppIdentityContext>(AppIdentityContext.Create);
             app.CreatePerOwinContext<AppUserManager>(AppUserManager.Create);
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {

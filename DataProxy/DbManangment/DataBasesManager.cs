@@ -151,24 +151,31 @@ namespace DataProxy.DbManangment
 
         public static void DropOutdatedDbs()
         {
-            OleDbDataBaseReader reader = new OleDbDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString);
-            DataSet set = reader.LoadTables(AnonDbInfosTableName);
-
-            var result = from dbRecord in set.Tables[AnonDbInfosTableName].AsEnumerable()
-                         let dateOfDeleting = dbRecord.Field<DateTime>("DATEOFDELETEING")
-                         where dateOfDeleting < DateTime.Now
-                         select new DataBaseInfo
-                         {
-                             Name = dbRecord.Field<string>("NAME"),
-                             Id = dbRecord.Field<int>("ID")
-                         };
-
-            //TODO: add additional servers
-            IHelper helper = new SqlServerHelper();
-            foreach (DataBaseInfo dataBaseInfo in result)
+            try
             {
-                RemoveAnonymousDbInfo(dataBaseInfo);
-                helper.DropDataBase(dataBaseInfo.Name);
+                OleDbDataBaseReader reader = new OleDbDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString);
+                DataSet set = reader.LoadTables(AnonDbInfosTableName);
+
+                var result = from dbRecord in set.Tables[AnonDbInfosTableName].AsEnumerable()
+                             let dateOfDeleting = dbRecord.Field<DateTime>("DATEOFDELETEING")
+                             where dateOfDeleting < DateTime.Now
+                             select new DataBaseInfo
+                             {
+                                 Name = dbRecord.Field<string>("NAME"),
+                                 Id = dbRecord.Field<int>("ID")
+                             };
+
+                //TODO: add additional servers
+                IHelper helper = new SqlServerHelper();
+                foreach (DataBaseInfo dataBaseInfo in result)
+                {
+                    RemoveAnonymousDbInfo(dataBaseInfo);
+                    helper.DropDataBase(dataBaseInfo.Name);
+                }
+            }
+            catch
+            {
+
             }
         }
 
