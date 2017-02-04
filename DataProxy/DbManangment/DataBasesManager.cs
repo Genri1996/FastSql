@@ -4,8 +4,10 @@ using System.Configuration;
 using System.Data;
 using System.Data.OleDb;
 using System.Linq;
+using System.Net.Sockets;
 using DataProxy.DataBaseReaders;
 using DataProxy.Executors;
+using DataProxy.Helpers;
 
 namespace DataProxy.DbManangment
 {
@@ -29,7 +31,7 @@ namespace DataProxy.DbManangment
             CreateDbInfosIfNoExists();
             CreateAnonDbInfosIfNoExists();
         }
-   
+
         /// <summary>
         /// Returns list of user`s database, orienting his ID.
         /// </summary>
@@ -38,7 +40,8 @@ namespace DataProxy.DbManangment
         public static List<DataBaseInfo> GetDbInfos(string userId)
         {
             //TODO Add public, add anonymous
-            OleDbDataBaseReader reader = new OleDbDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString);
+            OleDbDataBaseReader reader =
+                new OleDbDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString);
             DataSet set = reader.LoadTables(DbInfosTableName, AspNetUserTable);
 
             //Selects DBInfos, that belongs to user
@@ -57,9 +60,11 @@ namespace DataProxy.DbManangment
 
             return result;
         }
+
         public static List<DataBaseInfo> GetAnonymousDbInfos()
         {
-            OleDbDataBaseReader reader = new OleDbDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString);
+            OleDbDataBaseReader reader =
+                new OleDbDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString);
             DataSet set = reader.LoadTables(AnonDbInfosTableName);
 
             //Selects DBInfos, that belongs to user
@@ -87,23 +92,30 @@ namespace DataProxy.DbManangment
         {
             string query = $"USE {DbName} INSERT INTO {DbInfosTableName} "
                            + "(NAME, DATEOFCREATING, CONNECTIONSTRING, DBMSTYPE, USERKEY) "
-                           + $"VALUES('{info.Name}', CONVERT(DATETIME, '{info.DateOfCreating.ToString("yyyy-MM-dd hh:mm:ss")}', 120), "
+                           +
+                           $"VALUES('{info.Name}', CONVERT(DATETIME, '{info.DateOfCreating.ToString("yyyy-MM-dd hh:mm:ss")}', 120), "
                            + $"'{info.ConnectionString}','{info.DbmsType}', '{info.ForeignKey}');";
 
-            using (SqlServerExecutor executor = new SqlServerExecutor(ConfigurationManager.ConnectionStrings["IdentityDb"].ConnectionString))
+            using (
+                SqlServerExecutor executor =
+                    new SqlServerExecutor(ConfigurationManager.ConnectionStrings["IdentityDb"].ConnectionString))
             {
                 executor.ExecuteQueryAsString(query);
             }
         }
+
         public static void AddAnonymousDbInfo(DataBaseInfo info)
         {
             string query = $"USE {DbName} INSERT INTO {AnonDbInfosTableName} "
-                         + "(NAME, DATEOFCREATING, DATEOFDELETING, CONNECTIONSTRING, DBMSTYPE) "
-                         + $"VALUES('{info.Name}', CONVERT(DATETIME, '{info.DateOfCreating.ToString("yyyy-MM-dd hh:mm:ss")}', 120), " 
-                         + $"CONVERT(DATETIME, '{info.DateOfDeleting.ToString("yyyy-MM-dd hh:mm:ss")}', 120),"
-                         + $"'{info.ConnectionString}','{info.DbmsType}');";
+                           + "(NAME, DATEOFCREATING, DATEOFDELETING, CONNECTIONSTRING, DBMSTYPE) "
+                           +
+                           $"VALUES('{info.Name}', CONVERT(DATETIME, '{info.DateOfCreating.ToString("yyyy-MM-dd hh:mm:ss")}', 120), "
+                           + $"CONVERT(DATETIME, '{info.DateOfDeleting.ToString("yyyy-MM-dd hh:mm:ss")}', 120),"
+                           + $"'{info.ConnectionString}','{info.DbmsType}');";
 
-            using (SqlServerExecutor executor = new SqlServerExecutor(ConfigurationManager.ConnectionStrings["IdentityDb"].ConnectionString))
+            using (
+                SqlServerExecutor executor =
+                    new SqlServerExecutor(ConfigurationManager.ConnectionStrings["IdentityDb"].ConnectionString))
             {
                 executor.ExecuteQueryAsString(query);
             }
@@ -117,18 +129,46 @@ namespace DataProxy.DbManangment
         {
             string query = $"USE {DbName}  DELETE FROM {DbInfosTableName} WHERE DbInfos.Id={info.Id};";
 
-            using (SqlServerExecutor executor = new SqlServerExecutor(ConfigurationManager.ConnectionStrings["IdentityDb"].ConnectionString))
+            using (
+                SqlServerExecutor executor =
+                    new SqlServerExecutor(ConfigurationManager.ConnectionStrings["IdentityDb"].ConnectionString))
             {
                 executor.ExecuteQueryAsString(query);
             }
         }
+
         public static void RemoveAnonymousDbInfo(DataBaseInfo info)
         {
             string query = $"USE {DbName}  DELETE FROM {AnonDbInfosTableName} WHERE DbInfos.Id={info.Id};";
 
-            using (SqlServerExecutor executor = new SqlServerExecutor(ConfigurationManager.ConnectionStrings["IdentityDb"].ConnectionString))
+            using (
+                SqlServerExecutor executor =
+                    new SqlServerExecutor(ConfigurationManager.ConnectionStrings["IdentityDb"].ConnectionString))
             {
                 executor.ExecuteQueryAsString(query);
+            }
+        }
+
+        public static void DropOutdatedDbs()
+        {
+            OleDbDataBaseReader reader = new OleDbDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString);
+            DataSet set = reader.LoadTables(AnonDbInfosTableName);
+
+            var result = from dbRecord in set.Tables[AnonDbInfosTableName].AsEnumerable()
+                         let dateOfDeleting = dbRecord.Field<DateTime>("DATEOFDELETEING")
+                         where dateOfDeleting < DateTime.Now
+                         select new DataBaseInfo
+                         {
+                             Name = dbRecord.Field<string>("NAME"),
+                             Id = dbRecord.Field<int>("ID")
+                         };
+
+            //TODO: add additional servers
+            IHelper helper = new SqlServerHelper();
+            foreach (DataBaseInfo dataBaseInfo in result)
+            {
+                RemoveAnonymousDbInfo(dataBaseInfo);
+                helper.DropDataBase(dataBaseInfo.Name);
             }
         }
 
@@ -192,5 +232,7 @@ namespace DataProxy.DbManangment
                 }
             }
         }
+
+
     }
 }
