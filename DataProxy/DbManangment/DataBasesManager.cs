@@ -179,6 +179,11 @@ namespace DataProxy.DbManangment
             }
         }
 
+        public static string GetAutoName()
+        {
+            return $"db{DateTime.Now.Ticks}";
+        }
+
         /// <summary>
         /// Checks existance and creates if required
         /// </summary>

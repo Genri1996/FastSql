@@ -3,6 +3,14 @@
     ViewBag.Title = "Анонимное создание БД";
 }
 
+<script type="text/javascript">
+    function OnSuccess(data) {
+        var textBox = $('#DbName');
+        textBox.empty();
+        textBox.val(data);
+    }
+</script>
+
 <h2>Созданиние анонимной базы данных</h2>
 <p>Укажите параметры базы данных</p>
 
@@ -12,10 +20,11 @@
         @Html.AntiForgeryToken()
         @Html.ValidationSummary()
 
-        @Html.LabelFor(m => m.DataBaseName , "Введите название базы данных")<br/>
-        @Html.TextBoxFor(m => m.DataBaseName)
+        @Html.LabelFor(m => m.DataBaseName, "Введите название базы данных")<br />
+        @Html.TextBoxFor(m => m.DataBaseName, htmlAttributes: new { id = "DbName" })
+        <!--<button type="submit" name="action" value="getName">Получить имя</button>-->
         @Html.ValidationMessageFor(m => m.DataBaseName)
-        <br/>
+        <br />
 
         @Html.LabelFor(m => m.StoreHours, "Время жизни базы данных (в часах)")<br />
         @Html.EditorFor(m => m.StoreHours)
@@ -27,10 +36,11 @@
             @Html.LabelFor(m => m.SelectedServer, server)
             @Html.ValidationMessageFor(m => m.SelectedServer)
         }
-
-        <div>
-            <input type="submit"/>
-        </div>
+        <br />
+        <button name="action" type="submit" value="create">Отправить</button>
     </fieldset>
 }
 
+@section Scripts{
+    <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+}

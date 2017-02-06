@@ -223,6 +223,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\QueryController.cs" />
     <Compile Include="Controllers\UserRoomController.cs" />
+    <Compile Include="CustomAttributes\MultiButtonAttribute.cs" />
     <Compile Include="ExtensionMethods\FromServerSelectionVmToCreateDbObj.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -271,7 +272,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\Images\" />
-    <Folder Include="Scheduled\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataProxy\DataProxy.csproj">

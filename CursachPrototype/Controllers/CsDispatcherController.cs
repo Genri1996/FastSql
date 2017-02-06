@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using CursachPrototype.CustomAttributes;
 using CursachPrototype.Models.Accounting;
 using CursachPrototype.ViewModels;
 using DataProxy;
@@ -160,6 +161,7 @@ namespace CursachPrototype.Controllers
         }
 
         [HttpPost]
+        [MultipleButton(MatchFormKey = "action", MatchFormValue = "create")]
         public ActionResult CreateAnonymousDb(AnonymousDbVm vm)
         {
             vm.AvailableServers = GetAvailableDbmsAsListString();
@@ -192,6 +194,14 @@ namespace CursachPrototype.Controllers
             DataBasesManager.AddAnonymousDbInfo(tempObj);
 
             return View("ShowConnectionString", (object)connectionString);
+        }
+
+        [HttpGet]
+        [MultipleButton(MatchFormKey = "action", MatchFormValue = "getName")]
+        public JsonResult GetName()
+        {
+
+            return Json((object) "testName");
         }
 
         //TODO: Use Enum List instead
