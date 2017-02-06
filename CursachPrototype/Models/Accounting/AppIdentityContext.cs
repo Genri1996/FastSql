@@ -11,7 +11,7 @@ namespace CursachPrototype.Models.Accounting
             Database.CreateIfNotExists();
             //Create table DbInfos
             DataBasesManager.CreateTablesIfNotExists();
-            RecurringJob.AddOrUpdate(() => DataBasesManager.DropOutdatedDbs(), Cron.Minutely);//TODO: Hourly
+            RecurringJob.AddOrUpdate(() => DataBasesManager.DropOutdatedDbs(), Cron.Hourly);//TODO: Hourly
         }
 
         public static AppIdentityContext Create()
