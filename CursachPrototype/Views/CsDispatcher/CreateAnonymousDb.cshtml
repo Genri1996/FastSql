@@ -4,10 +4,13 @@
 }
 
 <script type="text/javascript">
-    function OnSuccess(data) {
+    function SetName() {
         var textBox = $('#DbName');
         textBox.empty();
-        textBox.val(data);
+
+        var ticks = (new Date().getTime());
+        var name = "db" + ticks + "_Anon";
+        textBox.val(name);
     }
 </script>
 
@@ -22,7 +25,7 @@
 
         @Html.LabelFor(m => m.DataBaseName, "Введите название базы данных")<br />
         @Html.TextBoxFor(m => m.DataBaseName, htmlAttributes: new { id = "DbName" })
-        <!--<button type="submit" name="action" value="getName">Получить имя</button>-->
+        <input type="button" onclick="SetName()" value="Получить имя"/>
         @Html.ValidationMessageFor(m => m.DataBaseName)
         <br />
 
