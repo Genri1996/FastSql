@@ -1,5 +1,7 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Data.OleDb;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 
@@ -39,6 +41,11 @@ namespace DataProxy.DataBaseReaders
         /// <returns></returns>
         public DataSet LoadTables(params string[] tableNames)
         {
+            return LoadTablesWithAdapter(tableNames).Key;
+        }
+
+        public KeyValuePair<DataSet, OleDbDataAdapter> LoadTablesWithAdapter(params string[] tableNames)
+        {
             DataSet ds = new DataSet();
             StringBuilder query = new StringBuilder();
 
@@ -47,14 +54,15 @@ namespace DataProxy.DataBaseReaders
                 query.Append($" SELECT * FROM {tableName};");
 
             OleDbDataAdapter adapter = new OleDbDataAdapter(query.ToString(), _connection);
+
             //Adding mapping with table names
             for (int i = 0; i < tableNames.Length; i++)
                 adapter.TableMappings.Add("Table" + (i != 0 ? i.ToString() : ""), tableNames[i]);
 
             adapter.Fill(ds);
 
-            return ds;
-        }
+            return new KeyValuePair<DataSet, OleDbDataAdapter>(ds, adapter);
+        } 
 
         /// <summary>
         /// Returns names of all tables from selected Db.

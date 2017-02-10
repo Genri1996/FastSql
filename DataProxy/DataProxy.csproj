@@ -43,8 +43,6 @@
   <ItemGroup>
     <Compile Include="DataBaseReaders\IDataBaseReader.cs" />
     <Compile Include="DataBaseReaders\OleDbDataBaseReader.cs" />
-    <Compile Include="DataPickers\IDataPicker.cs" />
-    <Compile Include="DataPickers\SqlServerDataPicker.cs" />
     <Compile Include="DataService.cs" />
     <Compile Include="Creators\IDbCreator.cs" />
     <Compile Include="DbManangment\DataBaseInfo.cs" />

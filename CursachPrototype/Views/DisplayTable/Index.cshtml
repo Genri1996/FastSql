@@ -5,7 +5,7 @@
     ViewBag.Title = "Просмотр таблицы";
 }
 
-<h2>Test</h2>
+<h2>@ViewBag.StatusMessage</h2>
 <div class="horizontal-container">
     <div class="left">
         <table>
@@ -26,10 +26,10 @@
                         <td>@item.ToString()</td>
                     }
                     <td>
-                        @Ajax.ActionLink("Редактировать", "Edit", new {id = dr[Model.Columns["ID"]].ToString()}, new AjaxOptions {UpdateTargetId = "editRow"})
+                        @Ajax.ActionLink("Редактировать", "Edit", new {id = dr[Model.Columns["ID"]].ToString()}, new AjaxOptions {UpdateTargetId = "ajax" })
                     </td>
                     <td>
-                        @Html.ActionLink("Удалить", "Edit", new {id = dr[Model.Columns["ID"]].ToString()})
+                      @Ajax.ActionLink("Удалить", "Delete", new { id = dr[Model.Columns["ID"]].ToString() }, new AjaxOptions { UpdateTargetId = "ajax" })
                     </td>
                 </tr>
             }
@@ -40,7 +40,7 @@
         <hr/>
     </div>
 
-    <div class="left" id="editRow">
+    <div class="left" id="ajax">
     </div>
 </div>
 

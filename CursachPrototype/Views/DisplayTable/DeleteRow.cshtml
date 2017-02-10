@@ -1,0 +1,27 @@
+﻿@model System.Data.DataRow
+    
+@{
+    ViewBag.Title = "Подтвердите удаление";
+}
+
+<script>
+    function OnSuccess() {
+        window.location.reload(true);
+    }
+</script>
+
+<h2>Подтвердите удаление</h2>
+
+<p>
+    Вы уверены, что хотите удалить запись с ID
+    <strong>@Model[Model.Table.Columns["ID"]]</strong>?<br />
+    <i style="color: red;">Данные будут безвозвратно уничтожены.</i>
+</p>
+
+@using (Ajax.BeginForm(new AjaxOptions {OnSuccess = "OnSuccess"}))
+{
+    <p>
+        <input type="submit" value="Delete"/>
+    </p>
+
+}
