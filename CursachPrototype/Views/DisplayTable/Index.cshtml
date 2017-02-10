@@ -1,0 +1,16 @@
+﻿@model System.Data.DataTable
+
+@{
+    ViewBag.Title = "Test";
+}
+
+<h2>Test</h2>
+
+@Html.Partial("DisplayTable",Model)
+
+@using (Html.BeginForm("UploadChanges", "DisplayTable", FormMethod.Post))
+{
+
+    <button type="submit">Отправить</button>
+}
+

@@ -43,6 +43,8 @@
   <ItemGroup>
     <Compile Include="DataBaseReaders\IDataBaseReader.cs" />
     <Compile Include="DataBaseReaders\OleDbDataBaseReader.cs" />
+    <Compile Include="DataPickers\IDataPicker.cs" />
+    <Compile Include="DataPickers\SqlServerDataPicker.cs" />
     <Compile Include="DataService.cs" />
     <Compile Include="Creators\IDbCreator.cs" />
     <Compile Include="DbManangment\DataBaseInfo.cs" />
@@ -52,9 +54,11 @@
     <Compile Include="Executors\SqlServerExecutor.cs" />
     <Compile Include="Helpers\IHelper.cs" />
     <Compile Include="Helpers\SqlServerHelper.cs" />
+    <Compile Include="Model\ColumnMetadata.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Creators\SqlServerCreator.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

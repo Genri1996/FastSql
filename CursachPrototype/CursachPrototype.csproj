@@ -220,6 +220,7 @@
     <Compile Include="App_Start\Startup.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CsDispatcherController.cs" />
+    <Compile Include="Controllers\DisplayTableController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\QueryController.cs" />
     <Compile Include="Controllers\UserRoomController.cs" />
@@ -262,6 +263,8 @@
     <Content Include="Views\Query\QueryResults.cshtml" />
     <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.1.min.map" />
+    <Content Include="Views\DisplayTable\Index.cshtml" />
+    <Content Include="Views\DisplayTable\DisplayTable.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
