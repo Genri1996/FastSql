@@ -1,0 +1,52 @@
+﻿@using System.Data
+@model DataRow
+
+@if (Model == null)
+{
+    <b style="color: red;">Произошла ошибка. Заданный ID не найден.</b>
+}
+else
+{
+    @:<fieldset>
+        using (Ajax.BeginForm("UploadChanges", "DisplayTable", new AjaxOptions { UpdateTargetId = "report" }))
+    {
+
+        for (int i = 0; i < Model.ItemArray.Length; i++)
+        {
+            var columnInfo = Model.Table.Columns[i];
+            var itemValue = Model.ItemArray[i];
+
+            if (String.Compare(columnInfo.ColumnName, "ID") == 0)
+            {
+                <p>@Html.Label(columnInfo.ColumnName) &nbsp;&nbsp;&nbsp;&nbsp; @itemValue</p>
+                continue;
+            }
+
+            @Html.Label(columnInfo.ColumnName + "\t") @: &nbsp; &nbsp; &nbsp; &nbsp;
+        if (columnInfo.DataType == typeof(int) || columnInfo.DataType == typeof(int?))
+            {
+                int? temp = (int?)itemValue;
+                <input type="number" name="@columnInfo.ColumnName" value="@temp" />
+            }
+
+            if (columnInfo.DataType == typeof(string))
+            {
+                string temp = (string)itemValue;
+                <input type="text" name="@columnInfo.ColumnName" value="@temp" />
+            }
+            <br />
+        }
+
+        <input type="submit" />
+    }
+    @:</fieldset>
+}
+
+<div id="report"></div>
+
+
+@section Scripts{
+    <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+}
+
+

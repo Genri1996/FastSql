@@ -264,7 +264,8 @@
     <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.1.min.map" />
     <Content Include="Views\DisplayTable\Index.cshtml" />
-    <Content Include="Views\DisplayTable\DisplayTable.cshtml" />
+    <Content Include="Views\DisplayTable\EditRow.cshtml" />
+    <Content Include="Views\Shared\_Message.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

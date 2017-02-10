@@ -1,16 +1,49 @@
-﻿@model System.Data.DataTable
+﻿@using System.Data
+@model System.Data.DataTable
 
 @{
-    ViewBag.Title = "Test";
+    ViewBag.Title = "Просмотр таблицы";
 }
 
 <h2>Test</h2>
+<div class="horizontal-container">
+    <div class="left">
+        <table>
+            <thead>
+            <tr>
+                @foreach (DataColumn dc in Model.Columns)
+                {
+                    <th>@dc.ColumnName</th>
+                }
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (DataRow dr in Model.Rows)
+            {
+                <tr>
+                    @foreach (object item in dr.ItemArray)
+                    {
+                        <td>@item.ToString()</td>
+                    }
+                    <td>
+                        @Ajax.ActionLink("Редактировать", "Edit", new {id = dr[Model.Columns["ID"]].ToString()}, new AjaxOptions {UpdateTargetId = "editRow"})
+                    </td>
+                    <td>
+                        @Html.ActionLink("Удалить", "Edit", new {id = dr[Model.Columns["ID"]].ToString()})
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
 
-@Html.Partial("DisplayTable",Model)
+        <br/>
+        <hr/>
+    </div>
 
-@using (Html.BeginForm("UploadChanges", "DisplayTable", FormMethod.Post))
-{
+    <div class="left" id="editRow">
+    </div>
+</div>
 
-    <button type="submit">Отправить</button>
+@section Scripts{
+    <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
 }
-
