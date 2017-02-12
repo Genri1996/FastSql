@@ -1,4 +1,6 @@
 ﻿@using System.Data
+@using System.Globalization
+@using CursachPrototype.ExtensionMethods
 @model DataTable
 
 <h2>@ViewBag.StatusMessage</h2>
@@ -22,10 +24,14 @@
                             <td>@item.ToString()</td>
                         }
                         <td>
-                            @Ajax.ActionLink("Редактировать", "Edit", new { id = dr[Model.Columns["ID"]].ToString() }, new AjaxOptions { UpdateTargetId = "ajax" })
+                            @Ajax.ActionLink("Редактировать", "Edit", 
+                           new { id = dr[Model.Columns.Cast<DataColumn>().First(column => column.ColumnName.ContainsIgnoreCase("Id"))].ToString() }, 
+                           new AjaxOptions { UpdateTargetId = "ajax" })
                         </td>
                         <td>
-                            @Ajax.ActionLink("Удалить", "Delete", new { id = dr[Model.Columns["ID"]].ToString() }, new AjaxOptions { UpdateTargetId = "ajax" })
+                            @Ajax.ActionLink("Удалить", "Delete", 
+                           new { id = dr[Model.Columns.Cast<DataColumn>().First(column => column.ColumnName.ContainsIgnoreCase("Id"))].ToString() }, 
+                           new AjaxOptions { UpdateTargetId = "ajax" })
                         </td>
                     </tr>
                 }

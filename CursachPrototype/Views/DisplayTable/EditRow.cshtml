@@ -1,4 +1,5 @@
 ﻿@using System.Data
+@using CursachPrototype.ExtensionMethods
 @model DataRow
 
 @if (Model == null)
@@ -16,7 +17,7 @@ else
             var columnInfo = Model.Table.Columns[i];
             var itemValue = Model.ItemArray[i];
 
-            if (String.Compare(columnInfo.ColumnName, "ID") == 0)
+            if (columnInfo.ColumnName.ContainsIgnoreCase("ID"))
             {
                 <p>@Html.Label(columnInfo.ColumnName) &nbsp;&nbsp;&nbsp;&nbsp; @itemValue</p>
                 <input type="hidden" name="ID" value="@itemValue"/>

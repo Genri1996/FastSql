@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using CursachPrototype.ExtensionMethods;
 using CursachPrototype.Models.Accounting;
 using CursachPrototype.ViewModels;
 using DataProxy.DataBaseReaders;
@@ -55,6 +56,8 @@ namespace CursachPrototype.Controllers
             }
         }
 
+
+
         [HttpGet]
         public ActionResult Index(int dbId, string userId)
         {
@@ -85,19 +88,15 @@ namespace CursachPrototype.Controllers
         {
             int changedRowId = int.Parse(Request["ID"]);
             DataRow dr = (from DataRow dataRow in _model.Rows
-                          let idOfCurrentRow = int.Parse(dataRow[_model.Columns["ID"]].ToString())
+                          let idOfCurrentRow = int.Parse(dataRow[_model.Columns.Cast<DataColumn>().First(column => column.ColumnName.ContainsIgnoreCase("Id"))].ToString())
                           where idOfCurrentRow == changedRowId
                           select dataRow).SingleOrDefault();
 
             dr.BeginEdit();
             foreach (DataColumn column in dr.Table.Columns)
             {
-                if (Request[column.ColumnName] == null
-                    || (string.Compare(Request[column.ColumnName], "ID") == 0))
-                {
+                if (Request[column.ColumnName] == null || !Request[column.ColumnName].ContainsIgnoreCase("Id"))
                     continue;
-                }
-
                 ProcesTypes(column, dr);
             }
 
@@ -126,33 +125,32 @@ namespace CursachPrototype.Controllers
         [HttpGet]
         public ActionResult Edit(int id)
         {
-            DataRow dr = (from DataRow dataRow in _model.Rows
-                          let idOfCurrentRow = int.Parse(dataRow[_model.Columns["ID"]].ToString())
-                          where idOfCurrentRow == id
-                          select dataRow).SingleOrDefault();
-
+            var dr = GetRecordById(id);
             return PartialView("~/Views/DisplayTable/EditRow.cshtml", dr);
+        }
+
+        private DataRow GetRecordById(int id)
+        {
+            var columnId = _model.Columns.Cast<DataColumn>()
+                .First(column => column.ColumnName.ContainsIgnoreCase("Id")).Ordinal;
+            DataRow dr = (from DataRow dataRow in _model.Rows
+                let idOfCurrentRow = int.Parse(dataRow.ItemArray[columnId].ToString())
+                where idOfCurrentRow == id
+                select dataRow).SingleOrDefault();
+            return dr;
         }
 
         [HttpGet]
         public ActionResult Delete(int id)
         {
-            DataRow dr = (from DataRow dataRow in _model.Rows
-                          let idOfCurrentRow = int.Parse(dataRow[_model.Columns["ID"]].ToString())
-                          where idOfCurrentRow == id
-                          select dataRow).SingleOrDefault();
-
+            var dr = GetRecordById(id);
             return PartialView("~/Views/DisplayTable/DeleteRow.cshtml", dr);
         }
 
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)
         {
-            DataRow dr = (from DataRow dataRow in _model.Rows
-                          let idOfCurrentRow = int.Parse(dataRow[_model.Columns["ID"]].ToString())
-                          where idOfCurrentRow == id
-                          select dataRow).SingleOrDefault();
-
+            var dr = GetRecordById(id);
             _model.Rows.Remove(dr);
             //TODO: fixate
 

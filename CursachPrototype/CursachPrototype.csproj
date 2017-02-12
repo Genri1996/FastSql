@@ -226,6 +226,7 @@
     <Compile Include="Controllers\UserRoomController.cs" />
     <Compile Include="CustomAttributes\MultiButtonAttribute.cs" />
     <Compile Include="ExtensionMethods\FromServerSelectionVmToCreateDbObj.cs" />
+    <Compile Include="ExtensionMethods\StringExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
