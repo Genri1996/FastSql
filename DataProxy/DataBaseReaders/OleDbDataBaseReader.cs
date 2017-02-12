@@ -20,8 +20,16 @@ namespace DataProxy.DataBaseReaders
         /// <param name="connectionString"></param>
         public OleDbDataBaseReader(string connectionString)
         {
+            connectionString = CheckProvider(connectionString);
             _connection = new OleDbConnection(connectionString);
             _connection.Open();
+        }
+
+        private string CheckProvider(string connectionString)
+        {
+            if (connectionString.Contains("SQLOLEDB"))
+                return connectionString;
+            return connectionString + ";Provider=SQLOLEDB;";
         }
 
         /// <summary>
@@ -62,13 +70,13 @@ namespace DataProxy.DataBaseReaders
             adapter.Fill(ds);
 
             return new KeyValuePair<DataSet, OleDbDataAdapter>(ds, adapter);
-        } 
+        }
 
         /// <summary>
         /// Returns names of all tables from selected Db.
         /// </summary>
         /// <returns></returns>
-        private string[] GetTableNames()
+        public string[] GetTableNames()
         {
             // Get the data table containing the schema
             DataTable dt = _connection.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);

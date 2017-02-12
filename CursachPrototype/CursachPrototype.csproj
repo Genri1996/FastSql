@@ -267,6 +267,7 @@
     <Content Include="Views\DisplayTable\EditRow.cshtml" />
     <Content Include="Views\Shared\_Message.cshtml" />
     <Content Include="Views\DisplayTable\DeleteRow.cshtml" />
+    <Content Include="Views\DisplayTable\EditTable.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

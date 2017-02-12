@@ -13,28 +13,71 @@ using Microsoft.AspNet.Identity;
 
 namespace CursachPrototype.Controllers
 {
+    [Authorize]
     public class DisplayTableController : Controller
     {
-        private DataTable _model;
-
-        public DisplayTableController()
+        private DataTable _model
         {
-            _model = new DataTable("Table");
-            _model.Columns.Add(new DataColumn("ID", typeof(int)));
-            _model.Columns.Add(new DataColumn("TestStr", typeof(string)));
-            _model.Rows.Add(55, "TestString");
-            _model.Rows.Add(66, "TestString2");
+            get
+            {
+                var cs = ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString;
+                //get DbInfos
+                var dbInfoTable = new OleDbDataBaseReader(cs).LoadTables("DbInfos").Tables["DbInfos"];
+                //get users db connection string
+                string dbCs = (from DataRow dataRow in dbInfoTable.Rows
+                               where (int)dataRow["ID"] == _dbId
+                               select dataRow["CONNECTIONSTRING"] as string).FirstOrDefault();
+                //load neccesary table from there
 
+                var usersDs = new OleDbDataBaseReader(dbCs).LoadTables(Session["TableName"] as string);
+                return usersDs.Tables[Session["TableName"] as string];
+            }
+        }
+
+        private string _userId
+        {
+            get { return Session["UserID"] as string; }
+            set { Session["UserID"] = value; }
+        }
+
+        private int _dbId
+        {
+            get { return (int)Session["DbID"]; }
+            set { Session["DbID"] = value; }
+        }
+
+        private DataBaseInfo _dataBaseInfo
+        {
+            get
+            {
+                return DataBasesManager.GetDbInfos(_userId).
+                    Single(dbInf => dbInf.Id == _dbId);
+            }
         }
 
         [HttpGet]
-        public ActionResult Index()
+        public ActionResult Index(int dbId, string userId)
         {
-            //var cs = ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString;
-            //_model = new OleDbDataBaseReader(cs).LoadTables("DbInfos").Tables["DbInfos"];
+            _userId = userId;
+            _dbId = dbId;
 
+            OleDbDataBaseReader reader = new OleDbDataBaseReader(_dataBaseInfo.ConnectionString);
+            var tables = reader.GetTableNames();
+
+            var items = tables.Select(tableName => new SelectListItem { Text = tableName, Value = tableName }).ToArray();
+            if (items.Length == 0)
+                ViewBag.NoElements = (bool?)true;
+            ViewBag.DbName = _dataBaseInfo.Name;
+
+            return View(items);
+        }
+
+        [HttpGet]
+        public ActionResult EditTable(string selectedTable)
+        {
+            Session["TableName"] = selectedTable;
             ViewBag.StatusMessage = "Просмотр таблицы " + _model.TableName;
-            return View(_model);
+            return PartialView(_model);
         }
 
         [HttpPost]
@@ -49,7 +92,8 @@ namespace CursachPrototype.Controllers
             dr.BeginEdit();
             foreach (DataColumn column in dr.Table.Columns)
             {
-                if (Request[column.ColumnName] == null || (String.Compare(Request[column.ColumnName], "ID")==0))
+                if (Request[column.ColumnName] == null
+                    || (string.Compare(Request[column.ColumnName], "ID") == 0))
                 {
                     continue;
                 }
@@ -66,13 +110,13 @@ namespace CursachPrototype.Controllers
 
         private void ProcesTypes(DataColumn column, DataRow dr)
         {
-            if (column.DataType == typeof (int))
+            if (column.DataType == typeof(int))
             {
                 int val = int.Parse(Request[column.ColumnName]);
                 dr[column] = val;
             }
 
-            if (column.DataType == typeof (string))
+            if (column.DataType == typeof(string))
             {
                 string val = Request[column.ColumnName];
                 dr[column] = val;
@@ -110,6 +154,7 @@ namespace CursachPrototype.Controllers
                           select dataRow).SingleOrDefault();
 
             _model.Rows.Remove(dr);
+            //TODO: fixate
 
             ViewBag.StatusMessage = "Запись была удалена";
             return RedirectToAction("Index");

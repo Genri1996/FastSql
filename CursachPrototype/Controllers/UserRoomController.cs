@@ -30,6 +30,7 @@ namespace CursachPrototype.Controllers
         public ActionResult Index()
         {
             AppUser user = _userManager.FindById(User.Identity.GetUserId());
+            ViewBag.UserId = user.Id;
             return View(DataBasesManager.GetDbInfos(user.Id));
         }
 
