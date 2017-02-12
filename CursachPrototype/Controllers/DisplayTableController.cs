@@ -79,21 +79,19 @@ namespace CursachPrototype.Controllers
         public ActionResult UploadChanges()
         {
             int changedRowId = int.Parse(Request["ID"]);
-            var dr = GetRecordById(changedRowId);
+            var dr = GetRecordById(changedRowId) ?? GetNewRow();
 
-            dr.BeginEdit();
             foreach (DataColumn column in dr.Table.Columns)
             {
-                if (Request[column.ColumnName] == null || !Request[column.ColumnName].ContainsIgnoreCase("Id"))
+                if (Request[column.ColumnName] == null || Request[column.ColumnName].ContainsIgnoreCase("Id"))
                     continue;
                 ProcesTypes(column, dr);
             }
 
             //TODO: add saving to database
-            dr.AcceptChanges();
 
             ViewBag.StatusMessage = "Ряд " + changedRowId + " был успешно изменён!";
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new {dbId = _dbId, userId = _userId});
         }
 
         [HttpGet]
@@ -103,15 +101,6 @@ namespace CursachPrototype.Controllers
             return PartialView("AddRow", row);
         }
 
-        private DataRow GetNewRow()
-        {
-            var newRow = _model.NewRow();
-            var columnId = _model.Columns.Cast<DataColumn>()
-              .First(column => column.ColumnName.ContainsIgnoreCase("Id")).Ordinal;
-            var maxId = _model.Rows.Cast<DataRow>().Max(row => int.Parse(row.ItemArray[columnId].ToString()));
-            newRow[columnId] = maxId + 1;
-            return newRow;
-        }
 
         [HttpGet]
         public ActionResult Edit(int id)
@@ -159,11 +148,17 @@ namespace CursachPrototype.Controllers
             DataRow dr = (from DataRow dataRow in _model.Rows
                           let idOfCurrentRow = int.Parse(dataRow.ItemArray[columnId].ToString())
                           where idOfCurrentRow == id
-                          select dataRow).Single();
+                          select dataRow).SingleOrDefault();
             return dr;
         }
-
-
-
+        private DataRow GetNewRow()
+        {
+            var newRow = _model.NewRow();
+            var columnId = _model.Columns.Cast<DataColumn>()
+              .First(column => column.ColumnName.ContainsIgnoreCase("Id")).Ordinal;
+            var maxId = _model.Rows.Cast<DataRow>().Max(row => int.Parse(row.ItemArray[columnId].ToString()));
+            newRow[columnId] = maxId + 1;
+            return newRow;
+        }
     }
 }
