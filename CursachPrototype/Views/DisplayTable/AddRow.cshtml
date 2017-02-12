@@ -1,0 +1,52 @@
+﻿@using System.Data
+@using CursachPrototype.ExtensionMethods
+@model DataRow
+
+@if (Model == null)
+{
+    <b style="color: red;">Произошла ошибка. Заданный ID не найден.</b>
+}
+else
+{
+    @:<fieldset>
+        using (Html.BeginForm("UploadChanges", "DisplayTable", FormMethod.Post))
+    {
+        @Html.ValidationSummary()
+        for (int i = 0; i < Model.ItemArray.Length; i++)
+        {
+            var columnInfo = Model.Table.Columns[i];
+            var itemValue = Model.ItemArray[i];
+
+            if (columnInfo.ColumnName.ContainsIgnoreCase("ID"))
+            {
+                <p>@Html.Label(columnInfo.ColumnName) &nbsp;&nbsp;&nbsp;&nbsp; @itemValue</p>
+                <input type="hidden" name="ID" value="@itemValue" />
+                continue;
+            }
+
+            @Html.Label(columnInfo.ColumnName + "\t") @: &nbsp; &nbsp; &nbsp; &nbsp;
+            if (columnInfo.DataType == typeof(int))
+            {
+                <input type="number" name="@columnInfo.ColumnName"/>
+            }
+
+            if (columnInfo.DataType == typeof(int?))
+            {;
+                <input type="number" name="@columnInfo.ColumnName" />
+            }
+
+            if (columnInfo.DataType == typeof(string))
+            {
+                <input type="text" name="@columnInfo.ColumnName" />
+            }
+            <br />
+        }
+
+        <input type="submit" />
+    }
+    @:</fieldset>
+}
+
+
+
+

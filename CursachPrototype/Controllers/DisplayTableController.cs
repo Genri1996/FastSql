@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Data;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using CursachPrototype.ExtensionMethods;
-using CursachPrototype.Models.Accounting;
-using CursachPrototype.ViewModels;
 using DataProxy.DataBaseReaders;
 using DataProxy.DbManangment;
-using Microsoft.AspNet.Identity;
 
 namespace CursachPrototype.Controllers
 {
@@ -56,8 +50,6 @@ namespace CursachPrototype.Controllers
             }
         }
 
-
-
         [HttpGet]
         public ActionResult Index(int dbId, string userId)
         {
@@ -87,10 +79,7 @@ namespace CursachPrototype.Controllers
         public ActionResult UploadChanges()
         {
             int changedRowId = int.Parse(Request["ID"]);
-            DataRow dr = (from DataRow dataRow in _model.Rows
-                          let idOfCurrentRow = int.Parse(dataRow[_model.Columns.Cast<DataColumn>().First(column => column.ColumnName.ContainsIgnoreCase("Id"))].ToString())
-                          where idOfCurrentRow == changedRowId
-                          select dataRow).SingleOrDefault();
+            var dr = GetRecordById(changedRowId);
 
             dr.BeginEdit();
             foreach (DataColumn column in dr.Table.Columns)
@@ -107,19 +96,21 @@ namespace CursachPrototype.Controllers
             return RedirectToAction("Index");
         }
 
-        private void ProcesTypes(DataColumn column, DataRow dr)
+        [HttpGet]
+        public ActionResult Add()
         {
-            if (column.DataType == typeof(int))
-            {
-                int val = int.Parse(Request[column.ColumnName]);
-                dr[column] = val;
-            }
+            var row = GetNewRow();
+            return PartialView("AddRow", row);
+        }
 
-            if (column.DataType == typeof(string))
-            {
-                string val = Request[column.ColumnName];
-                dr[column] = val;
-            }
+        private DataRow GetNewRow()
+        {
+            var newRow = _model.NewRow();
+            var columnId = _model.Columns.Cast<DataColumn>()
+              .First(column => column.ColumnName.ContainsIgnoreCase("Id")).Ordinal;
+            var maxId = _model.Rows.Cast<DataRow>().Max(row => int.Parse(row.ItemArray[columnId].ToString()));
+            newRow[columnId] = maxId + 1;
+            return newRow;
         }
 
         [HttpGet]
@@ -127,17 +118,6 @@ namespace CursachPrototype.Controllers
         {
             var dr = GetRecordById(id);
             return PartialView("~/Views/DisplayTable/EditRow.cshtml", dr);
-        }
-
-        private DataRow GetRecordById(int id)
-        {
-            var columnId = _model.Columns.Cast<DataColumn>()
-                .First(column => column.ColumnName.ContainsIgnoreCase("Id")).Ordinal;
-            DataRow dr = (from DataRow dataRow in _model.Rows
-                let idOfCurrentRow = int.Parse(dataRow.ItemArray[columnId].ToString())
-                where idOfCurrentRow == id
-                select dataRow).SingleOrDefault();
-            return dr;
         }
 
         [HttpGet]
@@ -157,5 +137,33 @@ namespace CursachPrototype.Controllers
             ViewBag.StatusMessage = "Запись была удалена";
             return RedirectToAction("Index");
         }
+
+        private void ProcesTypes(DataColumn column, DataRow dr)
+        {
+            if (column.DataType == typeof(int))
+            {
+                int val = int.Parse(Request[column.ColumnName]);
+                dr[column] = val;
+            }
+
+            if (column.DataType == typeof(string))
+            {
+                string val = Request[column.ColumnName];
+                dr[column] = val;
+            }
+        }
+        private DataRow GetRecordById(int id)
+        {
+            var columnId = _model.Columns.Cast<DataColumn>()
+                .First(column => column.ColumnName.ContainsIgnoreCase("Id")).Ordinal;
+            DataRow dr = (from DataRow dataRow in _model.Rows
+                          let idOfCurrentRow = int.Parse(dataRow.ItemArray[columnId].ToString())
+                          where idOfCurrentRow == id
+                          select dataRow).Single();
+            return dr;
+        }
+
+
+
     }
 }

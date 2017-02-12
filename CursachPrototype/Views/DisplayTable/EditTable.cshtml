@@ -42,6 +42,11 @@
         <hr />
     </div>
 
+    @using (Ajax.BeginForm("Add", "DisplayTable", new AjaxOptions {UpdateTargetId = "ajax", HttpMethod = "Get"}))
+    {
+        <button>Добавить запись</button>
+    }
+
     <div class="left" id="ajax">
     </div>
 </div>
