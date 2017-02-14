@@ -12,7 +12,7 @@ namespace DataProxy.Creators
     class SqlServerCreator : IDbCreator
     {
         //TODO: After publishing to another server should be changed.
-        private const string  LocalSqlServerName = @"AMDFXPC\SQLEXPRESS";
+        private const string  LocalSqlServerName = @".\SQLEXPRESS";
         //Full access to server
         private readonly string _masterConnectionString;
         private readonly string _dataBaseName;
