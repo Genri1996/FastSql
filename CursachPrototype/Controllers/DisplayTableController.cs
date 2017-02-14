@@ -1,10 +1,10 @@
-﻿using System.Configuration;
-using System.Data;
+﻿using System.Data;
 using System.Linq;
 using System.Web.Mvc;
 using CursachPrototype.ExtensionMethods;
 using DataProxy.DataBaseReaders;
 using DataProxy.DbManangment;
+using System.Text;
 
 namespace CursachPrototype.Controllers
 {
@@ -15,17 +15,21 @@ namespace CursachPrototype.Controllers
         {
             get
             {
-                var cs = ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString;
-                //get DbInfos
-                var dbInfoTable = new OleDbDataBaseReader(cs).LoadTables("DbInfos").Tables["DbInfos"];
-                //get users db connection string
-                string dbCs = (from DataRow dataRow in dbInfoTable.Rows
-                               where (int)dataRow["ID"] == _dbId
-                               select dataRow["CONNECTIONSTRING"] as string).FirstOrDefault();
-                //load neccesary table from there
-
-                var usersDs = new OleDbDataBaseReader(dbCs).LoadTables(Session["TableName"] as string);
+                var reader = _modelReader;
+                var usersDs = reader.LoadTables(Session["TableName"] as string);
+                reader.Dispose();
                 return usersDs.Tables[Session["TableName"] as string];
+            }
+        }
+
+        private OleDbDataBaseReader _modelReader
+        {
+            get
+            {
+                //get users db connection string
+                string dbCs = _dataBaseInfo.ConnectionString;
+                //load neccesary table from there
+                return new OleDbDataBaseReader(dbCs);
             }
         }
 
@@ -91,8 +95,44 @@ namespace CursachPrototype.Controllers
             //TODO: add saving to database
 
             ViewBag.StatusMessage = "Ряд " + changedRowId + " был успешно изменён!";
-            return RedirectToAction("Index", new {dbId = _dbId, userId = _userId});
+            return RedirectToAction("Index", new { dbId = _dbId, userId = _userId });
         }
+
+        [HttpPost]
+        public ActionResult UploadNewRow()
+        {
+            int changedRowId = int.Parse(Request["ID"]);
+            var dr = GetNewRow();
+
+            foreach (DataColumn column in dr.Table.Columns)
+            {
+                if (Request[column.ColumnName] == null || Request[column.ColumnName].ContainsIgnoreCase("Id"))
+                    continue;
+                ProcesTypes(column, dr);
+            }
+
+            DataTable dt = _model;
+
+            StringBuilder insertStringBuilder = new StringBuilder($"use {_dataBaseInfo.Name} Insert into {_model.TableName} values (");
+
+            bool first = true;
+            foreach (DataColumn column in dt.Columns)
+            {
+                if (!first)
+                {
+                    insertStringBuilder.Append(",");
+                    insertStringBuilder.Append($"@{column.ColumnName}");
+                }
+                else
+                    insertStringBuilder.Append($"@{column.ColumnName}");
+            }
+            insertStringBuilder.Append(")");
+            //TODO: add saving to database
+
+            ViewBag.StatusMessage = "Ряд " + changedRowId + " был успешно добавлен!";
+            return RedirectToAction("Index", new { dbId = _dbId, userId = _userId });
+        }
+
 
         [HttpGet]
         public ActionResult Add()
