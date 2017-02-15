@@ -86,19 +86,21 @@ namespace CursachPrototype.Controllers
         [HttpPost]
         public ActionResult UploadChanges()
         {
-            //int changedRowId = int.Parse(Request["ID"]);
-            //var dr = GetRecordById(changedRowId);
+            ChangesFixator changesHelper = new ChangesFixator(_dataBaseInfo, _model);
+            int changedRowId = int.Parse(Request["ID"]);
+            changesHelper.AddDataColumn(changedRowId.ToString());
+            DataTable dt = _model;
 
-            //foreach (DataColumn column in dr.Table.Columns)
-            //{
-            //    if (Request[column.ColumnName] == null || Request[column.ColumnName].ContainsIgnoreCase("Id"))
-            //        continue;
-            //    ProcesTypes(column, dr);
-            //}
+            foreach (DataColumn column in dt.Columns)
+                changesHelper.AddDataColumn(Request[column.ColumnName]);
 
-            ////TODO: add saving to database
+            var result = changesHelper.FixateChanges(ChangesFixator.QueryType.Update, GetIdOrdinalIndex(), changedRowId);
 
-            //ViewBag.StatusMessage = "Ряд " + changedRowId + " был успешно изменён!";
+            if (result == string.Empty)
+                result = "Ряд " + changedRowId + " был успешно изменен!";
+
+            TempData["StatusMessage"] = result;
+            TempData.Keep("StatusMessage");
             return RedirectToAction("Index", new { dbId = _dbId, userId = _userId });
         }
 
@@ -114,7 +116,7 @@ namespace CursachPrototype.Controllers
                 changesHelper.AddDataColumn(Request[column.ColumnName]);
 
             var result = changesHelper.FixateChanges(ChangesFixator.QueryType.Insert);
-           
+
             if (result == string.Empty)
                 result = "Ряд " + changedRowId + " был успешно добавлен!";
 
@@ -142,19 +144,21 @@ namespace CursachPrototype.Controllers
         [HttpGet]
         public ActionResult Delete(int id)
         {
-            var dr = GetRecordById(id);
-            return PartialView("~/Views/DisplayTable/DeleteRow.cshtml", dr);
+            return PartialView("~/Views/DisplayTable/DeleteRow.cshtml", id);
         }
 
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)
         {
-            var dr = GetRecordById(id);
-            _model.Rows.Remove(dr);
-            //TODO: fixate
+            ChangesFixator cf = new ChangesFixator(_dataBaseInfo, _model);
+            var result = cf.FixateChanges(ChangesFixator.QueryType.Delete, GetIdOrdinalIndex(), id);
+            if (result == string.Empty)
+                result = "Ряд " + id + "успешно удалён.";
 
-            ViewBag.StatusMessage = "Запись была удалена";
-            return RedirectToAction("Index");
+            TempData["StatusMessage"] = result;
+            TempData.Keep("StatusMessage");
+
+            return RedirectToAction("Index", new { dbId = _dbId, userId = _userId });
         }
 
         private int GetIdOrdinalIndex()

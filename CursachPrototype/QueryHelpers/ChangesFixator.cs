@@ -12,7 +12,7 @@ namespace CursachPrototype.QueryHelpers
     {
         private readonly DataBaseInfo _dbInfo;
         private readonly DataTable _dataTable;
-        private readonly List<string> _parametrsList = new List<string>();
+        private readonly IDictionary<string, string> _parametrsList = new Dictionary<string, string>();
         private int _columnIndex = 0;
 
         public enum QueryType
@@ -26,53 +26,67 @@ namespace CursachPrototype.QueryHelpers
             _dataTable = dataTable;
         }
 
-        public string FixateChanges(QueryType queryType)
+        public string FixateChanges(QueryType queryType, int primaryKeyRowName = 0, int rowId = 0)
         {
-            string query=null;
+            string query = null;
             switch (queryType)
             {
                 case QueryType.Insert:
                     query = GenerateInsertQuery();
                     break;
                 case QueryType.Update:
-                    query = GenerateUpdateQuery();
+                    query = GenerateUpdateQuery(primaryKeyRowName, rowId);
                     break;
                 case QueryType.Delete:
-                    query = GenerateDeleteQuery();
+                    query = GenerateDeleteQuery(primaryKeyRowName, rowId);
                     break;
             }
 
             return DataProxy.DataService.ExecuteQuery(query, _dbInfo.ConnectionString, _dbInfo.DbmsType);
         }
 
-        private string GenerateDeleteQuery()
+        private string GenerateDeleteQuery(int primaryKeyRowId, int rowId)
         {
-            throw new NotImplementedException();
+            return $"use {_dbInfo.Name} delete from {_dataTable.TableName} where {_dataTable.Columns[primaryKeyRowId].ColumnName} = {rowId}";
         }
 
-        private string GenerateUpdateQuery()
+        private string GenerateUpdateQuery(int primaryKeyRowId, int rowId)
         {
-            throw new NotImplementedException();
+            StringBuilder updateQueryBuilder = new StringBuilder($"use {_dbInfo.Name} update {_dataTable.TableName} set ");
+            bool first = true;
+            foreach (KeyValuePair<string, string> s in _parametrsList)
+            {
+                if (!first)
+                {
+                    updateQueryBuilder.Append(",");
+                    updateQueryBuilder.Append(s.Key + "=" + s.Value);
+                }
+                else
+                    updateQueryBuilder.Append(s.Key + "=" + s.Value);
+                first = false;
+            }
+            updateQueryBuilder.Append($" where {_dataTable.Columns[primaryKeyRowId].ColumnName} = {rowId}");
+            return updateQueryBuilder.ToString();
         }
 
         private string GenerateInsertQuery()
         {
-            StringBuilder insertStringBuilder = new StringBuilder($"use {_dbInfo.Name} Insert into {_dataTable.TableName} values (");
+            StringBuilder insertQueryBuilder = new StringBuilder($"use {_dbInfo.Name} Insert into {_dataTable.TableName} values (");
 
             bool first = true;
-            foreach (string s in _parametrsList)
+            foreach (string s in _parametrsList.Values)
             {
                 if (!first)
                 {
-                    insertStringBuilder.Append(",");
-                    insertStringBuilder.Append(s);
+                    insertQueryBuilder.Append(",");
+                    insertQueryBuilder.Append(s);
                 }
                 else
-                    insertStringBuilder.Append(s);
+                    insertQueryBuilder.Append(s);
                 first = false;
             }
-            insertStringBuilder.Append(")");
-            return insertStringBuilder.ToString();
+            insertQueryBuilder.Append(")");
+            return insertQueryBuilder.ToString();
         }
 
         public void AddDataColumn(string requestValue)
@@ -85,15 +99,16 @@ namespace CursachPrototype.QueryHelpers
             if (_columnIndex == _dataTable.Columns.Count)
                 _columnIndex = 0;
 
-            var columnDataType = _dataTable.Columns[_columnIndex].DataType;
+            var column = _dataTable.Columns[_columnIndex];
+            var columnDataType = column.DataType;
 
             if (columnDataType == typeof(int))
             {
-                _parametrsList.Add(requestValue);
+                _parametrsList.Add(column.ColumnName, requestValue);
             }
             else//Unrecognized type, send as string
             {
-                _parametrsList.Add("'" + requestValue + "'");
+                _parametrsList.Add(column.ColumnName, "'" + requestValue + "'");
             }
 
             _columnIndex++;

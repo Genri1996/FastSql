@@ -1,4 +1,4 @@
-﻿@model System.Data.DataRow
+﻿@model int
     
 @{
     ViewBag.Title = "Подтвердите удаление";
@@ -14,7 +14,7 @@
 
 <p>
     Вы уверены, что хотите удалить запись с ID
-    <strong>@Model[Model.Table.Columns["ID"]]</strong>?<br />
+    <strong>@Model</strong>?<br />
     <i style="color: red;">Данные будут безвозвратно уничтожены.</i>
 </p>
 
