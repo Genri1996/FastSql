@@ -271,6 +271,7 @@
     <Content Include="Views\DisplayTable\DeleteRow.cshtml" />
     <Content Include="Views\DisplayTable\EditTable.cshtml" />
     <Content Include="Views\DisplayTable\AddRow.cshtml" />
+    <Content Include="Views\DisplayTable\RenderTableRow.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

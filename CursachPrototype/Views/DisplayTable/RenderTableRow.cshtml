@@ -1,0 +1,20 @@
+﻿@model System.Data.DataRow
+
+@foreach (object obj in Model.ItemArray)
+{
+    <td>
+        @if (obj is DateTime)
+        {
+            var timeString = ((DateTime) obj).ToLongDateString();
+            @timeString
+        }else if (obj is double)
+        {
+            var doub = (double) obj;
+            doub.ToString("##.#####");
+        }
+        else
+        {
+            @obj.ToString();
+        }
+    </td>
+}

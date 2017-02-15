@@ -19,18 +19,15 @@
                 @foreach (DataRow dr in Model.Rows)
             {
                     <tr>
-                        @foreach (object item in dr.ItemArray)
-                        {
-                            <td>@item.ToString()</td>
-                        }
+                        @Html.Partial("RenderTableRow", dr)
                         <td>
-                            @Ajax.ActionLink("Редактировать", "Edit", 
-                           new { id = dr[Model.Columns.Cast<DataColumn>().First(column => column.ColumnName.ContainsIgnoreCase("Id"))].ToString() }, 
+                            @Ajax.ActionLink("Редактировать", "Edit",
+                           new { id = dr[Model.Columns.Cast<DataColumn>().First(column => column.ColumnName.ContainsIgnoreCase("Id"))].ToString() },
                            new AjaxOptions { UpdateTargetId = "ajax" })
                         </td>
                         <td>
-                            @Ajax.ActionLink("Удалить", "Delete", 
-                           new { id = dr[Model.Columns.Cast<DataColumn>().First(column => column.ColumnName.ContainsIgnoreCase("Id"))].ToString() }, 
+                            @Ajax.ActionLink("Удалить", "Delete",
+                           new { id = dr[Model.Columns.Cast<DataColumn>().First(column => column.ColumnName.ContainsIgnoreCase("Id"))].ToString() },
                            new AjaxOptions { UpdateTargetId = "ajax" })
                         </td>
                     </tr>
@@ -42,7 +39,7 @@
         <hr />
     </div>
 
-    @using (Ajax.BeginForm("Add", "DisplayTable", new AjaxOptions {UpdateTargetId = "ajax", HttpMethod = "Get"}))
+    @using (Ajax.BeginForm("Add", "DisplayTable", new AjaxOptions { UpdateTargetId = "ajax", HttpMethod = "Get" }))
     {
         <button>Добавить запись</button>
     }
