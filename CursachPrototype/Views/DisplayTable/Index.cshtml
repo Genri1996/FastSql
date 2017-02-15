@@ -5,6 +5,7 @@
 }
 
 <h2>Редактировани базы данных @ViewBag.DbName</h2>
+<p>@TempData["StatusMessage"]</p>
 @{
     if (ViewBag.NoElements as bool? == true)
     {

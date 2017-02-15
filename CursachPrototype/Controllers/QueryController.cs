@@ -35,6 +35,9 @@ namespace CursachPrototype.Controllers
                 vm.QueryResult = executor.ExecuteQueryAsString(vm.Query);
             }
 
+            if (vm.QueryResult == string.Empty)
+                vm.QueryResult = "Запрос выполнен успешно";
+
             return PartialView("QueryResults",vm);
         }
     }

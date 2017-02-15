@@ -1,10 +1,14 @@
 ﻿using System.Data;
+using System.Data.OleDb;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 using CursachPrototype.ExtensionMethods;
 using DataProxy.DataBaseReaders;
 using DataProxy.DbManangment;
 using System.Text;
+using CursachPrototype.QueryHelpers;
+using DataProxy;
 
 namespace CursachPrototype.Controllers
 {
@@ -82,54 +86,40 @@ namespace CursachPrototype.Controllers
         [HttpPost]
         public ActionResult UploadChanges()
         {
-            int changedRowId = int.Parse(Request["ID"]);
-            var dr = GetRecordById(changedRowId) ?? GetNewRow();
+            //int changedRowId = int.Parse(Request["ID"]);
+            //var dr = GetRecordById(changedRowId);
 
-            foreach (DataColumn column in dr.Table.Columns)
-            {
-                if (Request[column.ColumnName] == null || Request[column.ColumnName].ContainsIgnoreCase("Id"))
-                    continue;
-                ProcesTypes(column, dr);
-            }
+            //foreach (DataColumn column in dr.Table.Columns)
+            //{
+            //    if (Request[column.ColumnName] == null || Request[column.ColumnName].ContainsIgnoreCase("Id"))
+            //        continue;
+            //    ProcesTypes(column, dr);
+            //}
 
-            //TODO: add saving to database
+            ////TODO: add saving to database
 
-            ViewBag.StatusMessage = "Ряд " + changedRowId + " был успешно изменён!";
+            //ViewBag.StatusMessage = "Ряд " + changedRowId + " был успешно изменён!";
             return RedirectToAction("Index", new { dbId = _dbId, userId = _userId });
         }
 
         [HttpPost]
         public ActionResult UploadNewRow()
         {
+            ChangesFixator changesHelper = new ChangesFixator(_dataBaseInfo, _model);
             int changedRowId = int.Parse(Request["ID"]);
-            var dr = GetNewRow();
-
-            foreach (DataColumn column in dr.Table.Columns)
-            {
-                if (Request[column.ColumnName] == null || Request[column.ColumnName].ContainsIgnoreCase("Id"))
-                    continue;
-                ProcesTypes(column, dr);
-            }
-
+            changesHelper.AddDataColumn(changedRowId.ToString());
             DataTable dt = _model;
 
-            StringBuilder insertStringBuilder = new StringBuilder($"use {_dataBaseInfo.Name} Insert into {_model.TableName} values (");
-
-            bool first = true;
             foreach (DataColumn column in dt.Columns)
-            {
-                if (!first)
-                {
-                    insertStringBuilder.Append(",");
-                    insertStringBuilder.Append($"@{column.ColumnName}");
-                }
-                else
-                    insertStringBuilder.Append($"@{column.ColumnName}");
-            }
-            insertStringBuilder.Append(")");
-            //TODO: add saving to database
+                changesHelper.AddDataColumn(Request[column.ColumnName]);
 
-            ViewBag.StatusMessage = "Ряд " + changedRowId + " был успешно добавлен!";
+            var result = changesHelper.FixateChanges(ChangesFixator.QueryType.Insert);
+           
+            if (result == string.Empty)
+                result = "Ряд " + changedRowId + " был успешно добавлен!";
+
+            TempData["StatusMessage"] = result;
+            TempData.Keep("StatusMessage");
             return RedirectToAction("Index", new { dbId = _dbId, userId = _userId });
         }
 
@@ -167,38 +157,34 @@ namespace CursachPrototype.Controllers
             return RedirectToAction("Index");
         }
 
-        private void ProcesTypes(DataColumn column, DataRow dr)
+        private int GetIdOrdinalIndex()
         {
-            if (column.DataType == typeof(int))
-            {
-                int val = int.Parse(Request[column.ColumnName]);
-                dr[column] = val;
-            }
+            return _model.Columns.Cast<DataColumn>()
+              .First(column => column.ColumnName.ContainsIgnoreCase("Id")).Ordinal;
+        }
 
-            if (column.DataType == typeof(string))
-            {
-                string val = Request[column.ColumnName];
-                dr[column] = val;
-            }
+        private DataRow GetNewRow()
+        {
+            var dt = _model;
+            var newRow = dt.NewRow();
+            var columnId = GetIdOrdinalIndex();
+            int newRowId;
+            if (dt.Rows.Count == 0)
+                newRowId = 1;
+            else
+                newRowId = _model.Rows.Cast<DataRow>().Max(row => int.Parse(row.ItemArray[columnId].ToString())) + 1;
+            newRow[columnId] = newRowId;
+            return newRow;
+
         }
         private DataRow GetRecordById(int id)
         {
-            var columnId = _model.Columns.Cast<DataColumn>()
-                .First(column => column.ColumnName.ContainsIgnoreCase("Id")).Ordinal;
+            var columnId = GetIdOrdinalIndex();
             DataRow dr = (from DataRow dataRow in _model.Rows
                           let idOfCurrentRow = int.Parse(dataRow.ItemArray[columnId].ToString())
                           where idOfCurrentRow == id
-                          select dataRow).SingleOrDefault();
+                          select dataRow).Single();
             return dr;
-        }
-        private DataRow GetNewRow()
-        {
-            var newRow = _model.NewRow();
-            var columnId = _model.Columns.Cast<DataColumn>()
-              .First(column => column.ColumnName.ContainsIgnoreCase("Id")).Ordinal;
-            var maxId = _model.Rows.Cast<DataRow>().Max(row => int.Parse(row.ItemArray[columnId].ToString()));
-            newRow[columnId] = maxId + 1;
-            return newRow;
         }
     }
 }

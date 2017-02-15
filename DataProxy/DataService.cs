@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DataProxy.Creators;
 using DataProxy.DbManangment;
+using DataProxy.Executors;
 using DataProxy.Helpers;
 
 namespace DataProxy
@@ -61,6 +62,17 @@ namespace DataProxy
             return helper.DropDataBase(dataBaseName);
         }
 
+        public static string ExecuteQuery(string query, string connectionString, DbmsType type)
+        {
+            IQueryExecutor executor=null;
+            switch (type)
+            {
+                case DbmsType.SqlServer:
+                    executor = new SqlServerExecutor(connectionString);
+                    break;
+            }
 
+           return executor.ExecuteQueryAsString(query);
+        }
     }
 }

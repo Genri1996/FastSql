@@ -88,21 +88,6 @@ namespace DataProxy.DataBaseReaders
             return tableNames;
         }
 
-        public void BatchInsertUpdate(DataTable table, OleDbCommand insertCommand)
-        {
-            int batchSize = 1;
-            insertCommand.Connection = _connection;
-
-            using (OleDbDataAdapter adapter = new OleDbDataAdapter())
-            {
-                adapter.InsertCommand = insertCommand;
-                // Gets or sets the number of rows that are processed in each round-trip to the server.  
-                // Setting it to 1 disables batch updates, as rows are sent one at a time.  
-                adapter.UpdateBatchSize = batchSize;
-                adapter.Update(table);
-            }
-        }
-
         public void Dispose()
         {
             _connection.Close();

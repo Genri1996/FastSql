@@ -6,7 +6,7 @@ namespace CursachPrototype.Models.Accounting
 {
     public class AppIdentityContext : IdentityDbContext<AppUser>
     {
-        public AppIdentityContext() : base("IdentityDb")
+        public AppIdentityContext() : base("FastSqlIdentity")
         {
             Database.CreateIfNotExists();
             //Create table DbInfos
