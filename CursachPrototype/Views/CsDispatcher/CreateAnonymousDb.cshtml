@@ -14,35 +14,45 @@
     }
 </script>
 
-<h2>Созданиние анонимной базы данных</h2>
-<p>Укажите параметры базы данных</p>
+<div class="container">
+    <h2 class="text-center">Созданиние анонимной базы данных</h2>
 
-@using (Html.BeginForm("CreateAnonymousDb", "CsDispatcher", FormMethod.Post))
-{
-    <fieldset>
+    @using (Html.BeginForm("CreateAnonymousDb", "CsDispatcher", FormMethod.Post, new { @id = "mainForm" }))
+    {
         @Html.AntiForgeryToken()
         @Html.ValidationSummary()
 
-        @Html.LabelFor(m => m.DataBaseName, "Введите название базы данных")<br />
-        @Html.TextBoxFor(m => m.DataBaseName, htmlAttributes: new { id = "DbName" })
-        <input type="button" onclick="SetName()" value="Получить имя"/>
-        @Html.ValidationMessageFor(m => m.DataBaseName)
+        <div class="col-md-6 col-md-offset-3 form-group text-center">
+            @Html.LabelFor(m => m.DataBaseName, "Название:")
+            <div class="input-group ">
+                @Html.TextBoxFor(m => m.DataBaseName, new { @class = "form-control", @id = "DbName" })
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" onclick="SetName()">Сгенерировать</button>
+                </span>
+            </div>
+            @Html.ValidationMessageFor(m => m.DataBaseName)
+        </div>
         <br />
+        <div class="col-md-6 col-md-offset-3 form-group text-center">
+            @Html.LabelFor(m => m.StoreHours, "Время жизни базы данных (в часах)")<br/>
 
-        @Html.LabelFor(m => m.StoreHours, "Время жизни базы данных (в часах)")<br />
-        @Html.EditorFor(m => m.StoreHours)
-        @Html.ValidationMessageFor(m => m.StoreHours)
-        <br />
-        @foreach (string server in Model.AvailableServers)
-        {
-            @Html.RadioButtonFor(m => m.SelectedServer, server)
-            @Html.LabelFor(m => m.SelectedServer, server)
+            @Html.EditorFor(m => m.StoreHours, new { @class = "form-control input-number " })
+            @Html.ValidationMessageFor(m => m.StoreHours)
+        </div>
+        <div class="col-md-6 col-md-offset-4 radio-inline">
+            @foreach (string server in Model.AvailableServers)
+                {
+                <label>
+                    @Html.RadioButtonFor(m => m.SelectedServer, server)
+                    @server
+                </label>
+            }
             @Html.ValidationMessageFor(m => m.SelectedServer)
-        }
-        <br />
-        <button name="action" type="submit" value="create">Отправить</button>
-    </fieldset>
-}
+        </div>
+    }
+</div>
+
+<button type="submit" class="btn btn-default center-block" form="mainForm">Создать</button>
 
 @section Scripts{
     <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
