@@ -18,7 +18,7 @@ namespace CursachPrototype.ViewModels
 
         [Required(ErrorMessage = "Название БД должно быть установленно.")]
         [Display(Name = "Название")]
-        [RegularExpression(@"[A-z]{3,40}", ErrorMessage = "Некорректное имя БД")]
+        [RegularExpression(@"[a-zA-Z0-9]{3,40}", ErrorMessage = "Некорректное имя БД")]
         public string DataBaseName { get; set; }
 
         public virtual bool IsPublic => true;

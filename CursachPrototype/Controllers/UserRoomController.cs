@@ -44,7 +44,7 @@ namespace CursachPrototype.Controllers
         {
             AppUser user = _userManager.FindById(User.Identity.GetUserId());
             DataBaseInfo foundDb = DataBasesManager.GetDbInfos(user.Id).Single(db => db.Id == id);
-            return View(foundDb);
+            return PartialView(foundDb);
         }
 
         /// <summary>

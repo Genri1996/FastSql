@@ -44,10 +44,10 @@
                         @Html.DisplayFor(modelItem => item.ConnectionString)
                     </td>
                     <td>
-                        @Html.ActionLink("Удалить", "Delete", new {id = item.Id})
+                        @Ajax.ActionLink("Удалить", "Delete", new { item.Id }, new AjaxOptions { UpdateTargetId = "ajax" })
                     </td>
                     <td>
-                        @Ajax.ActionLink("Запрос", "ExecuteQuery", new {item.Id}, new AjaxOptions {UpdateTargetId = "queryExecutor"})
+                        @Ajax.ActionLink("Запрос", "ExecuteQuery", new {item.Id}, new AjaxOptions {UpdateTargetId = "ajax" })
                     </td>
                     <td>
                         @Html.ActionLink("Редактировать", "Index", "DisplayTable", new { dbId = item.Id, userId = ViewBag.UserId}, null)
@@ -57,7 +57,8 @@
         </table>
     </div>
 
-    <div class="left" id="queryExecutor">
+    <div class="left" id="ajax">
+        
     </div>
 </div>
 

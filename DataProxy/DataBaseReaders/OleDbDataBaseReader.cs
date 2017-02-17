@@ -63,7 +63,7 @@ namespace DataProxy.DataBaseReaders
 
             OleDbDataAdapter adapter = new OleDbDataAdapter(query.ToString(), _connection);
 
-            //Adding mapping with table names
+            //Adding mapping with table names 
             for (int i = 0; i < tableNames.Length; i++)
                 adapter.TableMappings.Add("Table" + (i != 0 ? i.ToString() : ""), tableNames[i]);
 

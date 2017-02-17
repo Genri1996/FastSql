@@ -38,7 +38,7 @@ namespace DataProxy.Creators
             if(error!=string.Empty)
                 throw new Exception("Создание базы данных провалилось.", new Exception(error));
 
-            return $"Data Source={LocalSqlServerName};Initial Catalog={_dataBaseName};Integrated security=True";
+            return $"Data Source={LocalSqlServerName};Initial Catalog={_dataBaseName};Integrated security=SSPI";
         }
 
         /// <summary>
