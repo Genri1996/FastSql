@@ -3,29 +3,46 @@
 @{
     ViewBag.Title = "Редактировани базы данных";
 }
-
-<h2>Редактировани базы данных @ViewBag.DbName</h2>
-<p>@TempData["StatusMessage"]</p>
-@{
-    if (ViewBag.NoElements as bool? == true)
-    {
-        <b style="color: red;">База данных пуста</b>
-    }
-    else
-    {
-        using (Ajax.BeginForm("EditTable", new AjaxOptions { UpdateTargetId = "editor", HttpMethod = "Get" }))
+<div class="container">
+    <h2 class="text-center">Редактировани базы данных @ViewBag.DbName</h2>
+    <br>
+    <p>@TempData["StatusMessage"]</p>
+    @{
+        if (ViewBag.NoElements as bool? == true)
         {
-            <fieldset>
-                <p>Выберите таблицу для изменения</p>
-                @Html.DropDownList("SelectedTable", new SelectList(@Model, "Value", "Text", null))
-                <br />
-                <button>Выбрать таблицу</button>
-            </fieldset>
+            <div class="alert alert-warning" role="alert">
+                <h4>База данных пуста.</h4>
+            </div>
+        }
+        else
+        {
+            using (Ajax.BeginForm("EditTable", new AjaxOptions { UpdateTargetId = "editor", HttpMethod = "Get" }))
+            {
+                <div class="panel panel-default">
+                    <div class="panel-heading">Выберите таблицу для изменения:</div>
+                    <div class="panel-body">
+                        <div class="input-group col-md-6 col-md-offset-3">
+
+                            @Html.DropDownList("SelectedTable", new SelectList(@Model, "Value", "Text", null), new
+                            {
+                                @class = "selectpicker form-control",
+                                @title="Please select table in database"
+                            })
+
+                            <span class="input-group-btn">
+                                <button class="btn btn-info my-group-button" type="submit">Выбрать таблицу</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            }
         }
     }
-}
+    <br>
+    <br>
 
-<div id="editor"></div>
+    <div id="editor"></div>
+</div>
 
 @section Scripts{
     <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>

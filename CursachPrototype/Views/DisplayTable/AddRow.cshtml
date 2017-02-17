@@ -2,53 +2,75 @@
 @using CursachPrototype.ExtensionMethods
 @model DataRow
 
-@if (Model == null)
-{
-    <b style="color: red;">Произошла ошибка. Заданный ID не найден.</b>
-}
-else
-{
-    @:<fieldset>
-        using (Html.BeginForm("UploadNewRow", "DisplayTable", FormMethod.Post))
-    {
-        @Html.ValidationSummary()
-        for (int i = 0; i < Model.ItemArray.Length; i++)
-        {
-            var columnInfo = Model.Table.Columns[i];
-            object itemValue = Model.ItemArray[i];
+<script type="text/javascript">
+    onload($('#ModalAddRow').modal('show'))
+</script>
 
-            if (columnInfo.ColumnName.ContainsIgnoreCase("ID"))
-            {
-                <p>@Html.Label(columnInfo.ColumnName) &nbsp;&nbsp;&nbsp;&nbsp; @itemValue</p>
-                <input type="hidden" name="ID" value="@itemValue" />
-                continue;
-            }
+<div class="modal fade" id="ModalAddRow" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                @{
+                    if (@Model != null)
+                    {
+                        <h4 class="modal-title">
+                            Добавление новой записи в таблицу @Model.Table.TableName
+                        </h4>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning" role="alert">
+                            <h4>Произошла ошибка. Заданный ID не найден.</h4>
+                        </div>
+                    }
+                }
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("UploadNewRow", "DisplayTable", FormMethod.Post, new { @id = "mainEditForm" }))
+                {
+                    @Html.ValidationSummary()
+                    for (int i = 0; i < Model.ItemArray.Length; i++)
+                    {
+                        var columnInfo = Model.Table.Columns[i];
+                        object itemValue = Model.ItemArray[i];
 
-            @Html.Label(columnInfo.ColumnName + "\t") @: &nbsp; &nbsp; &nbsp; &nbsp;
-            if (columnInfo.DataType == typeof(int))
-            {
-                <input type="number" name="@columnInfo.ColumnName" />
-            }
-            else if (columnInfo.DataType == typeof(double))
-            {
-                <input type="number" step="0.00001" name="@columnInfo.ColumnName" />
-            }
-            else if (columnInfo.DataType == typeof(DateTime))
-            {
-                <input type="datetime-local" name="@columnInfo.ColumnName"/>
-            }
-            else
-            {
-                <input type="text" name="@columnInfo.ColumnName" />
-            }
-            <br />
-        }
+                        <div class="form-group text-center">
+                            @{
+                                if (columnInfo.ColumnName.ContainsIgnoreCase("ID"))
+                                {
+                                    <label for="@columnInfo.ColumnName">@columnInfo.ColumnName:</label>
+                                    <input name="@columnInfo.ColumnName" class="form-control" id="@columnInfo.ColumnName" value="@itemValue" />
+                                    continue;
+                                }
 
-        <input type="submit" />
-    }
-    @:</fieldset>
-}
-
-
-
+                                <label for="@columnInfo.ColumnName">@columnInfo.ColumnName:</label>
+                                if (columnInfo.DataType == typeof(int))
+                                {
+                                    <input type="number" class="form-control" id="@columnInfo.ColumnName" name="@columnInfo.ColumnName" />
+                                }
+                                else if (columnInfo.DataType == typeof(double) || columnInfo.DataType == typeof(float))
+                                {
+                                    <input type="number" step="0.00001" class="form-control" id="@columnInfo.ColumnName" name="@columnInfo.ColumnName" />
+                                }
+                                else if (columnInfo.DataType == typeof(DateTime))
+                                {
+                                    <input type="datetime-local" class="form-control" id="@columnInfo.ColumnName" name="@columnInfo.ColumnName" />
+                                }
+                                else
+                                {
+                                    <input type="text" class="form-control" id="@columnInfo.ColumnName" name="@columnInfo.ColumnName" />
+                                }
+                            }
+                        </div>
+                                    }
+                                }
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success" form="mainEditForm">Сохранить</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
 

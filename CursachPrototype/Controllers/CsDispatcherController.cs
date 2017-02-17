@@ -115,7 +115,7 @@ namespace CursachPrototype.Controllers
             }
 
             //Save action to database
-            //Add new info to user. No ID and foreighn Key (!)
+            //AddRecord new info to user. No ID and foreighn Key (!)
             DataBasesManager.AddDbInfo(tempDbInfo);
             _userManager.Update(user);
 
@@ -159,7 +159,7 @@ namespace CursachPrototype.Controllers
                 return View("CustomError", (object)errorMessage);
             }
             //Save action to database
-            //Add new info to user. No ID and foreighn Key (!)
+            //AddRecord new info to user. No ID and foreighn Key (!)
             DataBasesManager.AddDbInfo(tempDbInfo);
             _userManager.Update(user);
 

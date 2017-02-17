@@ -53,7 +53,7 @@
                                         @Ajax.ActionLink("Строка подключения", "ShowConnectionString", new { item.Id }, new AjaxOptions { UpdateTargetId = "ajax" }, new { @class = "btn btn-info btn-xs" })
                                         @Ajax.ActionLink("Удалить", "Delete", new { item.Id }, new AjaxOptions { UpdateTargetId = "ajax" }, new { @class = "btn btn-info btn-xs" })
                                         @Ajax.ActionLink("Запрос", "ExecuteQuery", new { item.Id }, new AjaxOptions { UpdateTargetId = "ajax" }, new { @class = "btn btn-info btn-xs" })
-                                        @Html.ActionLink("Редактировать", "Index", "DisplayTable", new { dbId = item.Id, userId = ViewBag.UserId }, new { @class = "btn btn-info btn-xs" })
+                                        @Html.ActionLink("Редактировать", "Index", "DisplayTable", new { dbId = item.Id }, new { @class = "btn btn-info btn-xs" })
                                     </div>
                                 </div>
                             </td>

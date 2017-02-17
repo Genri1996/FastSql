@@ -5,6 +5,7 @@ using CursachPrototype.ExtensionMethods;
 using DataProxy.DataBaseReaders;
 using DataProxy.DbManangment;
 using CursachPrototype.QueryHelpers;
+using Microsoft.AspNet.Identity;
 
 namespace CursachPrototype.Controllers
 {
@@ -33,11 +34,7 @@ namespace CursachPrototype.Controllers
             }
         }
 
-        private string UserId
-        {
-            get { return Session["UserID"] as string; }
-            set { Session["UserID"] = value; }
-        }
+        private string UserId => User.Identity.GetUserId();
 
         private int DbId
         {
@@ -55,9 +52,8 @@ namespace CursachPrototype.Controllers
         }
 
         [HttpGet]
-        public ActionResult Index(int dbId, string userId)
+        public ActionResult Index(int dbId)
         {
-            UserId = userId;
             DbId = dbId;
 
             OleDbDataBaseReader reader = new OleDbDataBaseReader(DataBaseInfo.ConnectionString);
@@ -75,15 +71,22 @@ namespace CursachPrototype.Controllers
         public ActionResult EditTable(string selectedTable)
         {
             Session["TableName"] = selectedTable;
-            ViewBag.StatusMessage = "Просмотр таблицы " + Model.TableName;
+            TempData["StatusMessage"] = "Просмотр таблицы " + Model.TableName;
+            TempData.Keep("StatusMessage");
             return PartialView(Model);
         }
 
         [HttpGet]
-        public ActionResult Add()
+        public ActionResult AddRecord()
         {
             var row = GetNewRow();
             return PartialView("AddRow", row);
+        }
+
+        [HttpGet]
+        public ActionResult AddColumn()
+        {
+            throw new System.NotImplementedException();
         }
 
         [HttpGet]
@@ -102,10 +105,10 @@ namespace CursachPrototype.Controllers
         [HttpPost]
         public ActionResult UploadChanges()
         {
-            ChangesFixator changesHelper = new ChangesFixator(DataBaseInfo, Model);
-            int changedRowId = int.Parse(Request["ID"]);
             DataTable dt = Model;
-
+            ChangesFixator changesHelper = new ChangesFixator(DataBaseInfo, Model);
+            int changedRowId = int.Parse(Request[dt.Columns[GetIdOrdinalIndex()].ColumnName]);
+    
             foreach (DataColumn column in dt.Columns)
                 changesHelper.AddDataColumn(Request[column.ColumnName]);
 
@@ -122,9 +125,9 @@ namespace CursachPrototype.Controllers
         [HttpPost]
         public ActionResult UploadNewRow()
         {
-            ChangesFixator changesHelper = new ChangesFixator(DataBaseInfo, Model);
-            int changedRowId = int.Parse(Request["ID"]);
             DataTable dt = Model;
+            ChangesFixator changesHelper = new ChangesFixator(DataBaseInfo, Model);
+            int changedRowId = int.Parse(Request[dt.Columns[GetIdOrdinalIndex()].ColumnName]);
 
             foreach (DataColumn column in dt.Columns)
                 changesHelper.AddDataColumn(Request[column.ColumnName]);
@@ -139,13 +142,13 @@ namespace CursachPrototype.Controllers
             return RedirectToAction("Index", new { dbId = DbId, userId = UserId });
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpGet]
         public ActionResult DeleteConfirmed(int id)
         {
             ChangesFixator cf = new ChangesFixator(DataBaseInfo, Model);
             var result = cf.FixateChanges(ChangesFixator.QueryType.Delete, GetIdOrdinalIndex(), id);
             if (result == string.Empty)
-                result = "Ряд " + id + "успешно удалён.";
+                result = "Ряд " + id + " успешно удалён.";
 
             TempData["StatusMessage"] = result;
             TempData.Keep("StatusMessage");
@@ -183,5 +186,7 @@ namespace CursachPrototype.Controllers
                           select dataRow).Single();
             return dr;
         }
+
+       
     }
 }

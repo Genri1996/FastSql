@@ -1,27 +1,27 @@
 ﻿@model int
-    
-@{
-    ViewBag.Title = "Подтвердите удаление";
-}
 
-<script>
-    function OnSuccess() {
-        window.location.reload(true);
-    }
+<script type="text/javascript">
+    onload($('#ModalDelete').modal('show'))
 </script>
 
-<h2>Подтвердите удаление</h2>
-
-<p>
-    Вы уверены, что хотите удалить запись с ID
-    <strong>@Model</strong>?<br />
-    <i style="color: red;">Данные будут безвозвратно уничтожены.</i>
-</p>
-
-@using (Ajax.BeginForm(new AjaxOptions {OnSuccess = "OnSuccess"}))
-{
-    <p>
-        <input type="submit" value="Delete"/>
-    </p>
-
-}
+<div class="modal fade" id="ModalDelete" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Подтвердите удаление</h4>
+            </div>
+            <div class="modal-body">
+                <p>Вы уверены, что хотите удалить ряд # @Model</p>
+                <div class="alert alert-danger" role="alert">
+                    <p>Данные безвозвратно уничтожены.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                @Html.ActionLink("Удалить", "DeleteConfirmed", new { id = Model }, new { @class = "btn btn-danger" })
+                <input type="button" class="btn btn-default" data-dismiss="modal" value="Закрыть"/>
+            </div>
+        </div>
+    </div>
+</div>

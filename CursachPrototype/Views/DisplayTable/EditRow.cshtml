@@ -3,54 +3,78 @@
 @using CursachPrototype.ExtensionMethods
 @model DataRow
 
-@if (Model == null)
-{
-    <b style="color: red;">Произошла ошибка. Заданный ID не найден.</b>
-}
-else
-{
-    @:<fieldset>
-        using (Html.BeginForm("UploadChanges", "DisplayTable", FormMethod.Post))
-    {
-        @Html.ValidationSummary()
-        for (int i = 0; i < Model.ItemArray.Length; i++)
-        {
-            var columnInfo = Model.Table.Columns[i];
-            object itemValue = Model.ItemArray[i];
+<script type="text/javascript">
+    onload($('#ModalEditRow').modal('show'))
+</script>
 
-            if (columnInfo.ColumnName.ContainsIgnoreCase("ID"))
-            {
-                <p>@Html.Label(columnInfo.ColumnName) &nbsp;&nbsp;&nbsp;&nbsp; @itemValue</p>
-                <input type="hidden" name="ID" value="@itemValue"/>
-                continue;
-            }
+<div class="modal fade" id="ModalEditRow" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                @{
+                    if (@Model != null)
+                    {
+                        <h4 class="modal-title">
+                            Редактирование записи в таблице @Model.Table.TableName
+                        </h4>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning" role="alert">
+                            <h4>Произошла ошибка. Заданный ID не найден.</h4>
+                        </div>
+                    }
+                }
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("UploadChanges", "DisplayTable", FormMethod.Post, new { @id = "mainEditForm" }))
+                {
+                    @Html.ValidationSummary()
+                    foreach (DataColumn dc in Model.Table.Columns)
+                    {
+                        object itemValue = Model[dc];
 
-            @Html.Label(columnInfo.ColumnName + "\t") @: &nbsp; &nbsp; &nbsp; &nbsp;
-            if (columnInfo.DataType == typeof(int))
-            {
-                int temp = (int)itemValue;
-                <input type="number" name="@columnInfo.ColumnName" value="@temp" />
-            }
-            else if (columnInfo.DataType == typeof(double))
-            {
-                double temp = (double)itemValue;
-                <input type="number" name="@columnInfo.ColumnName" step="0.00001" value="@temp.ToString("##.#####")" />
-            }
-            else if(columnInfo.DataType == typeof(DateTime))
-            {
-                DateTime dt = (DateTime)itemValue;
-                <input type="datetime-local" name="@columnInfo.ColumnName" value="@XmlConvert.ToString(dt, XmlDateTimeSerializationMode.Unspecified)"/>
-            }
-            else
-            {
-                <input type="text" name="@columnInfo.ColumnName" value="@itemValue.ToString()" />
-            }
-            <br />
-        }
+                        <div class="form-group text-center">
+                            @{
+                                if (dc.ColumnName.ContainsIgnoreCase("ID"))
+                                {
+                                    <label for="@dc.ColumnName">@dc.ColumnName:</label>
+                                    <input name="@dc.ColumnName" class="form-control" id="@dc.ColumnName" value="@itemValue" />
+                                    continue;
+                                }
 
-        <input type="submit" />
-    }
-    @:</fieldset>
-}
+                                <label for="@dc.ColumnName">@dc.ColumnName:</label>
+                                if (dc.DataType == typeof(int))
+                                {
+                                    int temp = (int)itemValue;
+                                    <input type="number" class="form-control" id="@dc.ColumnName" name="@dc.ColumnName" value="@temp" />
+                                }
+                                else if (dc.DataType == typeof(double) || dc.DataType == typeof(float))
+                                {
+                                    double temp = (double)itemValue;
+                                    <input type="number" step="0.00001" class="form-control" id="@dc.ColumnName" name="@dc.ColumnName" value="@temp.ToString("##.#####")" />
+                                }
+                                else if (dc.DataType == typeof(DateTime))
+                                {
+                                    var dt = (DateTime)itemValue;
+                                    <input type="datetime-local" class="form-control" id="@dc.ColumnName" name="@dc.ColumnName" value="@XmlConvert.ToString(dt, XmlDateTimeSerializationMode.Unspecified)" />
+                                }
+                                else
+                                {
+                                    <input type="text" class="form-control" id="@dc.ColumnName" name="@dc.ColumnName" value="@itemValue.ToString()" />
+                                }
+                            }
+                        </div>
+                                    }
+                                }
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success" form="mainEditForm">Сохранить</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
