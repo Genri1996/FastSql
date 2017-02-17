@@ -1,14 +1,10 @@
 ﻿using System.Data;
-using System.Data.OleDb;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 using CursachPrototype.ExtensionMethods;
 using DataProxy.DataBaseReaders;
 using DataProxy.DbManangment;
-using System.Text;
 using CursachPrototype.QueryHelpers;
-using DataProxy;
 
 namespace CursachPrototype.Controllers
 {

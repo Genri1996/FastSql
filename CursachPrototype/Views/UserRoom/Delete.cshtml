@@ -1,20 +1,28 @@
 ﻿@model DataProxy.DbManangment.DataBaseInfo
 
-<h2>Подтвердите удаление</h2>
+<script type="text/javascript">
+    onload($('#ModalDelete').modal('show'))
+</script>
 
-<p>
-    Вы уверены, что хотите удалить базу данных
-    <strong>@Model.Name</strong>?<br/>
-    <i style="color: red;">Все подключения будут разорваны.<br/>Данные безвозвратно уничтожены.</i>
-</p>
-
-@using (Html.BeginForm())
-{
-    <p>
-        <input type="submit" value="Delete" />
-    </p>
-    <p>
-        @Html.ActionLink("Назад к списку", "Index")
-    </p>
-
-}
+<div class="modal fade" id="ModalDelete" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" onclick="$('#ModalDelete').modal('close')">&times;</button>
+                <h4 class="modal-title">Подтвердите удаление</h4>
+            </div>
+            <div class="modal-body">
+                <p>Вы уверены, что хотите удалить базу данных @Model.Name?</p>
+                <div class="alert alert-danger" role="alert">
+                    <p>Все подключения будут разорваны.</p>
+                    <p>Данные безвозвратно уничтожены.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                @Html.ActionLink("Удалить", "DeleteConfirmed", new { id = Model.Id }, new {@class = "btn btn-danger" })
+                <input type="button" class="btn btn-default" data-dismiss="modal" value="Закрыть" onclick="$('#ModalDelete').modal('close')" />
+            </div>
+        </div>
+    </div>
+</div>

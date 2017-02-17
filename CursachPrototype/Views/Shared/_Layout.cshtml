@@ -1,23 +1,20 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width"/>
-    <link href="@Url.Content("~/Content/Styles/Site.css")" type="text/css" rel="stylesheet"/>
+    <meta name="viewport" content="width=device-width" />
+    <link href="@Url.Content("~/Content/Styles/Site.css")" type="text/css" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/Bootstrap/bootstrap.min.css")" type="text/css" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/DarkTheme.min.css")" rel="stylesheet" type="text/css">
     @RenderSection("Styles", false)
     <script src="@Url.Content("~/Scripts/jquery-3.1.1.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/bootstrap.min.js")"></script>
     @RenderSection("Scripts", false)
 
     <title>@ViewBag.Title</title>
 </head>
 <body>
-<header>
-  @Html.Partial("_LoginPartial")
-</header>
-<div>
+    @Html.Partial("_LoginPartial")
     @RenderBody()
-</div>
-<footer>
-    
-</footer>
+    @Html.Partial("_FooterPartial")
 </body>
 </html>

@@ -4,64 +4,70 @@
     ViewBag.Title = "Личный кабинет";
 }
 
-<h2>Личный профиль</h2>
-<strong>Вам доступно @Model.Count баз данных</strong>
 
-<br />
-<br />
+<div class="container">
+    <h2 class="text-center">Личный профиль</h2>
+    <p class="text-center">Вам доступно @Model.Count баз данных</p>
 
-<div class="horizontal-container">
-    <div class="left">
-        <table>
-            <tr>
-                <th>
-                    Имя
-                </th>
-                <th>
-                    Дата создания
-                </th>
-                <th>
-                    СУБД
-                </th>
-                <th>
-                    Строка подключения
-                </th>
-            </tr>
-
-            @foreach (var item in Model)
-            {
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DateOfCreating)
-                    </td>
-                    <td>
-                        @item.DbmsType.ToString()
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ConnectionString)
-                    </td>
-                    <td>
-                        @Ajax.ActionLink("Удалить", "Delete", new { item.Id }, new AjaxOptions { UpdateTargetId = "ajax" })
-                    </td>
-                    <td>
-                        @Ajax.ActionLink("Запрос", "ExecuteQuery", new {item.Id}, new AjaxOptions {UpdateTargetId = "ajax" })
-                    </td>
-                    <td>
-                        @Html.ActionLink("Редактировать", "Index", "DisplayTable", new { dbId = item.Id, userId = ViewBag.UserId}, null)
-                    </td>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Имя
+                    </th>
+                    <th>
+                        Дата создания
+                    </th>
+                    <th>
+                        СУБД
+                    </th>
+                    <th class="text-center">
+                        Действия
+                    </th>
                 </tr>
-            }
+            </thead>
+            <tbody>
+                @{
+                    int num = 0;
+                    foreach (var item in Model)
+                    {
+                        num++;
+                        <tr>
+                            <th>@num</th>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DateOfCreating)
+                            </td>
+                            <td>
+                                @item.DbmsType.ToString()
+                            </td>
+                            <td>
+                                <div class="text-center">
+                                    <div class="btn-group">
+                                        @Ajax.ActionLink("Строка подключения", "ShowConnectionString", new { item.Id }, new AjaxOptions { UpdateTargetId = "ajax" }, new { @class = "btn btn-info btn-xs" })
+                                        @Ajax.ActionLink("Удалить", "Delete", new { item.Id }, new AjaxOptions { UpdateTargetId = "ajax" }, new { @class = "btn btn-info btn-xs" })
+                                        @Ajax.ActionLink("Запрос", "ExecuteQuery", new { item.Id }, new AjaxOptions { UpdateTargetId = "ajax" }, new { @class = "btn btn-info btn-xs" })
+                                        @Html.ActionLink("Редактировать", "Index", "DisplayTable", new { dbId = item.Id, userId = ViewBag.UserId }, new { @class = "btn btn-info btn-xs" })
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                       }
+                }
+            </tbody>
         </table>
-    </div>
-
-    <div class="left" id="ajax">
-        
     </div>
 </div>
 
+<div id="ajax"></div>
+
 @section Scripts{
     <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/CopyToClipboard.js")"></script>
 }

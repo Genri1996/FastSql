@@ -5,7 +5,6 @@ using CursachPrototype.Models.Accounting;
 using CursachPrototype.ViewModels;
 using DataProxy;
 using DataProxy.DbManangment;
-using DataProxy.Executors;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 
@@ -47,25 +46,15 @@ namespace CursachPrototype.Controllers
             return PartialView(foundDb);
         }
 
-        /// <summary>
-        /// Removes Database after confiramtion
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpPost, ActionName("Delete")]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            //Find user
-            AppUser user = _userManager.FindById(User.Identity.GetUserId());
-            //Find DB
-            DataBaseInfo foundDb = DataBasesManager.GetDbInfos(user.Id).Single(db => db.Id == id);
-            //Remove db info from DbInfos
-            DataBasesManager.RemoveDbInfo(foundDb);
-            //Delete database
-            DataService.DropDataBase(foundDb.DbmsType, foundDb.Name);
-
-            return RedirectToAction("Index");
-        }
+        ///// <summary>
+        ///// Removes Database after confiramtion
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpPost, ActionName("Delete")]
+        //public ActionResult DeleteConfirmed(DataBaseInfo dbInfo)
+        //{
+           
+        //}
 
         [HttpGet]
         public ActionResult ExecuteQuery(int id)
@@ -82,6 +71,35 @@ namespace CursachPrototype.Controllers
             };
 
             return PartialView("~/Views/Query/QueryExecutor.cshtml", vm);
+        }
+
+
+        /// <summary>
+        /// Removes Database after confiramtion
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult DeleteConfirmed(int id)
+        {
+            //Find user
+            AppUser user = _userManager.FindById(User.Identity.GetUserId());
+            //Find DB
+            DataBaseInfo foundDb = DataBasesManager.GetDbInfos(user.Id).Single(db => db.Id == id);
+            //Remove db info from DbInfos
+            DataBasesManager.RemoveDbInfo(foundDb);
+            //Delete database
+            DataService.DropDataBase(foundDb.DbmsType, foundDb.Name);
+
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult ShowConnectionString(int id)
+        {
+            //Find user
+            AppUser user = _userManager.FindById(User.Identity.GetUserId());
+            //Find DB
+            DataBaseInfo foundDb = DataBasesManager.GetDbInfos(user.Id).Single(db => db.Id == id);
+
+            return PartialView("WatchConnectionString", foundDb.ConnectionString);
         }
     }
 }

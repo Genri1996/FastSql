@@ -1,27 +1,17 @@
 ﻿@model String
 
-@{
-    ViewBag.Title = "Строка подключения";
-}
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="popover"]').popover();
+    });
+</script>
 
-<h2>Используйте строку подключения</h2>
-<p style="font-size: 18pt" id="connectionString">@Model</p>
-<button onclick="copyToClipboard('connectionString')">Скопировать</button>
+<h2 class="text-center">Используйте строку подключения</h2>
+<br>
+<h4 class="alert alert-success" role="alert" id="connectionString">@Model</h4>
+<br>
+<button data-toggle="popover" data-trigger="focus" data-content="Скопированно в буфер обмена" class="btn btn-success col-lg-offset-5" onclick="copyToClipboard('connectionString')">
+    Скопировать
+</button>
 
-<!--Popup with message that connection string was copied-->
-<div class="b-popup" id="popup1" style="display: none">
-    <div class="b-popup-content">
-        <strong>
-            Скопированно в <br/>  буфер обмена
-        </strong>
-    </div>
-</div>
 
-@section Scripts{
-    <script src="@Url.Content("~/Scripts/Popup.js")"></script>
-    <script src="@Url.Content("~/Scripts/CopyToClipboard.js")"></script>
-}
-
-@section Styles{
-    <link href="@Url.Content("~/Content/Styles/Popup.css")" rel="stylesheet" type="text/css">
-}

@@ -1,0 +1,36 @@
+﻿@model String
+
+@{
+    ViewBag.Title = "Строка подключения";
+}
+
+<div class="container" id="ajax">
+    @{
+        if (ViewBag.IsAnon == true)
+        {
+            @Html.Partial("ShowConnectionString", Model)
+        }
+        else
+        {
+            using (Ajax.BeginForm("ShowConnectionString", "CsDispatcher", new AjaxOptions { UpdateTargetId = "ajax" }))
+            {
+                <div class="alert alert-warning text-center col-md-6 col-md-offset-3">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <h5 class="alert-heading">Внимание!</h5>
+                    <h4 class="alert alert-warning" role="alert">
+                        Передача строки подсключения потенциально опасна. Убедитесь, что соеденение безопасно. В противном случае
+                        воспользуйтесь визуальным редактором базы данных или проведите запрос с сайта.
+                    </h4>
+                    <br>
+                    <button class="btn btn-danger">Показать</button>
+                    @Html.ActionLink("В личный кабинет", "Index", "UserRoom", null, new { @class = "btn btn-success" })
+                </div>
+            }
+        }
+    }
+</div>
+
+@section Scripts{
+    <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/CopyToClipboard.js")"></script>
+}

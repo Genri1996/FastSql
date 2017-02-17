@@ -1,19 +1,63 @@
 ﻿@{
     ViewBag.Title = "Добро пожаловать";
 }
-<div class="wrapper">
-    <div class="rowElement left-option">
-        @Html.ActionLink("Создать публичную базу данных", "CreatePublicDb", "CsDispatcher")
-    </div>
-    <div class="rowElement center-option">
-        @Html.ActionLink("Создать личную базу данных", "CreateProtectedDb", "CsDispatcher")
-    </div>
-    <div class="rowElement right-option">
-        @Html.ActionLink("Создать временную публичную базу данных анонимно", "CreateAnonymousDb", "CsDispatcher")
+
+<div class="container">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                        Создать публичную базу данных
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    <div>
+                        @Html.ActionLink("Создать", "CreatePublicDb", "CsDispatcher", null, new {@class = "btn btn-success" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">Создать личную базу данных</a>
+                </h4>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse">
+                <div class="panel-body">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    <div>
+                        @Html.ActionLink("Создать", "CreateProtectedDb", "CsDispatcher", null, new { @class = "btn btn-success" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+                        Создать временную публичную базу данных анонимно
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse3" class="panel-collapse collapse">
+                <div class="panel-body">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    <div>
+                        @Html.ActionLink("Создать", "CreateAnonymousDb", "CsDispatcher", null, new { @class = "btn btn-success" })
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-
-@section Styles{
-    <link href="@Url.Content("~/Content/Styles/LandingPage.css")" rel="stylesheet" type="text/css" />
-}
-

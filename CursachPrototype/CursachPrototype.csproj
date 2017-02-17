@@ -194,10 +194,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\bootstrap-theme.css" />
-    <Content Include="Content\bootstrap-theme.min.css" />
-    <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Bootstrap\bootstrap-theme.css" />
+    <Content Include="Content\Bootstrap\bootstrap-theme.min.css" />
+    <Content Include="Content\Bootstrap\bootstrap.css" />
+    <Content Include="Content\Bootstrap\bootstrap.min.css" />
+    <Content Include="Content\DarkTheme.min.css" />
     <Content Include="Content\Styles\LandingPage.css" />
     <Content Include="Content\Styles\Popup.css" />
     <Content Include="Content\Styles\Site.css" />
@@ -210,10 +211,10 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Content\bootstrap.min.css.map" />
-    <Content Include="Content\bootstrap.css.map" />
-    <Content Include="Content\bootstrap-theme.min.css.map" />
-    <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Content\Bootstrap\bootstrap.min.css.map" />
+    <Content Include="Content\Bootstrap\bootstrap.css.map" />
+    <Content Include="Content\Bootstrap\bootstrap-theme.min.css.map" />
+    <Content Include="Content\Bootstrap\bootstrap-theme.css.map" />
     <None Include="Properties\PublishProfiles\IISPub.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
@@ -225,7 +226,6 @@
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
-    <Content Include="Scripts\Popup.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -268,7 +268,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\CsDispatcher\CreateProtectedDb.cshtml" />
-    <Content Include="Views\CsDispatcher\ShowConnectionString.cshtml" />
+    <Content Include="Views\CsDispatcher\RequestConnectionString.cshtml" />
     <Content Include="Views\Query\QueryExecutor.cshtml" />
     <Content Include="Views\CsDispatcher\CustomError.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
@@ -278,7 +278,6 @@
     <Content Include="Views\CsDispatcher\CreateAnonymousDb.cshtml" />
     <Content Include="Views\UserRoom\Index.cshtml" />
     <Content Include="Views\CsDispatcher\CreatePublicDb.cshtml" />
-    <Content Include="Views\Query\QueryResults.cshtml" />
     <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.1.min.map" />
     <Content Include="Views\DisplayTable\Index.cshtml" />
@@ -288,6 +287,10 @@
     <Content Include="Views\DisplayTable\EditTable.cshtml" />
     <Content Include="Views\DisplayTable\AddRow.cshtml" />
     <Content Include="Views\DisplayTable\RenderTableRow.cshtml" />
+    <Content Include="Views\Shared\_FooterPartial.cshtml" />
+    <Content Include="Views\Query\QueryResults.cshtml" />
+    <Content Include="Views\CsDispatcher\ShowConnectionString.cshtml" />
+    <Content Include="Views\UserRoom\WatchConnectionString.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

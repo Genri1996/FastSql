@@ -70,6 +70,17 @@ namespace CursachPrototype.Controllers
             return View(vm);
         }
 
+        [Authorize]
+        public ActionResult ShowConnectionString()
+        {
+            string cs =
+                DataBasesManager.GetDbInfos(User.Identity.GetUserId())
+                    .OrderByDescending(db => db.DateOfCreating)
+                    .First()
+                    .ConnectionString;
+
+            return PartialView("ShowConnectionString", cs);
+        }
 
         [HttpPost]
         public ActionResult CreatePublicDb(DbVm vm)
@@ -81,11 +92,11 @@ namespace CursachPrototype.Controllers
 
             //Receives info
             AppUser user = _userManager.FindById(User.Identity.GetUserId());
-            var tempObj = vm.ToCreateDatabaseObject(user);
+            var tempDbInfo = vm.ToCreateDatabaseObject(user);
 
             //Check Db Exists
             DbmsType selectedDbmsType = (DbmsType)Enum.Parse(typeof(DbmsType), vm.SelectedServer);
-            if (DataService.CheckDataBaseExists(selectedDbmsType, tempObj.Name))
+            if (DataService.CheckDataBaseExists(selectedDbmsType, tempDbInfo.Name))
             {
                 string errorMessage = "База данных с таким именем уже существует в этой СУБД.";
                 ModelState.AddModelError("err", errorMessage);
@@ -93,10 +104,9 @@ namespace CursachPrototype.Controllers
             }
 
             //Try to create database
-            String connectionString;
             try
             {
-                connectionString = DataService.CreateDatabase(tempObj);
+                tempDbInfo.ConnectionString = DataService.CreateDatabase(tempDbInfo);
             }
             catch (Exception)
             {
@@ -104,13 +114,12 @@ namespace CursachPrototype.Controllers
                 return View("CustomError", (object)errorMessage);
             }
 
-            tempObj.ConnectionString = connectionString;
             //Save action to database
             //Add new info to user. No ID and foreighn Key (!)
-            DataBasesManager.AddDbInfo(tempObj);
+            DataBasesManager.AddDbInfo(tempDbInfo);
             _userManager.Update(user);
 
-            return View("ShowConnectionString", (object)connectionString);
+            return View("RequestConnectionString");
         }
 
         /// <summary>
@@ -128,11 +137,11 @@ namespace CursachPrototype.Controllers
 
             //Receives info
             AppUser user = _userManager.FindById(User.Identity.GetUserId());
-            var tempObj = vm.ToCreateDatabaseObject(user);
+            var tempDbInfo = vm.ToCreateDatabaseObject(user);
 
             //Check Db Exists
             DbmsType selectedDbmsType = (DbmsType)Enum.Parse(typeof(DbmsType), vm.SelectedServer);
-            if (DataService.CheckDataBaseExists(selectedDbmsType, tempObj.Name))
+            if (DataService.CheckDataBaseExists(selectedDbmsType, tempDbInfo.Name))
             {
                 string errorMessage = "База данных с таким именем уже существует в этой СУБД.";
                 ModelState.AddModelError("err", errorMessage);
@@ -140,24 +149,21 @@ namespace CursachPrototype.Controllers
             }
 
             //Try to create database
-            String connectionString;
             try
             {
-                connectionString = DataService.CreateDatabase(tempObj, user.UserNickName, vm.DataBasePassword);
+                tempDbInfo.ConnectionString = DataService.CreateDatabase(tempDbInfo, user.UserNickName, vm.DataBasePassword);
             }
             catch (Exception)
             {
                 string errorMessage = "Не удалось создать базу данных.";
                 return View("CustomError", (object)errorMessage);
             }
-
-            tempObj.ConnectionString = connectionString;
             //Save action to database
             //Add new info to user. No ID and foreighn Key (!)
-            DataBasesManager.AddDbInfo(tempObj);
+            DataBasesManager.AddDbInfo(tempDbInfo);
             _userManager.Update(user);
 
-            return View("ShowConnectionString", (object)connectionString);
+            return View("RequestConnectionString");
         }
 
         [HttpPost]
@@ -192,7 +198,8 @@ namespace CursachPrototype.Controllers
             tempObj.ConnectionString = connectionString;
             DataBasesManager.AddAnonymousDbInfo(tempObj);
 
-            return View("ShowConnectionString", (object)connectionString);
+            ViewBag.IsAnon = true;
+            return View("RequestConnectionString", (object)connectionString);
         }
 
         //TODO: Use Enum List instead
