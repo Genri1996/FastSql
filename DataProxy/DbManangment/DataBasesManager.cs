@@ -4,7 +4,6 @@ using System.Configuration;
 using System.Data;
 using System.Data.OleDb;
 using System.Linq;
-using System.Net.Sockets;
 using DataProxy.DataBaseReaders;
 using DataProxy.Executors;
 using DataProxy.Helpers;
@@ -87,7 +86,6 @@ namespace DataProxy.DbManangment
         /// Adds record about database to DbInfos.
         /// </summary>
         /// <param name="info"></param>
-        /// <param name="user"></param>
         public static void AddDbInfo(DataBaseInfo info)
         {
             string query = $"USE {DbName} INSERT INTO {DbInfosTableName} "
@@ -175,19 +173,13 @@ namespace DataProxy.DbManangment
             }
             catch
             {
-
+                // ignored
             }
-        }
-
-        public static string GetAutoName()
-        {
-            return $"db{DateTime.Now.Ticks}";
         }
 
         /// <summary>
         /// Checks existance and creates if required
         /// </summary>
-        /// <param name="reader"></param>
         private static void CreateDbInfosIfNoExists()
         {
             OleDbDataBaseReader reader = new OleDbDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString);

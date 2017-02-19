@@ -1,5 +1,48 @@
-﻿@model CursachPrototype.ViewModels.QueryExecutorVm
+﻿@using System.Data
+@model DataTable
 
-<p>@Model.QueryResult</p>
-
-
+<div class="panel panel-default">
+    @{
+        if (@Model.Columns.Count == 0)
+        {
+            <div class="alert alert-success " role="alert">
+                <h4 class="text-center">Запрос выполнен успешно</h4>
+            </div>
+        }
+        else
+        {
+            if (@Model.Columns.Cast<DataColumn>().Any(column => column.ColumnName == "FastSqlQueryErrMessages"))
+            {
+                <div class="alert alert-danger" role="alert">
+                    <h4 class="text-center">Произошла ошибка во время исполнения запроса.</h4>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-success " role="alert">
+                    <h4 class="text-center">Запрос выполнен успешно</h4>
+                </div>
+            }
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            @foreach (DataColumn dc in Model.Columns)
+                            {
+                                <th>@dc.ColumnName</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            @foreach (DataRow dr in Model.Rows)
+                            {
+                                @Html.Partial("~/Views/DisplayTable/RenderTableRow.cshtml", dr)
+                            }
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        }
+    }
+</div>

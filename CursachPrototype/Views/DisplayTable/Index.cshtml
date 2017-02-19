@@ -10,9 +10,10 @@
     @{
         if (ViewBag.NoElements as bool? == true)
         {
-            <div class="alert alert-warning" role="alert">
-                <h4>База данных пуста.</h4>
+            <div class="alert alert-warning  col-md-6 col-md-offset-3" role="alert">
+                <h4 class="text-center">База данных пуста.</h4>
             </div>
+
         }
         else
         {
@@ -38,6 +39,7 @@
             }
         }
     }
+    <button type="button" class="btn btn-success col-md-6 col-md-offset-3">Новая таблица</button>
     <br>
     <br>
 

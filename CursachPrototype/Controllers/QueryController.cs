@@ -32,13 +32,9 @@ namespace CursachPrototype.Controllers
 
             using (IQueryExecutor executor = new SqlServerExecutor(foundDb.ConnectionString))
             {
-                vm.QueryResult = executor.ExecuteQueryAsString(vm.Query);
+                vm.DataTable = executor.ExecuteQueryAsDataTable(vm.Query);
             }
-
-            if (vm.QueryResult == string.Empty)
-                vm.QueryResult = "Запрос выполнен успешно";
-
-            return PartialView("QueryResults",vm);
+            return PartialView("QueryResults",vm.DataTable);
         }
     }
 }

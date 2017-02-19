@@ -96,9 +96,18 @@ namespace DataProxy.Executors
                 sda.Fill(dt);
                 return dt;
             }
-            catch (Exception)
+            catch (SqlException e)
             {
-                return null;
+                var errorDataColumn = new DataColumn("FastSqlQueryErrMessages", typeof(string));
+                dt.Columns.Add(errorDataColumn);
+                foreach (SqlError sqlError in e.Errors)
+                {
+                    var row = dt.NewRow();
+                    row[0] = sqlError.Message;
+                    dt.Rows.Add(row);
+                }
+
+                return dt;
             }
             finally
             {
