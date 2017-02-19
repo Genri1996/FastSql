@@ -1,0 +1,43 @@
+﻿@using CursachPrototype.ViewModels;
+@model CreateColumnVm
+
+<script type="text/javascript">
+    onload($('#ModalAddColumn').modal('show'))
+</script>
+
+<div class="modal fade" id="ModalAddColumn" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Создание колонки</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group text-center">
+                    @using (Html.BeginForm("UpdateWithNewColumn", "DisplayTable", FormMethod.Post, new { @id = "AddFormColumn" }))
+                    {
+                        @Html.ValidationSummary()
+
+                        @Html.LabelFor(m => m.ColumnName, "Название колонки")
+                        @Html.TextBoxFor(m => m.ColumnName, new { @class = "form-control" })
+
+                        @Html.LabelFor(m=> m.TypeName, "Выберите тип")
+                        @Html.DropDownListFor(vm => vm.TypeName, Model.AvailableTypes, new {@class = "form-control"})
+
+                        @Html.LabelFor(m=>m.TypeLength, "Укажите длину строки (если выбрали строку)")
+                        <br/>
+                        @Html.EditorFor(m => m.TypeLength, new { @class = "form-control input-number " })
+
+                        @Html.LabelFor(m => m.Constraints, "Укажите ограничения для этой колонки (не обязательно)")
+                        @Html.TextBoxFor(m => m.Constraints, new {@class="form-control"})
+                    }
+                    </div>
+                </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-default" data-dismiss="modal" form="AddColumnForm">Создать</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>

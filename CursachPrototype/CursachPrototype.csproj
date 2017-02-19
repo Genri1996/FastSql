@@ -252,6 +252,7 @@
     <Compile Include="Models\Accounting\AppUserManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\AnonymousDbVm.cs" />
+    <Compile Include="ViewModels\CreateColumnVm.cs" />
     <Compile Include="ViewModels\DbVm.cs" />
     <Compile Include="ViewModels\LoginVm.cs" />
     <Compile Include="ViewModels\QueryExecutorVm.cs" />
@@ -291,6 +292,7 @@
     <Content Include="Views\Query\QueryResults.cshtml" />
     <Content Include="Views\CsDispatcher\ShowConnectionString.cshtml" />
     <Content Include="Views\UserRoom\WatchConnectionString.cshtml" />
+    <Content Include="Views\DisplayTable\AddColumn.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

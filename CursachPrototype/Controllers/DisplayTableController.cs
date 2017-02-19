@@ -5,6 +5,7 @@ using CursachPrototype.ExtensionMethods;
 using DataProxy.DataBaseReaders;
 using DataProxy.DbManangment;
 using CursachPrototype.QueryHelpers;
+using CursachPrototype.ViewModels;
 using Microsoft.AspNet.Identity;
 
 namespace CursachPrototype.Controllers
@@ -86,7 +87,7 @@ namespace CursachPrototype.Controllers
         [HttpGet]
         public ActionResult AddColumn()
         {
-            throw new System.NotImplementedException();
+            return PartialView(new CreateColumnVm());
         }
 
         [HttpGet]
@@ -120,6 +121,13 @@ namespace CursachPrototype.Controllers
             TempData["StatusMessage"] = result;
             TempData.Keep("StatusMessage");
             return RedirectToAction("Index", new { dbId = DbId, userId = UserId });
+        }
+
+        [HttpPost]
+        public ActionResult UpdateWithNewColumn(CreateColumnVm vm)
+        {
+            TempData["StatusMessage"] = $"Колонка {vm.ColumnName} была создана.";
+            return RedirectToAction("Index", DbId);
         }
 
         [HttpPost]
