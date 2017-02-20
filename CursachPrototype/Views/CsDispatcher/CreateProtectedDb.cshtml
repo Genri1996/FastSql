@@ -20,8 +20,14 @@
 
         <div class="col-md-6 col-md-offset-3 form-group text-center">
             @Html.LabelFor(m => m.DataBasePassword, "Пароль:")
-            @Html.TextBoxFor(m => m.DataBasePassword, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.DataBasePassword, new {@class = "form-control"})
             @Html.ValidationMessageFor(m => m.DataBasePassword)
+        </div>
+
+        <div class="col-md-6 col-md-offset-3 form-group text-center">
+            @Html.LabelFor(m => m.PasswordConfiramtion, "Подтверждение пароля:")
+            @Html.TextBoxFor(m => m.PasswordConfiramtion, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.PasswordConfiramtion)
         </div>
 
         <div class="col-md-6 col-md-offset-4 radio-inline">

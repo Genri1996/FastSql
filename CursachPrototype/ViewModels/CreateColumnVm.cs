@@ -9,6 +9,9 @@ namespace CursachPrototype.ViewModels
 {
     public class CreateColumnVm
     {
+
+        public string TableName { get; set; }
+
         [Required(ErrorMessage = "Название колонки должно быть установленно.")]
         [Display(Name = "Название")]
         [RegularExpression(@"[a-zA-Z0-9]{3,40}", ErrorMessage = "Некорректное имя колонки")]

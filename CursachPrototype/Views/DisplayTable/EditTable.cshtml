@@ -14,7 +14,7 @@
         </p>
         <div class="btn-group pull-right">
             @Ajax.ActionLink("Новая запись", "AddRecord",null, new AjaxOptions{ UpdateTargetId = "ajax" },  new { @class = "btn btn-info col-xs-6" })
-            @Ajax.ActionLink("Новый столбец", "AddColumn", null, new AjaxOptions { UpdateTargetId = "ajax" }, new { @class = "btn btn-info col-xs-6" })
+            @Ajax.ActionLink("Новый столбец", "AddColumn", new {tableName = Model.TableName}, new AjaxOptions { UpdateTargetId = "ajax" }, new { @class = "btn btn-info col-xs-6" })
         </div>
         <div class="clearfix"></div>
     </div>

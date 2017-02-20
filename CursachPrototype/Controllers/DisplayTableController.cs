@@ -85,7 +85,7 @@ namespace CursachPrototype.Controllers
         }
 
         [HttpGet]
-        public ActionResult AddColumn()
+        public ActionResult AddColumn(string tableName)
         {
             return PartialView(new CreateColumnVm());
         }
@@ -109,7 +109,7 @@ namespace CursachPrototype.Controllers
             DataTable dt = Model;
             ChangesFixator changesHelper = new ChangesFixator(DataBaseInfo, Model);
             int changedRowId = int.Parse(Request[dt.Columns[GetIdOrdinalIndex()].ColumnName]);
-    
+
             foreach (DataColumn column in dt.Columns)
                 changesHelper.AddDataColumn(Request[column.ColumnName]);
 
@@ -126,8 +126,15 @@ namespace CursachPrototype.Controllers
         [HttpPost]
         public ActionResult UpdateWithNewColumn(CreateColumnVm vm)
         {
-            TempData["StatusMessage"] = $"Колонка {vm.ColumnName} была создана.";
-            return RedirectToAction("Index", DbId);
+            IHelper helper = new SqlServerHelper(vm, DataBaseInfo);
+            var result = helper.InsertNewColumn();
+
+            if (result == string.Empty)
+                TempData["StatusMessage"] = $"Колонка {vm.ColumnName} была создана.";
+            else
+                TempData["StatusMessage"] = result;
+
+            return RedirectToAction("Index", new {dbId = DbId});
         }
 
         [HttpPost]
@@ -195,6 +202,6 @@ namespace CursachPrototype.Controllers
             return dr;
         }
 
-       
+
     }
 }

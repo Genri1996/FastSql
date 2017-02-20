@@ -40,7 +40,7 @@
                                 if (columnInfo.ColumnName.ContainsIgnoreCase("ID"))
                                 {
                                     <label for="@columnInfo.ColumnName">@columnInfo.ColumnName:</label>
-                                    <input name="@columnInfo.ColumnName" class="form-control" id="@columnInfo.ColumnName" value="@itemValue" />
+                                    <input name="@columnInfo.ColumnName"  readonly="readonly" class="form-control disabled" id="@columnInfo.ColumnName" value="@itemValue" />
                                     continue;
                                 }
 
