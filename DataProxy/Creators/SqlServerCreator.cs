@@ -12,7 +12,7 @@ namespace DataProxy.Creators
     class SqlServerCreator : IDbCreator
     {
         //TODO: After publishing to another server should be changed.
-        private const string  LocalSqlServerName = @".\SQLEXPRESS";
+        private const string LocalSqlServerName = @".\SQLEXPRESS";
         //Full access to server
         private readonly string _masterConnectionString;
         private readonly string _dataBaseName;
@@ -35,7 +35,7 @@ namespace DataProxy.Creators
             {
                 error = executor.ExecuteQueryAsString(query);
             }
-            if(error!=string.Empty)
+            if (error != string.Empty)
                 throw new Exception("Создание базы данных провалилось.", new Exception(error));
 
             return $"Data Source={LocalSqlServerName};Initial Catalog={_dataBaseName};Integrated security=SSPI";
@@ -50,30 +50,30 @@ namespace DataProxy.Creators
         public string CreateNewDatabaseWithProtection(string login, string password)
         {
             //errors collector
-            StringBuilder result = new StringBuilder();      
+            StringBuilder result = new StringBuilder();
+
+            var loginTimeStamp = DateTime.Now.Ticks % 100000;
 
             using (SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString))
             {
-                //couldn't create login, if it is already exists
-                if (new SqlServerHelper().IsLoginExists(login) == false)
-                {
-                    string createLoginQuery = $"USE MASTER CREATE LOGIN {login} WITH PASSWORD = '{password}'";
-                    result.Append(executor.ExecuteQueryAsString(createLoginQuery));
-                }
+
+                string createLoginQuery = $"USE MASTER CREATE LOGIN {login + loginTimeStamp} WITH PASSWORD = '{password}'";
+                result.Append(executor.ExecuteQueryAsString(createLoginQuery));
+                
                 string createDbQuery = $"USE MASTER CREATE DATABASE {_dataBaseName}";
-                string createUserQuery = $"USE {_dataBaseName} CREATE USER {login} FOR LOGIN {login}";
+                string createUserQuery = $"USE {_dataBaseName} CREATE USER {login + loginTimeStamp} FOR LOGIN {login + loginTimeStamp}";
                 //Apply protection rules
-                string grantPermissionQuery = $"USE {_dataBaseName} EXEC sp_addrolemember 'db_owner', {login}";
+                string grantPermissionQuery = $"USE {_dataBaseName} EXEC sp_addrolemember 'db_owner', {login+ loginTimeStamp}";
 
                 result.Append(executor.ExecuteQueryAsString(createDbQuery));
                 result.Append(executor.ExecuteQueryAsString(createUserQuery));
                 result.Append(executor.ExecuteQueryAsString(grantPermissionQuery));
             }
 
-            if(result.ToString()!=string.Empty)
+            if (result.ToString() != string.Empty)
                 throw new Exception("Создание базы данных провалилось.", new Exception(result.ToString()));
 
-            return $"Data Source={LocalSqlServerName};Initial Catalog={_dataBaseName};User Id={login};Password={password}";
+            return $"Data Source={LocalSqlServerName};Initial Catalog={_dataBaseName};User Id={login + loginTimeStamp};Password={password}";
         }
     }
 }
