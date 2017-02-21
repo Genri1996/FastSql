@@ -30,9 +30,9 @@
                         @Html.LabelFor(m => m.TypeName, "Выберите тип")
                         @Html.DropDownListFor(vm => vm.TypeName, Model.AvailableTypes, new { @class = "form-control" })
 
-                        @Html.LabelFor(m => m.TypeLength, "Укажите длину строки (если выбрали строку)")
+                        @Html.LabelFor(m => m.TypeLength, "Укажите длину строки или плавающей переменной (если выбрали их)")
                         <br />
-                        @Html.EditorFor(m => m.TypeLength, new { @class = "form-control input-number " })
+                        @Html.EditorFor(m => m.TypeLength, new { @class = "form-control input-number" })
 
                         @Html.LabelFor(m => m.Constraints, "Укажите ограничения для этой колонки (не обязательно)")
                         @Html.TextBoxFor(m => m.Constraints, new { @class = "form-control" })

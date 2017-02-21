@@ -1,0 +1,33 @@
+﻿@model CursachPrototype.ViewModels.DeleteColumnVm
+
+<script type="text/javascript">
+    onload($('#ModalDelete').modal('show'))
+</script>
+
+<div class="modal fade" id="ModalDelete" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" onclick="$('#ModalDelete').modal('close')">&times;</button>
+                <h4 class="modal-title">Удаление колонки из таблицы @Model</h4>
+            </div>
+            <div class="modal-body">
+                <p>Выберите колонку для удаления из таблицы</p>
+                <div class="alert alert-danger" role="alert">
+                    <p>Данные безвозвратно уничтожены.</p>
+                </div>
+                @using (Html.BeginForm("DeleteColumnConfirmed", "DisplayTable", FormMethod.Post, new { @id = "mainForm" }))
+                {
+                    @Html.HiddenFor(m => m.TableName)
+                    @Html.LabelFor(m => m.ColumnName, "Выберите колонку")
+                    @Html.DropDownListFor(vm => vm.ColumnName, Model.AvailableColumns, new { @class = "form-control" })
+                }
+            </div>
+            <div class="modal-footer">
+                <input type="submit" class="btn btn-danger" data-dismis="modal" value="Удалить" form="mainForm"/>
+                <input type="button" class="btn btn-default" data-dismiss="modal" value="Закрыть" onclick="$('#ModalDelete').modal('close')"/>
+            </div>
+        </div>
+    </div>
+</div>

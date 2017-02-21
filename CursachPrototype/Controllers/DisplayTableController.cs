@@ -72,8 +72,6 @@ namespace CursachPrototype.Controllers
         public ActionResult EditTable(string selectedTable)
         {
             Session["TableName"] = selectedTable;
-            TempData["StatusMessage"] = "Просмотр таблицы " + Model.TableName;
-            TempData.Keep("StatusMessage");
             return PartialView(Model);
         }
 
@@ -103,6 +101,21 @@ namespace CursachPrototype.Controllers
             return PartialView("~/Views/DisplayTable/DeleteRow.cshtml", id);
         }
 
+        [HttpGet]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            ChangesFixator cf = new ChangesFixator(DataBaseInfo, Model);
+            var result = cf.FixateChanges(ChangesFixator.QueryType.Delete, GetIdOrdinalIndex(), id);
+            if (result == string.Empty)
+                result = "Ряд " + id + " успешно удалён.";
+
+            TempData["StatusMessage"] = result;
+            TempData.Keep("StatusMessage");
+
+            return RedirectToAction("Index", new { dbId = DbId });
+        }
+
+
         [HttpPost]
         public ActionResult UploadChanges()
         {
@@ -126,15 +139,29 @@ namespace CursachPrototype.Controllers
         [HttpPost]
         public ActionResult UpdateWithNewColumn(CreateColumnVm vm)
         {
-            IHelper helper = new SqlServerHelper(vm, DataBaseInfo);
-            var result = helper.InsertNewColumn();
+            IHelper helper = new SqlServerHelper(DataBaseInfo);
+            var result = helper.InsertNewColumn(vm);
 
             if (result == string.Empty)
                 TempData["StatusMessage"] = $"Колонка {vm.ColumnName} была создана.";
             else
                 TempData["StatusMessage"] = result;
 
-            return RedirectToAction("Index", new {dbId = DbId});
+            return RedirectToAction("Index", new { dbId = DbId });
+        }
+
+        public ActionResult DeleteColumn(string tablename)
+        {
+            DeleteColumnVm vm = new DeleteColumnVm { TableName = tablename };
+            var dt = Model;
+            foreach (DataColumn dataColumn in dt.Columns)
+                //Skip Id Row. We won't delete it
+                if (string.Compare(dataColumn.ColumnName, dt.Columns[GetIdOrdinalIndex()].ColumnName) == 0)
+                    continue;
+                else
+                    vm.AvailableColumns.Add(new SelectListItem { Text = dataColumn.ColumnName, Value = dataColumn.ColumnName });
+
+            return PartialView(vm);
         }
 
         [HttpPost]
@@ -157,19 +184,19 @@ namespace CursachPrototype.Controllers
             return RedirectToAction("Index", new { dbId = DbId, userId = UserId });
         }
 
-        [HttpGet]
-        public ActionResult DeleteConfirmed(int id)
+        [HttpPost]
+        public ActionResult DeleteColumnConfirmed(DeleteColumnVm vm)
         {
-            ChangesFixator cf = new ChangesFixator(DataBaseInfo, Model);
-            var result = cf.FixateChanges(ChangesFixator.QueryType.Delete, GetIdOrdinalIndex(), id);
-            if (result == string.Empty)
-                result = "Ряд " + id + " успешно удалён.";
+            IHelper helper = new SqlServerHelper(DataBaseInfo);
+            var result = helper.DropColumn(vm);
+
+            if (string.IsNullOrEmpty(result))
+                result = $"Колонка {vm.ColumnName} удалена успешно!";
 
             TempData["StatusMessage"] = result;
-            TempData.Keep("StatusMessage");
-
-            return RedirectToAction("Index", new { dbId = DbId, userId = UserId });
+            return RedirectToAction("Index", new { dbId = DbId });
         }
+
 
         private int GetIdOrdinalIndex()
         {

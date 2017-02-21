@@ -9,6 +9,7 @@ namespace CursachPrototype.QueryHelpers
 {
     public interface IHelper
     {
-        string InsertNewColumn();
+        string InsertNewColumn(CreateColumnVm vm);
+        string DropColumn(DeleteColumnVm vm);
     }
 }

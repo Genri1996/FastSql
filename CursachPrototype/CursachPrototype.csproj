@@ -246,6 +246,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\DeleteColumnVm.cs" />
     <Compile Include="QueryHelpers\ChangesFixator.cs" />
     <Compile Include="Models\Accounting\AppIdentityContext.cs" />
     <Compile Include="Models\Accounting\AppUser.cs" />
@@ -295,6 +296,7 @@
     <Content Include="Views\CsDispatcher\ShowConnectionString.cshtml" />
     <Content Include="Views\UserRoom\WatchConnectionString.cshtml" />
     <Content Include="Views\DisplayTable\AddColumn.cshtml" />
+    <Content Include="Views\DisplayTable\DeleteColumn.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

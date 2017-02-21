@@ -1,12 +1,18 @@
 ﻿@model SelectListItem[]
 
 @{
-    ViewBag.Title = "Редактировани базы данных";
+    ViewBag.Title = "Редактирование базы данных";
 }
 <div class="container">
     <h2 class="text-center">Редактировани базы данных @ViewBag.DbName</h2>
     <br>
-    <p>@TempData["StatusMessage"]</p>
+    @if (@TempData["StatusMessage"] != null)
+    {
+        <div class="alert alert-warning text-center"> 
+                @TempData["StatusMessage"]
+            <br>
+        </div>
+    }
     @{
         if (ViewBag.NoElements as bool? == true)
         {
