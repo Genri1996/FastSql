@@ -115,6 +115,39 @@ namespace CursachPrototype.Controllers
             return RedirectToAction("Index", new { dbId = DbId });
         }
 
+        [HttpGet]
+        public ActionResult CreateTable()
+        {
+            return PartialView();
+        }
+
+        [HttpGet]
+        public ActionResult DeleteColumn(string tablename)
+        {
+            DeleteColumnVm vm = new DeleteColumnVm { TableName = tablename };
+            var dt = Model;
+            foreach (DataColumn dataColumn in dt.Columns)
+                //Skip Id Row. We won't delete it
+                if (string.Compare(dataColumn.ColumnName, dt.Columns[GetIdOrdinalIndex()].ColumnName) == 0)
+                    continue;
+                else
+                    vm.AvailableColumns.Add(new SelectListItem { Text = dataColumn.ColumnName, Value = dataColumn.ColumnName });
+
+            return PartialView(vm);
+        }
+
+        [HttpGet]
+        public ActionResult DeleteTable()
+        {
+            TableVm vm = new TableVm();
+            OleDbDataBaseReader reader = new OleDbDataBaseReader(DataBaseInfo.ConnectionString);
+            var tables = reader.GetTableNames();
+
+            var items = tables.Select(tableName => new SelectListItem { Text = tableName, Value = tableName }).ToArray();
+            vm.AvailableColumns.AddRange(items);
+
+            return PartialView(vm);
+        }
 
         [HttpPost]
         public ActionResult UploadChanges()
@@ -150,20 +183,6 @@ namespace CursachPrototype.Controllers
             return RedirectToAction("Index", new { dbId = DbId });
         }
 
-        public ActionResult DeleteColumn(string tablename)
-        {
-            DeleteColumnVm vm = new DeleteColumnVm { TableName = tablename };
-            var dt = Model;
-            foreach (DataColumn dataColumn in dt.Columns)
-                //Skip Id Row. We won't delete it
-                if (string.Compare(dataColumn.ColumnName, dt.Columns[GetIdOrdinalIndex()].ColumnName) == 0)
-                    continue;
-                else
-                    vm.AvailableColumns.Add(new SelectListItem { Text = dataColumn.ColumnName, Value = dataColumn.ColumnName });
-
-            return PartialView(vm);
-        }
-
         [HttpPost]
         public ActionResult UploadNewRow()
         {
@@ -197,6 +216,31 @@ namespace CursachPrototype.Controllers
             return RedirectToAction("Index", new { dbId = DbId });
         }
 
+        [HttpPost]
+        public ActionResult CreateTableConfirmed(TableVm vm)
+        {
+            IHelper helper = new SqlServerHelper(DataBaseInfo);
+            var result = helper.CreateTable(vm.TableName);
+
+            if (string.IsNullOrEmpty(result))
+                result = $"Таблица {vm.TableName} создана успешно!";
+
+            TempData["StatusMessage"] = result;
+            return RedirectToAction("Index", new { dbId = DbId });
+        }
+
+        [HttpPost]
+        public ActionResult DeleteTableConfirmed(TableVm vm)
+        {
+            IHelper helper = new SqlServerHelper(DataBaseInfo);
+            var result = helper.DeleteTable(vm.TableName);
+
+            if (string.IsNullOrEmpty(result))
+                result = $"Таблица {vm.TableName} удалена успешно!";
+
+            TempData["StatusMessage"] = result;
+            return RedirectToAction("Index", new { dbId = DbId });
+        }
 
         private int GetIdOrdinalIndex()
         {
@@ -229,6 +273,6 @@ namespace CursachPrototype.Controllers
             return dr;
         }
 
-
+      
     }
 }

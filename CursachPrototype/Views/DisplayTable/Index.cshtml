@@ -4,12 +4,12 @@
     ViewBag.Title = "Редактирование базы данных";
 }
 <div class="container">
-    <h2 class="text-center">Редактировани базы данных @ViewBag.DbName</h2>
-    <br>
+    <h2 class="text-center">Редактирование базы данных @ViewBag.DbName</h2>
+    <br />
     @if (@TempData["StatusMessage"] != null)
     {
-        <div class="alert alert-warning text-center"> 
-                @TempData["StatusMessage"]
+        <div class="alert alert-warning text-center col-md-6 col-md-offset-3">
+            <p>@TempData["StatusMessage"]</p>
             <br>
         </div>
     }
@@ -31,10 +31,10 @@
                         <div class="input-group col-md-6 col-md-offset-3">
 
                             @Html.DropDownList("SelectedTable", new SelectList(@Model, "Value", "Text", null), new
-                            {
-                                @class = "selectpicker form-control",
-                                @title="Please select table in database"
-                            })
+                       {
+                           @class = "selectpicker form-control",
+                           @title = "Please select table in database"
+                       })
 
                             <span class="input-group-btn">
                                 <button class="btn btn-info my-group-button" type="submit">Выбрать таблицу</button>
@@ -45,7 +45,9 @@
             }
         }
     }
-    <button type="button" class="btn btn-success col-md-6 col-md-offset-3">Новая таблица</button>
+    @Ajax.ActionLink("Новая таблица", "CreateTable", null, new AjaxOptions { UpdateTargetId = "editor" }, new { @class = "btn btn-success col-md-6 col-md-offset-3" })
+    <br/>
+    @Ajax.ActionLink("Удалить таблицу", "DeleteTable", null, new AjaxOptions { UpdateTargetId = "editor" }, new { @class = "btn btn-danger col-md-6 col-md-offset-3" })
     <br>
     <br>
 

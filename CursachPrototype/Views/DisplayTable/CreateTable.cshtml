@@ -1,0 +1,37 @@
+﻿@model CursachPrototype.ViewModels.TableVm
+
+<script type="text/javascript">
+    onload($('#ModalCreateTable').modal('show'))
+</script>
+
+<div class="modal fade" id="ModalCreateTable" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Создание таблицы</h4>
+            </div>
+            <div class="modal-body text-center">
+                <div class="alert alert-info" role="alert">
+                    <p>Колонка "ID" будет автоматически создана первичным ключом.</p>
+                </div>
+
+                @using (Html.BeginForm("CreateTableConfirmed", "DisplayTable", FormMethod.Post, new { @id = "mainEditForm" }))
+                {
+                    <div class="alert text-center" style="color: red;">
+                        <h3>@Html.ValidationSummary()</h3>
+                    </div>
+
+                        @Html.LabelFor(m => m.TableName)
+                        @Html.TextBoxFor(m => m.TableName, new { @class = "form-control" })
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success" form="mainEditForm">Сохранить</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+

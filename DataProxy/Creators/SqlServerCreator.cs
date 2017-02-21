@@ -56,7 +56,6 @@ namespace DataProxy.Creators
 
             using (SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString))
             {
-
                 string createLoginQuery = $"USE MASTER CREATE LOGIN {login + loginTimeStamp} WITH PASSWORD = '{password}'";
                 result.Append(executor.ExecuteQueryAsString(createLoginQuery));
                 

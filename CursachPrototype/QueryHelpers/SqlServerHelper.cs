@@ -65,7 +65,7 @@ namespace CursachPrototype.QueryHelpers
                     _dbInf.DbmsType);
                 if (!string.IsNullOrWhiteSpace(defaultQueryResult))
                 {
-                    DropColumn(new DeleteColumnVm {ColumnName = _cvm.ColumnName, TableName = _dbInf.Name});
+                    DropColumn(new DeleteColumnVm { ColumnName = _cvm.ColumnName, TableName = _dbInf.Name });
                     return defaultQueryResult;
                 }
             }
@@ -85,6 +85,30 @@ namespace CursachPrototype.QueryHelpers
                                $"EXEC('ALTER TABLE {vm.TableName} DROP CONSTRAINT ' + @ConstraintName) " +
                                $"ALTER TABLE {vm.TableName} DROP COLUMN {vm.ColumnName}";
             return DataProxy.DataService.ExecuteQuery(dropQuery, _dbInf.ConnectionString, _dbInf.DbmsType);
+        }
+
+        public string CreateTable(string tableName)
+        {
+            string createTableQuery = $"CREATE TABLE {tableName} (ID int NOT NULL PRIMARY KEY)";
+            return DataProxy.DataService.ExecuteQuery(createTableQuery, _dbInf.ConnectionString, _dbInf.DbmsType);
+        }
+
+        public string DeleteTable(string tableName)
+        {
+            string dropConstraintQueryGenerator =
+                $"SELECT " +
+                $"'ALTER TABLE ' + OBJECT_SCHEMA_NAME(parent_object_id) " +
+                $"+ '.[' + OBJECT_NAME(parent_object_id) + ']" +
+                $" DROP CONSTRAINT ' + name FROM sys.foreign_keys" +
+                $" WHERE referenced_object_id = object_id('{tableName}')";
+
+
+            var dropConstraintQuery = DataProxy.DataService.ExecuteQuery(dropConstraintQueryGenerator, _dbInf.ConnectionString, _dbInf.DbmsType);
+            if(!string.IsNullOrEmpty(dropConstraintQuery))
+                DataProxy.DataService.ExecuteQuery(dropConstraintQuery, _dbInf.ConnectionString, _dbInf.DbmsType);
+
+            string dropTableQuery = $"DROP TABLE {tableName}";
+            return DataProxy.DataService.ExecuteQuery(dropTableQuery, _dbInf.ConnectionString, _dbInf.DbmsType);
         }
     }
 }

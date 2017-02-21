@@ -9,6 +9,9 @@
     @using (Html.BeginForm("Login", "Account", FormMethod.Post, htmlAttributes: new { @id = "mainForm" }))
     {
         @Html.AntiForgeryToken()
+        <div class="alert text-center" style="color: red;">
+            <h3>@Html.ValidationSummary()</h3>
+        </div>
         <div>
            @if (ViewData.ModelState[""] != null && ViewData.ModelState[""].Errors.Any())
            {
