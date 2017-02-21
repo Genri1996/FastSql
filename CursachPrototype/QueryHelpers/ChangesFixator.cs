@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml;
 using CursachPrototype.ExtensionMethods;
 using DataProxy.DbManangment;
+using DataProxy.Executors;
 
 namespace CursachPrototype.QueryHelpers
 {
@@ -81,7 +82,7 @@ namespace CursachPrototype.QueryHelpers
             bool first = true;
             foreach (var keyValuePair in _parametrsList)
             {
-                if(keyValuePair.Value==InvalidValue)
+                if (keyValuePair.Value == InvalidValue)
                     continue;
 
                 if (!first)
@@ -121,8 +122,12 @@ namespace CursachPrototype.QueryHelpers
             var column = _dataTable.Columns[_columnIndex];
             var columnDataType = column.DataType;
 
-          
-                
+            if (string.IsNullOrWhiteSpace(requestValue) && HasColumnDefaultValue(column))
+            {
+                _parametrsList.Add(column.ColumnName, InvalidValue);
+                _columnIndex++;
+                return;
+            }
 
             if (columnDataType == typeof(int) || columnDataType == typeof(double) || columnDataType == typeof(float))
             {
@@ -133,7 +138,7 @@ namespace CursachPrototype.QueryHelpers
                     return;
                 }
 
-                _parametrsList.Add(column.ColumnName, requestValue.Replace(',','.'));
+                _parametrsList.Add(column.ColumnName, requestValue.Replace(',', '.'));
             }
             else if (columnDataType == typeof(DateTime))
             {
@@ -154,6 +159,20 @@ namespace CursachPrototype.QueryHelpers
             }
 
             _columnIndex++;
+        }
+
+        private bool HasColumnDefaultValue(DataColumn column)
+        {
+            string query =
+                $"SELECT COLUMN_DEFAULT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{_dataTable.TableName}' AND COLUMN_NAME = '{column.ColumnName}'";
+            DataTable dtResult;
+            IQueryExecutor exe;
+            using (exe = new SqlServerExecutor(_dbInfo.ConnectionString))
+            {
+                dtResult = exe.ExecuteQueryAsDataTable(query);
+            }
+
+            return dtResult.Rows[0][0].GetType() != typeof(DBNull);
         }
     }
 }

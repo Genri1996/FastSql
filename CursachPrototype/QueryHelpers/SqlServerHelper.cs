@@ -30,26 +30,32 @@ namespace CursachPrototype.QueryHelpers
                     type = $"float({_vm.TypeLength})";
                     break;
                 case "DateTime":
-                    type = $"datetime";
+                    type = "datetime";
                     break;
             }
             query += type;
 
-            if (!string.IsNullOrEmpty(_vm.Constraints))
-                query += _vm.DefaultValue != string.Empty ? "," : "" + _vm.Constraints;
-
             var result = DataProxy.DataService.ExecuteQuery(query, _dbInf.ConnectionString, _dbInf.DbmsType);
 
             if (!string.IsNullOrWhiteSpace(result))
-            {
                 return result;
-            }
 
+            //Adding default value if neccesary
+            var defaultQueryResult = SetDefaultIfRequired();
+
+            if (!string.IsNullOrWhiteSpace(defaultQueryResult))
+                return defaultQueryResult;
+
+            return string.Empty;
+        }
+
+        private string SetDefaultIfRequired()
+        {
             if (!string.IsNullOrWhiteSpace(_vm.DefaultValue))
             {
                 var defaultQuery = $"ALTER TABLE {_vm.TableName} ADD DEFAULT ";
                 if (_vm.TypeName == "String")
-                    defaultQuery += "N'" + _vm.DefaultValue + "'";
+                    defaultQuery += "'" + _vm.DefaultValue + "'";
                 else
                     defaultQuery += _vm.DefaultValue;
 
