@@ -9,7 +9,7 @@
         /// Creates database and returns connection string
         /// </summary>
         /// <returns></returns>
-        string CreateNewDatabase();
+        string CreateNewDatabaseWithRandomLogin();
         
         /// <summary>
         /// Creates database and returns connection string with preotection

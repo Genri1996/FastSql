@@ -20,7 +20,7 @@ namespace DataProxy
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static string CreateDatabase(DataBaseInfo obj, string login = null, string password = null)
+        public static string CreateDatabase(DataBaseInfo obj, string connectionString, string login = null, string password = null)
         {
             IDbCreator creator = null;
             switch (obj.DbmsType)
@@ -29,14 +29,19 @@ namespace DataProxy
                     creator = new SqlServerCreator(obj.Name);
                     break;
             }
+            string cs;
             if (obj.IsPublic)
-                return creator.CreateNewDatabase();
-            if (!string.IsNullOrEmpty(login) && !string.IsNullOrEmpty(password))
-                return creator.CreateNewDatabaseWithProtection(login, password);
-            throw new ArgumentException("Lack of arguments.");
+                cs = creator.CreateNewDatabaseWithRandomLogin();
+            else if (!string.IsNullOrEmpty(login) && !string.IsNullOrEmpty(password))
+                cs = creator.CreateNewDatabaseWithProtection(login, password);
+            else
+                throw new ArgumentException("Lack of arguments.");
+
+            cs = cs.Replace("SERVERNAME", connectionString);
+            return cs;
         }
 
-        public static bool CheckDataBaseExists(DbmsType selectedDbms, String dataBaseName)
+        public static bool CheckDataBaseExists(DbmsType selectedDbms, string dataBaseName)
         {
             IHelper helper = null;
             switch (selectedDbms)
@@ -49,7 +54,7 @@ namespace DataProxy
             return helper.IsDataBaseExists(dataBaseName);
         }
 
-        public static bool DropDataBase(DbmsType selectedDbms, String dataBaseName)
+        public static bool DropDataBase(DbmsType selectedDbms, string dataBaseName)
         {
             IHelper helper = null;
             switch (selectedDbms)
@@ -64,7 +69,7 @@ namespace DataProxy
 
         public static string ExecuteQuery(string query, string connectionString, DbmsType type)
         {
-            IQueryExecutor executor=null;
+            IQueryExecutor executor = null;
             switch (type)
             {
                 case DbmsType.SqlServer:
@@ -72,7 +77,7 @@ namespace DataProxy
                     break;
             }
 
-           return executor.ExecuteQueryAsString(query);
+            return executor.ExecuteQueryAsString(query);
         }
     }
 }

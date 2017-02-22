@@ -1,7 +1,8 @@
-﻿using Microsoft.Owin;
+﻿using System.Configuration;
+using Microsoft.Owin;
 using Owin;
-using CursachPrototype.Models;
 using CursachPrototype.Models.Accounting;
+using DataProxy;
 using Hangfire;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.AspNet.Identity;
@@ -14,6 +15,9 @@ namespace CursachPrototype
     {
         public void Configuration(IAppBuilder app)
         {
+            DataService.ExecuteQuery("USE MASTER CREATE DATABASE HANGFIRE",
+                ConfigurationManager.ConnectionStrings["SqlServerMaster"].ConnectionString, DbmsType.SqlServer);
+
             GlobalConfiguration.Configuration.UseSqlServerStorage("Hangfire");
 
             app.UseHangfireDashboard();

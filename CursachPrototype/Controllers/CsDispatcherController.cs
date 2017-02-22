@@ -30,20 +30,6 @@ namespace CursachPrototype.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet, Authorize]
-        public ActionResult CreatePublicDb()
-        {
-            DbVm vm = new DbVm
-            {
-                AvailableServers = GetAvailableDbmsAsListString()
-            };
-            return View(vm);
-        }
-
-        /// <summary>
-        /// Returns menu for creating database in some selected DBMS
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet, Authorize]
         public ActionResult CreateProtectedDb()
         {
             ProtectedDbVm vm = new ProtectedDbVm
@@ -82,46 +68,7 @@ namespace CursachPrototype.Controllers
             return PartialView("ShowConnectionString", cs);
         }
 
-        [HttpPost]
-        public ActionResult CreatePublicDb(DbVm vm)
-        {
-            vm.AvailableServers = GetAvailableDbmsAsListString();
-
-            if (!ModelState.IsValid)
-                return View(vm);
-
-            //Receives info
-            AppUser user = _userManager.FindById(User.Identity.GetUserId());
-            var tempDbInfo = vm.ToCreateDatabaseObject(user);
-
-            //Check Db Exists
-            DbmsType selectedDbmsType = (DbmsType)Enum.Parse(typeof(DbmsType), vm.SelectedServer);
-            if (DataService.CheckDataBaseExists(selectedDbmsType, tempDbInfo.Name))
-            {
-                string errorMessage = "База данных с таким именем уже существует в этой СУБД.";
-                ModelState.AddModelError("err", errorMessage);
-                return View(vm);
-            }
-
-            //Try to create database
-            try
-            {
-                tempDbInfo.ConnectionString = DataService.CreateDatabase(tempDbInfo);
-            }
-            catch (Exception)
-            {
-                string errorMessage = "Не удалось создать базу данных.";
-                return View("CustomError", (object)errorMessage);
-            }
-
-            //Save action to database
-            //AddRecord new info to user. No ID and foreighn Key (!)
-            DataBasesManager.AddDbInfo(tempDbInfo);
-            _userManager.Update(user);
-
-            return View("RequestConnectionString");
-        }
-
+        
         /// <summary>
         /// Creates Database according to user`s vm selection
         /// </summary>
@@ -151,12 +98,11 @@ namespace CursachPrototype.Controllers
             //Try to create database
             try
             {
-                tempDbInfo.ConnectionString = DataService.CreateDatabase(tempDbInfo, user.UserNickName, vm.DataBasePassword);
+                tempDbInfo.ConnectionString = DataService.CreateDatabase(tempDbInfo, GetSqlServerAddress(), user.UserNickName, vm.DataBasePassword);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                string errorMessage = "Не удалось создать базу данных.";
-                return View("CustomError", (object)errorMessage);
+                return View("CustomError", (object)e.ToString());
             }
             //Save action to database
             //AddRecord new info to user. No ID and foreighn Key (!)
@@ -188,12 +134,11 @@ namespace CursachPrototype.Controllers
             String connectionString;
             try
             {
-                connectionString = DataService.CreateDatabase(tempObj);
+                connectionString = DataService.CreateDatabase(tempObj, GetSqlServerAddress());
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                string errorMessage = "Не удалось создать базу данных.";
-                return View("CustomError", (object)errorMessage);
+                return View("CustomError", (object)e.ToString());
             }
             tempObj.ConnectionString = connectionString;
             DataBasesManager.AddAnonymousDbInfo(tempObj);
@@ -210,6 +155,15 @@ namespace CursachPrototype.Controllers
         private List<string> GetAvailableDbmsAsListString()
         {
             return DataService.AvailableServers.Select(dbmsType => dbmsType.ToString()).ToList();
+        }
+
+        private string GetSqlServerAddress()
+        {
+            var req = $"{Request.Url.Authority}";
+            if (req.Contains("localhost"))
+                return @".\SQLEXPRESS";
+            return
+                req;
         }
     }
 }
