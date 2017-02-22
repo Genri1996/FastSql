@@ -23,8 +23,6 @@ namespace CursachPrototype.ViewModels
         [Range(1, 5000, ErrorMessage = "От 1 до 72 часа")]
         public int TypeLength { get; set; }
 
-        public string Constraints { get; set; }
-
         public string DefaultValue { get; set; }
 
         public IEnumerable<SelectListItem> AvailableTypes => 
