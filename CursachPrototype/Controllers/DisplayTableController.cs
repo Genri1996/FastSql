@@ -53,17 +53,21 @@ namespace CursachPrototype.Controllers
         }
 
         [HttpGet]
-        public ActionResult Index(int dbId)
+        public ActionResult Index(int dbId, string defaultTableName = null)
         {
+            Session["TableName"] = defaultTableName;
             DbId = dbId;
-
-            OleDbDataBaseReader reader = new OleDbDataBaseReader(DataBaseInfo.ConnectionString);
-            var tables = reader.GetTableNames();
+            var tables = ModelReader.GetTableNames();
 
             var items = tables.Select(tableName => new SelectListItem { Text = tableName, Value = tableName }).ToArray();
             if (items.Length == 0)
                 ViewBag.NoElements = (bool?)true;
             ViewBag.DbName = DataBaseInfo.Name;
+
+            if (Session["TableName"] != null)
+            {
+                ViewBag.dataOfTheTable = Model;
+            }
 
             return View(items);
         }
@@ -102,7 +106,7 @@ namespace CursachPrototype.Controllers
         }
 
         [HttpGet]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteRowConfirmed(int id)
         {
             ChangesFixator cf = new ChangesFixator(DataBaseInfo, Model);
             var result = cf.FixateChanges(ChangesFixator.QueryType.Delete, GetIdOrdinalIndex(), id);
@@ -112,7 +116,7 @@ namespace CursachPrototype.Controllers
             TempData["StatusMessage"] = result;
             TempData.Keep("StatusMessage");
 
-            return RedirectToAction("Index", new { dbId = DbId });
+            return RedirectToAction("Index", new { dbId = DbId, defaultTableName = Model.TableName });
         }
 
         [HttpGet]
@@ -150,10 +154,10 @@ namespace CursachPrototype.Controllers
         }
 
         [HttpPost]
-        public ActionResult UploadChanges()
+        public ActionResult EditRow()
         {
             DataTable dt = Model;
-            ChangesFixator changesHelper = new ChangesFixator(DataBaseInfo, Model);
+            ChangesFixator changesHelper = new ChangesFixator(DataBaseInfo, dt);
             int changedRowId = int.Parse(Request[dt.Columns[GetIdOrdinalIndex()].ColumnName]);
 
             foreach (DataColumn column in dt.Columns)
@@ -166,7 +170,7 @@ namespace CursachPrototype.Controllers
 
             TempData["StatusMessage"] = result;
             TempData.Keep("StatusMessage");
-            return RedirectToAction("Index", new { dbId = DbId, userId = UserId });
+            return RedirectToAction("Index", new { dbId = DbId, defaultTableName = dt.TableName });
         }
 
         [HttpPost]
@@ -187,7 +191,7 @@ namespace CursachPrototype.Controllers
         public ActionResult UploadNewRow()
         {
             DataTable dt = Model;
-            ChangesFixator changesHelper = new ChangesFixator(DataBaseInfo, Model);
+            ChangesFixator changesHelper = new ChangesFixator(DataBaseInfo, dt);
             int changedRowId = int.Parse(Request[dt.Columns[GetIdOrdinalIndex()].ColumnName]);
 
             foreach (DataColumn column in dt.Columns)
@@ -200,7 +204,7 @@ namespace CursachPrototype.Controllers
 
             TempData["StatusMessage"] = result;
             TempData.Keep("StatusMessage");
-            return RedirectToAction("Index", new { dbId = DbId, userId = UserId });
+            return RedirectToAction("Index", new { dbId = DbId, defaultTableName = dt.TableName });
         }
 
         [HttpPost]
@@ -213,7 +217,7 @@ namespace CursachPrototype.Controllers
                 result = $"Колонка {vm.ColumnName} удалена успешно!";
 
             TempData["StatusMessage"] = result;
-            return RedirectToAction("Index", new { dbId = DbId });
+            return RedirectToAction("Index", new { dbId = DbId, defaultTableName = vm.TableName });
         }
 
         [HttpPost]
@@ -226,7 +230,7 @@ namespace CursachPrototype.Controllers
                 result = $"Таблица {vm.TableName} создана успешно!";
 
             TempData["StatusMessage"] = result;
-            return RedirectToAction("Index", new { dbId = DbId });
+            return RedirectToAction("Index", new { dbId = DbId, defaultTableName = vm.TableName });
         }
 
         [HttpPost]
@@ -273,6 +277,6 @@ namespace CursachPrototype.Controllers
             return dr;
         }
 
-      
+
     }
 }

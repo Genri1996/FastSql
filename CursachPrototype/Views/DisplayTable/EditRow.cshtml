@@ -28,7 +28,7 @@
                 }
             </div>
             <div class="modal-body">
-                @using (Html.BeginForm("UploadChanges", "DisplayTable", FormMethod.Post, new { @id = "mainEditForm" }))
+                @using (Html.BeginForm("EditRow", "DisplayTable", FormMethod.Post, new { @id = "mainEditForm" }))
                 {
                     @Html.ValidationSummary()
                     foreach (DataColumn dc in Model.Table.Columns)

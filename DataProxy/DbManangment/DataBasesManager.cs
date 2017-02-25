@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.OleDb;
+using System.Globalization;
 using System.Linq;
 using DataProxy.DataBaseReaders;
 using DataProxy.Executors;
@@ -51,7 +52,7 @@ namespace DataProxy.DbManangment
                               Id = dbInfo.Field<int>("Id"),
                               Name = dbInfo.Field<string>("NAME"),
                               ConnectionString = dbInfo.Field<string>("CONNECTIONSTRING"),
-                              DateOfCreating = dbInfo.Field<DateTime>("DATEOFCREATING"),
+                              DateOfCreating = (DateTime)dbInfo["DATEOFCREATING"],
                               IsAnonymous = false,
                               DbmsType = (DbmsType)Enum.Parse(typeof(DbmsType), dbInfo.Field<string>("DBMSTYPE")),
                               ForeignKey = dbInfo.Field<string>("USERKEY")
@@ -73,8 +74,8 @@ namespace DataProxy.DbManangment
                               Id = dbInfo.Field<int>("Id"),
                               Name = dbInfo.Field<string>("NAME"),
                               ConnectionString = dbInfo.Field<string>("CONNECTIONSTRING"),
-                              DateOfCreating = dbInfo.Field<DateTime>("DATEOFCREATING"),
-                              DateOfDeleting = dbInfo.Field<DateTime>("DATEOFDELETING"),
+                              DateOfCreating = (DateTime)dbInfo["DATEOFCREATING"],
+                              DateOfDeleting = (DateTime)dbInfo["DATEOFDELETING"],
                               IsAnonymous = true,
                               DbmsType = (DbmsType)Enum.Parse(typeof(DbmsType), dbInfo.Field<string>("DBMSTYPE"))
                           }).ToList();
@@ -91,7 +92,7 @@ namespace DataProxy.DbManangment
             string query = $"USE {DbName} INSERT INTO {DbInfosTableName} "
                            + "(NAME, DATEOFCREATING, CONNECTIONSTRING, DBMSTYPE, USERKEY) "
                            +
-                           $"VALUES('{info.Name}', CONVERT(DATETIME, '{info.DateOfCreating.ToString("yyyy-MM-dd hh:mm:ss")}', 120), "
+                           $"VALUES('{info.Name}', CONVERT(DATETIME, '{info.DateOfCreating.ToString("yyyy-MM-dd HH:mm:ss")}', 120), "
                            + $"'{info.ConnectionString}','{info.DbmsType}', '{info.ForeignKey}');";
 
             using (
@@ -107,8 +108,8 @@ namespace DataProxy.DbManangment
             string query = $"USE {DbName} INSERT INTO {AnonDbInfosTableName} "
                            + "(NAME, DATEOFCREATING, DATEOFDELETING, CONNECTIONSTRING, DBMSTYPE) "
                            +
-                           $"VALUES('{info.Name}', CONVERT(DATETIME, '{info.DateOfCreating.ToString("yyyy-MM-dd hh:mm:ss")}', 120), "
-                           + $"CONVERT(DATETIME, '{info.DateOfDeleting.ToString("yyyy-MM-dd hh:mm:ss")}', 120),"
+                           $"VALUES('{info.Name}', CONVERT(DATETIME, '{info.DateOfCreating.ToString("yyyy-MM-dd HH:mm:ss")}', 120), "
+                           + $"CONVERT(DATETIME, '{info.DateOfDeleting.ToString("yyyy-MM-dd HH:mm:ss")}', 120),"
                            + $"'{info.ConnectionString}','{info.DbmsType}');";
 
             using (
@@ -137,7 +138,7 @@ namespace DataProxy.DbManangment
 
         public static void RemoveAnonymousDbInfo(DataBaseInfo info)
         {
-            string query = $"USE {DbName}  DELETE FROM {AnonDbInfosTableName} WHERE DbInfos.Id={info.Id};";
+            string query = $"USE {DbName}  DELETE FROM {AnonDbInfosTableName} WHERE Id={info.Id};";
 
             using (
                 SqlServerExecutor executor =
@@ -155,12 +156,13 @@ namespace DataProxy.DbManangment
                 DataSet set = reader.LoadTables(AnonDbInfosTableName);
 
                 var result = from dbRecord in set.Tables[AnonDbInfosTableName].AsEnumerable()
-                             let dateOfDeleting = dbRecord.Field<DateTime>("DATEOFDELETEING")
+                             let dateOfDeleting = (DateTime)dbRecord["DATEOFDELETING"]
                              where dateOfDeleting < DateTime.Now
                              select new DataBaseInfo
                              {
                                  Name = dbRecord.Field<string>("NAME"),
-                                 Id = dbRecord.Field<int>("ID")
+                                 Id = dbRecord.Field<int>("ID"),
+                                 DateOfDeleting = (DateTime)dbRecord["DATEOFDELETING"]
                              };
 
                 //TODO: add additional servers

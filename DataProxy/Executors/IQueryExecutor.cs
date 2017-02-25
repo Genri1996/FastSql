@@ -13,9 +13,29 @@ namespace DataProxy.Executors
     /// </summary>
     public interface IQueryExecutor:IDisposable
     {
+        /// <summary>
+        /// Executes string quey and returns datatable
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
         DataTable ExecuteQueryAsDataTable(String command);
+        /// <summary>
+        /// Executes string quey and returns string
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
         String ExecuteQueryAsString(String command);
+        /// <summary>
+        /// Executes SqlCommand and returns string
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
         String ExecuteCommandAsString(SqlCommand command);
+        /// <summary>
+        /// Executes SqlCommand and returns DataTable
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
         DataTable ExecuteCommandAsDataTable(SqlCommand command);
     }
 }

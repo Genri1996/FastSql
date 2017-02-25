@@ -1,4 +1,5 @@
-﻿@model SelectListItem[]
+﻿@using System.Data
+@model SelectListItem[]
 
 @{
     ViewBag.Title = "Редактирование базы данных";
@@ -51,7 +52,12 @@
     <br>
     <br>
 
-    <div id="editor"></div>
+    <div id="editor">
+            @if (Session["TableName"] != null)
+            {
+                @Html.Partial("EditTable", (DataTable) ViewBag.dataOfTheTable)
+            }
+    </div>
 </div>
 
 @section Scripts{

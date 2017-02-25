@@ -3,6 +3,7 @@ using Microsoft.Owin;
 using Owin;
 using CursachPrototype.Models.Accounting;
 using DataProxy;
+using DataProxy.DbManangment;
 using Hangfire;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.AspNet.Identity;
@@ -23,13 +24,15 @@ namespace CursachPrototype
             app.UseHangfireDashboard();
             app.UseHangfireServer();
 
+            RecurringJob.AddOrUpdate(() => DataBasesManager.DropOutdatedDbs(), Cron.Hourly);//TODO: Hourly
+
             // настраиваем контекст и менеджер
             app.CreatePerOwinContext<AppIdentityContext>(AppIdentityContext.Create);
             app.CreatePerOwinContext<AppUserManager>(AppUserManager.Create);
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
-                LoginPath = new PathString("/Account/Login"),
+                LoginPath = new PathString("/Account/Login")
             });
         }
     }

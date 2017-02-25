@@ -55,7 +55,6 @@
     <Compile Include="Executors\SqlServerExecutor.cs" />
     <Compile Include="Helpers\IHelper.cs" />
     <Compile Include="Helpers\SqlServerHelper.cs" />
-    <Compile Include="Model\ColumnMetadata.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Creators\SqlServerCreator.cs" />
   </ItemGroup>

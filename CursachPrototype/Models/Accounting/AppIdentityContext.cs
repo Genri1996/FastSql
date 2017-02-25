@@ -1,5 +1,4 @@
 ﻿using DataProxy.DbManangment;
-using Hangfire;
 using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace CursachPrototype.Models.Accounting
@@ -11,7 +10,7 @@ namespace CursachPrototype.Models.Accounting
             Database.CreateIfNotExists();
             //Create table DbInfos
             DataBasesManager.CreateTablesIfNotExists();
-            RecurringJob.AddOrUpdate(() => DataBasesManager.DropOutdatedDbs(), Cron.Hourly);//TODO: Hourly
+            
         }
 
         public static AppIdentityContext Create()
