@@ -18,7 +18,6 @@
                 <div class="form-group text-center">
                     @using (Html.BeginForm("UpdateWithNewColumn", "DisplayTable", FormMethod.Post, new { @id = "AddColumnForm" }))
                     {
-                        @Html.ValidationSummary()
                         @Html.HiddenFor(m => m.TableName)
 
                         @Html.LabelFor(m => m.ColumnName, "Название колонки")

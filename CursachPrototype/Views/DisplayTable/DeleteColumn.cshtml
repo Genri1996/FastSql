@@ -15,7 +15,7 @@
             <div class="modal-body">
                 <p>Выберите колонку для удаления из таблицы</p>
                 <div class="alert alert-danger" role="alert">
-                    <p>Данные безвозвратно уничтожены.</p>
+                    <p>Данные будут безвозвратно уничтожены.</p>
                 </div>
                 @using (Html.BeginForm("DeleteColumnConfirmed", "DisplayTable", FormMethod.Post, new { @id = "mainForm" }))
                 {

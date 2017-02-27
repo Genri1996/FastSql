@@ -87,9 +87,9 @@ namespace CursachPrototype.Controllers
         }
 
         [HttpGet]
-        public ActionResult AddColumn(string tableName)
+        public ActionResult AddColumn(string tablename)
         {
-            return PartialView(new CreateColumnVm());
+            return PartialView(new CreateColumnVm {TableName = tablename});
         }
 
         [HttpGet]
@@ -169,21 +169,26 @@ namespace CursachPrototype.Controllers
                 result = "Ряд " + changedRowId + " был успешно изменен!";
 
             TempData["StatusMessage"] = result;
-            TempData.Keep("StatusMessage");
             return RedirectToAction("Index", new { dbId = DbId, defaultTableName = dt.TableName });
         }
 
         [HttpPost]
         public ActionResult UpdateWithNewColumn(CreateColumnVm vm)
         {
-            IHelper helper = new SqlServerHelper(DataBaseInfo);
-            var result = helper.InsertNewColumn(vm);
+            if (ModelState.IsValid)
+            {
 
-            if (result == string.Empty)
-                TempData["StatusMessage"] = $"Колонка {vm.ColumnName} была создана.";
-            else
-                TempData["StatusMessage"] = result;
+                IHelper helper = new SqlServerHelper(DataBaseInfo);
+                var result = helper.InsertNewColumn(vm);
 
+                if (result == string.Empty)
+                    TempData["StatusMessage"] = $"Колонка {vm.ColumnName} была создана.";
+                else
+                    TempData["StatusMessage"] = result;
+
+                return RedirectToAction("Index", new { dbId = DbId, defaultTableName = vm.TableName});
+            }
+            TempData["StatusMessage"] = "Были введены недопустимые данные.";
             return RedirectToAction("Index", new { dbId = DbId });
         }
 
@@ -203,46 +208,60 @@ namespace CursachPrototype.Controllers
                 result = "Ряд " + changedRowId + " был успешно добавлен!";
 
             TempData["StatusMessage"] = result;
-            TempData.Keep("StatusMessage");
             return RedirectToAction("Index", new { dbId = DbId, defaultTableName = dt.TableName });
         }
 
         [HttpPost]
         public ActionResult DeleteColumnConfirmed(DeleteColumnVm vm)
         {
-            IHelper helper = new SqlServerHelper(DataBaseInfo);
-            var result = helper.DropColumn(vm);
+            if (ModelState.IsValid)
+            {
+                IHelper helper = new SqlServerHelper(DataBaseInfo);
+                var result = helper.DropColumn(vm);
 
-            if (string.IsNullOrEmpty(result))
-                result = $"Колонка {vm.ColumnName} удалена успешно!";
+                if (string.IsNullOrEmpty(result))
+                    result = $"Колонка {vm.ColumnName} удалена успешно!";
 
-            TempData["StatusMessage"] = result;
+                TempData["StatusMessage"] = result;
+                return RedirectToAction("Index", new { dbId = DbId, defaultTableName = vm.TableName });
+            }
+            TempData["StatusMessage"] = "Были введены недопустимые данные.";
             return RedirectToAction("Index", new { dbId = DbId, defaultTableName = vm.TableName });
         }
 
         [HttpPost]
         public ActionResult CreateTableConfirmed(TableVm vm)
         {
-            IHelper helper = new SqlServerHelper(DataBaseInfo);
-            var result = helper.CreateTable(vm.TableName);
+            if (ModelState.IsValid)
+            {
+                IHelper helper = new SqlServerHelper(DataBaseInfo);
+                var result = helper.CreateTable(vm.TableName);
 
-            if (string.IsNullOrEmpty(result))
-                result = $"Таблица {vm.TableName} создана успешно!";
+                if (string.IsNullOrEmpty(result))
+                    result = $"Таблица {vm.TableName} создана успешно!";
 
-            TempData["StatusMessage"] = result;
-            return RedirectToAction("Index", new { dbId = DbId, defaultTableName = vm.TableName });
+                TempData["StatusMessage"] = result;
+                return RedirectToAction("Index", new { dbId = DbId, defaultTableName = vm.TableName });
+            }
+            TempData["StatusMessage"] = "Были введены недопустимые данные.";
+            return RedirectToAction("Index", new { dbId = DbId });
         }
 
         [HttpPost]
         public ActionResult DeleteTableConfirmed(TableVm vm)
         {
-            IHelper helper = new SqlServerHelper(DataBaseInfo);
-            var result = helper.DeleteTable(vm.TableName);
+            if (ModelState.IsValid)
+            {
+                IHelper helper = new SqlServerHelper(DataBaseInfo);
+                var result = helper.DeleteTable(vm.TableName);
 
-            if (string.IsNullOrEmpty(result))
-                result = $"Таблица {vm.TableName} удалена успешно!";
+                if (string.IsNullOrEmpty(result))
+                    result = $"Таблица {vm.TableName} удалена успешно!";
 
-            TempData["StatusMessage"] = result;
+                TempData["StatusMessage"] = result;
+                return RedirectToAction("Index", new { dbId = DbId });
+            }
+            TempData["StatusMessage"] = "Были введены недопустимые данные.";
             return RedirectToAction("Index", new { dbId = DbId });
         }
 

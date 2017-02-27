@@ -19,11 +19,7 @@
                 </div>
 
                 @using (Html.BeginForm("DeleteTableConfirmed", "DisplayTable", FormMethod.Post, new { @id = "mainEditForm" }))
-                {
-                    <div class="alert text-center" style="color: red">
-                        <h3>@Html.ValidationSummary()</h3>
-                    </div>
-
+                { 
                     @Html.LabelFor(m => m.TableName)
                     @Html.DropDownListFor(vm => vm.TableName, Model.AvailableColumns, new { @class = "form-control" })
                 }

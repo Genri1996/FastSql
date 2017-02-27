@@ -19,10 +19,6 @@
 
                 @using (Html.BeginForm("CreateTableConfirmed", "DisplayTable", FormMethod.Post, new { @id = "mainEditForm" }))
                 {
-                    <div class="alert text-center" style="color: red;">
-                        <h3>@Html.ValidationSummary()</h3>
-                    </div>
-
                         @Html.LabelFor(m => m.TableName)
                         @Html.TextBoxFor(m => m.TableName, new { @class = "form-control" })
                 }
