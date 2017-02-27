@@ -62,6 +62,8 @@ namespace CursachPrototype.Controllers
             var items = tables.Select(tableName => new SelectListItem { Text = tableName, Value = tableName }).ToArray();
             if (items.Length == 0)
                 ViewBag.NoElements = (bool?)true;
+            else
+                ViewBag.NoElements = (bool?)false;
             ViewBag.DbName = DataBaseInfo.Name;
 
             if (Session["TableName"] != null)
@@ -89,7 +91,7 @@ namespace CursachPrototype.Controllers
         [HttpGet]
         public ActionResult AddColumn(string tablename)
         {
-            return PartialView(new CreateColumnVm {TableName = tablename});
+            return PartialView(new CreateColumnVm { TableName = tablename });
         }
 
         [HttpGet]
@@ -186,7 +188,7 @@ namespace CursachPrototype.Controllers
                 else
                     TempData["StatusMessage"] = result;
 
-                return RedirectToAction("Index", new { dbId = DbId, defaultTableName = vm.TableName});
+                return RedirectToAction("Index", new { dbId = DbId, defaultTableName = vm.TableName });
             }
             TempData["StatusMessage"] = "Были введены недопустимые данные.";
             return RedirectToAction("Index", new { dbId = DbId });

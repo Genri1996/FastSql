@@ -1,52 +1,54 @@
 ﻿@using System.Data
 @using CursachPrototype.ExtensionMethods
 @model DataTable
-
-<div class="panel panel-default">
-    <!-- Default panel contents -->
-    <div class="panel-heading">
-        <p class="panel-title pull-left">
-            @Model.Rows.Count записей
-        </p>
-        <div class="btn-group pull-right">
-            @Ajax.ActionLink("Новая запись", "AddRecord",null, new AjaxOptions{ UpdateTargetId = "ajax" },  new { @class = "btn btn-info col-xs-6" })
-            @Ajax.ActionLink("Новый столбец", "AddColumn", new {tableName = Model.TableName}, new AjaxOptions { UpdateTargetId = "ajax" }, new { @class = "btn btn-info col-xs-6" })
-            @Ajax.ActionLink("Удалить столбец", "DeleteColumn", new { tableName = Model.TableName }, new AjaxOptions { UpdateTargetId = "ajax" }, new { @class = "btn btn-info col-xs-6" })
+<div class="container">
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <p class="panel-title pull-left">
+                @Model.Rows.Count записей
+            </p>
+            <div class="btn-group pull-right">
+                @Ajax.ActionLink("Новая запись", "AddRecord", null, new AjaxOptions { UpdateTargetId = "ajax" }, new { @class = "btn btn-info col-xs-4" })
+                @Ajax.ActionLink("Новый столбец", "AddColumn", new { tableName = Model.TableName }, new AjaxOptions { UpdateTargetId = "ajax" }, new { @class = "btn btn-info col-xs-4" })
+                @Ajax.ActionLink("Убрать столбец", "DeleteColumn", new { tableName = Model.TableName }, new AjaxOptions { UpdateTargetId = "ajax" }, new { @class = "btn btn-info col-xs-4" })
+            </div>
+            <div class="clearfix"></div>
         </div>
-        <div class="clearfix"></div>
-    </div>
-    <div class="table-responsive">
-        <table class="table">
-            <thead>
-            <tr>
-                @foreach (DataColumn dc in Model.Columns)
-                {
-                    <th>@dc.ColumnName</th>
-                }
-                <th class="text-center">Действия</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (DataRow dr in Model.Rows)
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        @foreach (DataColumn dc in Model.Columns)
+                        {
+                            <th>@dc.ColumnName</th>
+                        }
+                        <th class="text-center pull-right">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (DataRow dr in Model.Rows)
             {
-                <tr>
-                    @Html.Partial("RenderTableRow", dr)
-                    <td class="btn-group text-center">
-                        @Ajax.ActionLink("Редактировать", "Edit",
-                            new {id = dr[Model.Columns.Cast<DataColumn>().First(column => column.ColumnName.ContainsIgnoreCase("Id"))].ToString()},
-                            new AjaxOptions {UpdateTargetId = "ajax"},
-                            new {@class = "btn btn-info btn-xs"})
-                        @Ajax.ActionLink("Удалить", "Delete",
-                            new {id = dr[Model.Columns.Cast<DataColumn>().First(column => column.ColumnName.ContainsIgnoreCase("Id"))].ToString()},
-                            new AjaxOptions {UpdateTargetId = "ajax"},
-                            new {@class = "btn btn-info btn-xs"})
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
+                        <tr>
+                            @Html.Partial("RenderTableRow", dr)
+                            <td class="text-center">
+                                <div class="btn-group pull-right">
+                                    @Ajax.ActionLink("Редактировать", "Edit",
+                                    new { id = dr[Model.Columns.Cast<DataColumn>().First(column => column.ColumnName.ContainsIgnoreCase("Id"))].ToString() },
+                                    new AjaxOptions { UpdateTargetId = "ajax" },
+                                    new { @class = "btn btn-info btn-xs" })
+                                    @Ajax.ActionLink("Удалить", "Delete",
+                                    new { id = dr[Model.Columns.Cast<DataColumn>().First(column => column.ColumnName.ContainsIgnoreCase("Id"))].ToString() },
+                                    new AjaxOptions { UpdateTargetId = "ajax" },
+                                    new { @class = "btn btn-info btn-xs" })
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div id="ajax"></div>
     </div>
-    <div id="ajax"></div>
 </div>
-
 

@@ -26,35 +26,34 @@
 
         <div class="col-md-6 col-md-offset-3 form-group text-center">
             @Html.LabelFor(m => m.DataBaseName, "Название:")
-            <div class="input-group ">
-                @Html.TextBoxFor(m => m.DataBaseName, new { @class = "form-control", @id = "DbName" })
-                <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" onclick="SetName()">Сгенерировать</button>
-                </span>
-            </div>
+            @Html.TextBoxFor(m => m.DataBaseName, new { @class = "form-control", @id = "DbName" })
+            <br />
+            <button class="btn btn-info" type="button" onclick="SetName()">Сгенерировать</button>
             @Html.ValidationMessageFor(m => m.DataBaseName)
         </div>
         <br />
         <div class="col-md-6 col-md-offset-3 form-group text-center">
-            @Html.LabelFor(m => m.StoreHours, "Время жизни базы данных (в часах)")<br/>
+            @Html.LabelFor(m => m.StoreHours, "Время жизни базы данных (в часах)")<br />
 
-            @Html.EditorFor(m => m.StoreHours, new { @class = "form-control input-number" })
+            @Html.TextBoxFor(m => m.StoreHours, new { @type = "number", @class = "form-control" })
             @Html.ValidationMessageFor(m => m.StoreHours)
         </div>
         <div class="col-md-6 col-md-offset-4 radio-inline">
             @foreach (string server in Model.AvailableServers)
                 {
-                <label>
-                    @Html.RadioButtonFor(m => m.SelectedServer, server)
-                    @server
-                </label>
+                <div class="col-md-6">
+                    <label>
+                        @Html.RadioButtonFor(m => m.SelectedServer, server)
+                        @server
+                    </label>
+                </div>
             }
             @Html.ValidationMessageFor(m => m.SelectedServer)
         </div>
     }
 </div>
 
-<button type="submit" class="btn btn-default center-block" form="mainForm">Создать</button>
+<button type="submit" class="btn btn-success center-block" form="mainForm">Создать</button>
 
 @section Scripts{
     <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>

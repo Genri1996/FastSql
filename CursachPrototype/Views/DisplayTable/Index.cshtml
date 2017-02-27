@@ -6,59 +6,62 @@
 }
 <div class="container">
     <h2 class="text-center">Редактирование базы данных @ViewBag.DbName</h2>
-    <br />
     @if (@TempData["StatusMessage"] != null)
     {
         <div class="alert alert-warning text-center col-md-6 col-md-offset-3">
             <p>@TempData["StatusMessage"]</p>
-            <br>
         </div>
     }
-    @{
-        if (ViewBag.NoElements as bool? == true)
+    @if (ViewBag.NoElements as bool? == true)
+    {
+        <div class="alert alert-warning  col-md-6 col-md-offset-3" role="alert">
+            <h4 class="text-center">База данных пуста.</h4>
+        </div>
+    }
+</div>
+@if (ViewBag.NoElements as bool? == false)
+{
+    <div class="container">
+        @using (Ajax.BeginForm("EditTable", new AjaxOptions { UpdateTargetId = "editor", HttpMethod = "Get" }))
         {
-            <div class="alert alert-warning  col-md-6 col-md-offset-3" role="alert">
-                <h4 class="text-center">База данных пуста.</h4>
-            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Выберите таблицу для изменения:</div>
+                <div class="panel-body">
+                    <div class="col-md-5 col-md-offset-2">
 
-        }
-        else
-        {
-            using (Ajax.BeginForm("EditTable", new AjaxOptions { UpdateTargetId = "editor", HttpMethod = "Get" }))
-            {
-                <div class="panel panel-default">
-                    <div class="panel-heading">Выберите таблицу для изменения:</div>
-                    <div class="panel-body">
-                        <div class="input-group col-md-6 col-md-offset-3">
-
-                            @Html.DropDownList("SelectedTable", new SelectList(@Model, "Value", "Text", null), new
-                       {
-                           @class = "selectpicker form-control",
-                           @title = "Please select table in database"
-                       })
-
-                            <span class="input-group-btn">
-                                <button class="btn btn-info my-group-button" type="submit">Выбрать таблицу</button>
-                            </span>
-                        </div>
+                        @Html.DropDownList("SelectedTable", new SelectList(@Model, "Value", "Text", null), new
+                   {
+                       @class = "selectpicker form-control",
+                       @title = "Please select table in database"
+                   })
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-info my-group-button" type="submit">Выбрать таблицу</button>
                     </div>
                 </div>
-            }
+            </div>
         }
-    }
+    </div>
+}
+
+<div class="container">
     @Ajax.ActionLink("Новая таблица", "CreateTable", null, new AjaxOptions { UpdateTargetId = "editor" }, new { @class = "btn btn-success col-md-6 col-md-offset-3" })
-    <br/>
+    <br>
+    <br>
+    <br>
     @Ajax.ActionLink("Удалить таблицу", "DeleteTable", null, new AjaxOptions { UpdateTargetId = "editor" }, new { @class = "btn btn-danger col-md-6 col-md-offset-3" })
     <br>
     <br>
-
-    <div id="editor">
-            @if (Session["TableName"] != null)
-            {
-                @Html.Partial("EditTable", (DataTable) ViewBag.dataOfTheTable)
-            }
-    </div>
+    <br>
 </div>
+
+<div id="editor">
+    @if (Session["TableName"] != null)
+    {
+        @Html.Partial("EditTable", (DataTable)ViewBag.dataOfTheTable)
+    }
+</div>
+
 
 @section Scripts{
     <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
