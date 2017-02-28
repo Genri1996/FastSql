@@ -23,15 +23,37 @@
                         @Html.LabelFor(m => m.ColumnName, "Название колонки")
                         @Html.TextBoxFor(m => m.ColumnName, new { @class = "form-control" })
 
-                        @Html.LabelFor(m => m.DefaultValue, "Значенние по умолчанию (не обязательно)")
-                        @Html.TextBoxFor(m => m.DefaultValue, new { @class = "form-control" })
-
                         @Html.LabelFor(m => m.TypeName, "Выберите тип")
                         @Html.DropDownListFor(vm => vm.TypeName, Model.AvailableTypes, new { @class = "form-control" })
 
                         @Html.LabelFor(m => m.TypeLength, "Укажите длину строки или плавающей переменной (если выбрали их)")
                         <br />
-                        @Html.EditorFor(m => m.TypeLength, new { @class = "form-control input-number" })
+                        @Html.TextBoxFor(m => m.TypeLength, new { @type = "number", @class = "form-control" })
+
+                        <br/>
+                        <div class="radio-inline">
+                            <div class="col-md-6">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.IsDefaultValueEnabled)
+                                    Значение по умолчанию
+                                </label>
+                            </div>
+                            <div class="col-md-6">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.IsNotNull)
+                                    NotNull
+                                </label>
+                            </div>
+                            <div class="col-md-6">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.IsUnique)
+                                    Unique
+                                </label>
+                            </div>
+                        </div>
+
+                        @Html.LabelFor(m => m.DefaultValue, "Значенние по умолчанию (если включено)")
+                        @Html.TextBoxFor(m => m.DefaultValue, new { @class = "form-control" })
                     }
                 </div>
             </div>

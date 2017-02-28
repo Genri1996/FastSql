@@ -68,7 +68,18 @@ namespace CursachPrototype.Controllers
             return PartialView("ShowConnectionString", cs);
         }
 
-        
+        [Authorize]
+        public ActionResult GoToEditingProtected()
+        {
+            var id =
+               DataBasesManager.GetDbInfos(User.Identity.GetUserId())
+                   .OrderByDescending(db => db.DateOfCreating)
+                   .First()
+                   .Id;
+
+            return RedirectToAction("Index","DisplayTable", new { dbId = id});
+        }
+
         /// <summary>
         /// Creates Database according to user`s vm selection
         /// </summary>
@@ -166,5 +177,7 @@ namespace CursachPrototype.Controllers
             return
                 req;
         }
+
+       
     }
 }

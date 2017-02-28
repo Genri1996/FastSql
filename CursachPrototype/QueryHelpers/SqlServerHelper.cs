@@ -46,12 +46,24 @@ namespace CursachPrototype.QueryHelpers
             if (!string.IsNullOrWhiteSpace(defaultQueryResult))
                 return defaultQueryResult;
 
+            //Adding unique constraint
+            var uniqueQueryResult = SetUniqueIfRequired();
+
+            if (!string.IsNullOrWhiteSpace(uniqueQueryResult))
+                return uniqueQueryResult;
+
+            //Adding not null
+            var notNullQueryResult = SetNotNullIfRequired();
+
+            if (!string.IsNullOrWhiteSpace(notNullQueryResult))
+                return notNullQueryResult;
+
             return string.Empty;
         }
 
         private string SetDefaultIfRequired()
         {
-            if (!string.IsNullOrWhiteSpace(_cvm.DefaultValue))
+            if (_cvm.IsDefaultValueEnabled)
             {
                 var defaultQuery = $"ALTER TABLE {_cvm.TableName} ADD DEFAULT ";
                 if (_cvm.TypeName == "String")
@@ -65,7 +77,60 @@ namespace CursachPrototype.QueryHelpers
                     _dbInf.DbmsType);
                 if (!string.IsNullOrWhiteSpace(defaultQueryResult))
                 {
-                    DropColumn(new DeleteColumnVm { ColumnName = _cvm.ColumnName, TableName = _dbInf.Name });
+                    DropColumn(new DeleteColumnVm { ColumnName = _cvm.ColumnName, TableName = _cvm.TableName });
+                    return defaultQueryResult;
+                }
+            }
+            return string.Empty;
+        }
+
+
+        private string SetUniqueIfRequired()
+        {
+            if (_cvm.IsUnique)
+            {
+                var defaultQuery = $"ALTER TABLE {_cvm.TableName} ADD UNIQUE ({_cvm.ColumnName})";
+
+                var defaultQueryResult = DataProxy.DataService.ExecuteQuery(defaultQuery, _dbInf.ConnectionString,
+                    _dbInf.DbmsType);
+
+                if (!string.IsNullOrWhiteSpace(defaultQueryResult))
+                {
+                    DropColumn(new DeleteColumnVm { ColumnName = _cvm.ColumnName, TableName = _cvm.TableName });
+                    return defaultQueryResult;
+                }
+            }
+            return string.Empty;
+        }
+
+        private string SetNotNullIfRequired()
+        {
+            if (_cvm.IsNotNull)
+            {
+                var defaultQuery = $"ALTER TABLE {_cvm.TableName} ALTER COLUMN ({_cvm.ColumnName}) ";
+
+                if (string.Compare(_cvm.TypeName,"String")==0)
+                {
+                    defaultQuery += $"NVARCHAR({_cvm.TypeLength})";
+                }else if (string.Compare(_cvm.TypeName, "String") == 0)
+                {
+                    defaultQuery +="INT"; 
+                }
+                else if (string.Compare(_cvm.TypeName, "Double") == 0)
+                {
+                    defaultQuery += $"FLOAT({_cvm.TypeLength})";
+                }
+                else if (string.Compare(_cvm.TypeName, "DateTime") == 0)
+                {
+                    defaultQuery += "DATETIME";
+                }
+
+                defaultQuery += " NOT NULL";
+                var defaultQueryResult = DataProxy.DataService.ExecuteQuery(defaultQuery, _dbInf.ConnectionString,
+                    _dbInf.DbmsType);
+                if (!string.IsNullOrWhiteSpace(defaultQueryResult))
+                {
+                    DropColumn(new DeleteColumnVm { ColumnName = _cvm.ColumnName, TableName = _cvm.TableName });
                     return defaultQueryResult;
                 }
             }

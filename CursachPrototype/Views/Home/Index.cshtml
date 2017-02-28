@@ -42,7 +42,7 @@
             <div class="col-lg-5 col-lg-offset-1 col-md-6 text-center">
                 <a href="@Url.Action("CreateAnonymousDb", "CsDispatcher")">
                     <div class="service-box">
-                        <i class="fa fa-4x fa-paper-plane text-primary sr-icons"></i>
+                        <i class="fa fa-4x fa-rocket text-primary sr-icons"></i>
                         <h3>База Данных без регистрации</h3>
                         <p class="text-muted">Создается база данных со случайно сгенирированными учётными данными.</p>
                     </div>
@@ -51,7 +51,7 @@
             <div class="col-lg-5 col-md-6 text-center">
                 <a href="@Url.Action("CreateProtectedDb", "CsDispatcher")">
                     <div class="service-box">
-                        <i class="fa fa-4x fa-newspaper-o text-primary sr-icons"></i>
+                        <i class="fa fa-4x fa-lock text-primary sr-icons"></i>
                         <h3>Защищенная база данных (требуется регистрация)</h3>
                         <p class="text-muted">
                             Создается база данных. В качестве логина выступает ваш ник, пароля - заданный при создании пароль.
@@ -69,7 +69,7 @@
         </div>
         <div class="row">
             <div class="center-block text-center">
-                @Ajax.RawActionLink(" <div class=\"service-box\"> <i class=\"fa fa-4x fa-paper-plane text-primary sr-icons\"></i><h3>Запрос к базе данных</h3><p class=\"text-muted\">Сделайте запрос к вашей базе данных через наш сервис с использованием нашего SQL-редактора.</p></div>", 
+                @Ajax.RawActionLink(" <div class=\"service-box\"> <i class=\"fa fa-4x fa-envelope text-primary sr-icons\"></i><h3>Запрос к базе данных</h3><p class=\"text-muted\">Сделайте запрос к вашей базе данных через наш сервис с использованием нашего SQL-редактора.</p></div>", 
                 "MakeQuery", "Home", null, new AjaxOptions {UpdateTargetId = "ajax"}, null)
             </div>
         </div>

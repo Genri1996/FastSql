@@ -20,10 +20,16 @@ namespace CursachPrototype.ViewModels
         [Required(ErrorMessage = "Поле должно быть выбрано.")]
         public string TypeName { get; set; }
 
-        [Range(1, 5000, ErrorMessage = "От 1 до 72 часа")]
-        public int TypeLength { get; set; }
+        [Range(1, 5000, ErrorMessage = "От 1 до 5000")]
+        public int TypeLength { get; set; } = 100;
 
-        public string DefaultValue { get; set; }
+        public string DefaultValue { get; set; } = "";
+
+        public bool IsDefaultValueEnabled { get; set; } = false;
+
+        public bool IsUnique { get; set;} = false;
+
+        public bool IsNotNull { get; set; } = false;
 
         public IEnumerable<SelectListItem> AvailableTypes => 
             new List<SelectListItem>
