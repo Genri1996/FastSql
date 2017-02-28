@@ -18,7 +18,9 @@
                     {
                         <label for="conStr">Строка подключения</label>
                         @Html.TextBox("conStr", "", new { @class = "form-control", @id = "conStr" })
-                        @Html.TextArea("query", new { @class = "form-control", @rows = "5" })
+                        <br/>
+                        <label for="query">Запрос</label>
+                        @Html.TextArea("query", new { @class = "form-control", @rows = "5", @id = "query" })
                     }
                     <br />
                     <div id="results"></div>

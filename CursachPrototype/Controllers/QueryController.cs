@@ -40,24 +40,39 @@ namespace CursachPrototype.Controllers
             return PartialView("QueryResults", vm.DataTable);
         }
 
-        [HttpGet]
         public ActionResult QueryExecutorWithCs(QueryExecutorVm vm)
         {
-            var connectionString = Request["conStr"];
+            var connectionString = Request["conStr"].Trim();
+            vm.DataTable = new DataTable();
+            var errorDataColumn = new DataColumn("FastSqlQueryErrMessages", typeof(string));
+            vm.DataTable.Columns.Add(errorDataColumn);
+
+            //Check if connection string is empty
             if (string.IsNullOrEmpty(connectionString))
             {
-                var errorDataColumn = new DataColumn("FastSqlQueryErrMessages", typeof(string));
-                vm.DataTable.Columns.Add(errorDataColumn);
                 var row = vm.DataTable.NewRow();
                 row[0] = "Ваша строка подключения пуста!";
                 vm.DataTable.Rows.Add(row);
-
                 return PartialView("QueryResults", vm.DataTable);
             }
-            using (IQueryExecutor executor = new SqlServerExecutor(connectionString))
+            //Try to establish connection
+            IQueryExecutor executor = null;
+            try
             {
-                vm.DataTable = executor.ExecuteQueryAsDataTable(vm.Query);
+                executor = new SqlServerExecutor(connectionString);
             }
+            catch
+            {
+                var row = vm.DataTable.NewRow();
+                row[0] = "Не удалось установить соеденение.";
+                vm.DataTable.Rows.Add(row);
+                executor?.Dispose();
+                return PartialView("QueryResults", vm.DataTable);
+            }
+            //receive data
+            vm.DataTable = executor.ExecuteQueryAsDataTable(vm.Query);
+            executor.Dispose();
+
             return PartialView("QueryResults", vm.DataTable);
         }
     }
