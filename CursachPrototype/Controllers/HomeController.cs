@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using CursachPrototype.ViewModels;
 
 namespace CursachPrototype.Controllers
 {
@@ -8,6 +9,11 @@ namespace CursachPrototype.Controllers
         public ActionResult Index()
         {
             return View();
+        }
+
+        public ActionResult MakeQuery()
+        {
+            return PartialView("~/Views/Query/QueryExecutorWithCs.cshtml", new QueryExecutorVm());
         }
     }
 }

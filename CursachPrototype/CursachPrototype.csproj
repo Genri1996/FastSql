@@ -317,6 +317,7 @@
     <Compile Include="Controllers\UserRoomController.cs" />
     <Compile Include="CustomAttributes\MultiButtonAttribute.cs" />
     <Compile Include="ExtensionMethods\FromServerSelectionVmToCreateDbObj.cs" />
+    <Compile Include="ExtensionMethods\HtmlExtensionHelper.cs" />
     <Compile Include="ExtensionMethods\StringExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -374,6 +375,7 @@
     <Content Include="Views\DisplayTable\DeleteColumn.cshtml" />
     <Content Include="Views\DisplayTable\CreateTable.cshtml" />
     <Content Include="Views\DisplayTable\DeleteTable.cshtml" />
+    <Content Include="Views\Query\QueryExecutorWithCs.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

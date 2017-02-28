@@ -1,0 +1,40 @@
+﻿@model CursachPrototype.ViewModels.QueryExecutorVm
+
+<script type="text/javascript">
+    onload($('#ModalExecute').modal('show'))
+</script>
+
+<div class="modal fade" id="ModalExecute" role="dialog" data-backdrop="static">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" onclick="$('#ModalExecute').modal('close')">&times;</button>
+                <h4 class="modal-title">Запрос к @Model.DbName</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    @using (Ajax.BeginForm("QueryExecutorWithCs", new { controller = "Query" }, new AjaxOptions { UpdateTargetId = "results" }, new { @id = "mainForm" }))
+                    {
+                        <label for="conStr">Строка подключения</label>
+                        @Html.TextBox("conStr", "", new { @class = "form-control", @id = "conStr" })
+                        @Html.TextArea("query", new { @class = "form-control", @rows = "5" })
+                    }
+                    <br />
+                    <div id="results"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" form="mainForm">Выполнить</button>
+                <button class="btn btn-default" data-dismiss="modal" onclick="$('#ModalExecute').modal('close')">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts{
+    <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+}

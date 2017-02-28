@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CursachPrototype.Models.Accounting;
@@ -21,7 +23,8 @@ namespace CursachPrototype.Controllers
         private AppUserManager _userManager => System.Web.HttpContext.Current.GetOwinContext()
             .GetUserManager<AppUserManager>();
 
-        [HttpPost]
+
+        [HttpPost, Authorize]
         public ActionResult QueryExecutor(QueryExecutorVm vm)
         {
             //Find user
@@ -34,7 +37,28 @@ namespace CursachPrototype.Controllers
             {
                 vm.DataTable = executor.ExecuteQueryAsDataTable(vm.Query);
             }
-            return PartialView("QueryResults",vm.DataTable);
+            return PartialView("QueryResults", vm.DataTable);
+        }
+
+        [HttpGet]
+        public ActionResult QueryExecutorWithCs(QueryExecutorVm vm)
+        {
+            var connectionString = Request["conStr"];
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                var errorDataColumn = new DataColumn("FastSqlQueryErrMessages", typeof(string));
+                vm.DataTable.Columns.Add(errorDataColumn);
+                var row = vm.DataTable.NewRow();
+                row[0] = "Ваша строка подключения пуста!";
+                vm.DataTable.Rows.Add(row);
+
+                return PartialView("QueryResults", vm.DataTable);
+            }
+            using (IQueryExecutor executor = new SqlServerExecutor(connectionString))
+            {
+                vm.DataTable = executor.ExecuteQueryAsDataTable(vm.Query);
+            }
+            return PartialView("QueryResults", vm.DataTable);
         }
     }
 }
