@@ -11,7 +11,7 @@ namespace DataProxy.Creators
     /// </summary>
     class SqlServerCreator : IDbCreator
     {
-        public const string LocalSqlServerName = @"SERVERNAME";
+        private const string LocalSqlServerName = @"SERVERNAME";
         //Full access to server
         private readonly string _masterConnectionString;
         private readonly string _dataBaseName;

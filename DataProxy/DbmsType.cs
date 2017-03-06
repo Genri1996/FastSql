@@ -5,6 +5,6 @@
     /// </summary>
     public enum DbmsType
     {
-        SqlServer
+        SqlServer, MySql
     }
 }
