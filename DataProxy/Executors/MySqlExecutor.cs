@@ -1,42 +1,18 @@
-﻿using System;
-using System.Data;
-using System.Data.SqlClient;
+﻿using System.Data.Common;
 using MySql.Data.MySqlClient;
 
 namespace DataProxy.Executors
 {
-    class MySqlExecutor:QueryExecutor
+    public sealed class MySqlExecutor : QueryExecutor
     {
-        private readonly MySqlConnection _connection;
+        protected override DbConnection Connection { get; set; }
+        protected override DbDataAdapter DataAdapter { get; set; }
 
-        /// <summary>
-        /// Opens connection imeddiately.
-        /// </summary>
-        /// <param name="connectionString"></param>
         public MySqlExecutor(string connectionString)
         {
-            _connection = new MySqlConnection(connectionString);
+            Connection = new MySqlConnection(connectionString);
+            DataAdapter = new MySqlDataAdapter();
             Open();
-        }
-
-        public override DataTable ExecuteQueryAsDataTable(string command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override string ExecuteQueryAsString(string command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override string ExecuteCommandAsString(SqlCommand command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override DataTable ExecuteCommandAsDataTable(SqlCommand command)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

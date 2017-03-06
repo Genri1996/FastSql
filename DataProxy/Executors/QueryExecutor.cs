@@ -14,50 +14,121 @@ namespace DataProxy.Executors
     /// </summary>
     public abstract class QueryExecutor:IDisposable
     {
-        protected DbConnection _connection;
-
         /// <summary>
         /// Executes string quey and returns datatable
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public abstract DataTable ExecuteQueryAsDataTable(String command);
+        public DataTable ExecuteQueryAsDataTable(string command)
+        {
+            SqlCommand cmd = new SqlCommand(command);
+            return ExecuteCommandAsDataTable(cmd);
+        }
+
         /// <summary>
         /// Executes string quey and returns string
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public abstract String ExecuteQueryAsString(String command);
+        public string ExecuteQueryAsString(string command)
+        {
+            SqlCommand cmd = new SqlCommand(command);
+            return ExecuteCommandAsString(cmd);
+        }
+
         /// <summary>
         /// Executes SqlCommand and returns string
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public abstract String ExecuteCommandAsString(SqlCommand command);
+        public string ExecuteCommandAsString(DbCommand command)
+        {
+            StringBuilder builder = new StringBuilder();
+            command.Connection = Connection;
+
+            //Result collector
+            DbDataReader reader = null;
+            try
+            {
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    for (int i = 0; i < reader.VisibleFieldCount; i++)
+                        builder.AppendLine(reader[i] + " ");
+                    builder.AppendLine();
+                }
+            }
+            catch (SqlException exception)
+            {
+                builder.AppendLine(exception.Message);
+            }
+            finally
+            {
+                reader?.Close();
+                reader?.Dispose();
+                command.Dispose();
+            }
+            return builder.ToString();
+        }
+
         /// <summary>
         /// Executes SqlCommand and returns DataTable
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public abstract DataTable ExecuteCommandAsDataTable(SqlCommand command);
-
-        protected void Open()
+        public DataTable ExecuteCommandAsDataTable(DbCommand command)
         {
+            DataTable dt = new DataTable();
+            command.Connection = Connection;
+            DbDataAdapter sda = DataAdapter;
+            sda.SelectCommand = command;
+            command.CommandType = CommandType.Text;
             try
             {
-                _connection.Open();
+                sda.Fill(dt);
+                return dt;
             }
-            catch (SqlException ex)
+            catch (SqlException e)
             {
-                _connection.Dispose();
-                throw new Exception("Unable to open connection.", ex);
+                var errorDataColumn = new DataColumn("FastSqlQueryErrMessages", typeof(string));
+                dt.Columns.Add(errorDataColumn);
+                foreach (SqlError sqlError in e.Errors)
+                {
+                    var row = dt.NewRow();
+                    row[0] = sqlError.Message;
+                    dt.Rows.Add(row);
+                }
+
+                return dt;
+            }
+            finally
+            {
+                sda.Dispose();
             }
         }
 
         public void Dispose()
         {
-            _connection.Close();
-            _connection.Dispose();
+            Connection.Close();
+            Connection.Dispose();
         }
+
+        protected abstract DbConnection Connection { get; set; }
+
+        protected abstract DbDataAdapter DataAdapter { get; set; }
+
+        protected void Open()
+        {
+            try
+            {
+                Connection.Open();
+            }
+            catch (SqlException ex)
+            {
+                Connection.Dispose();
+                throw new Exception("Unable to open connection.", ex);
+            }
+        } 
+
     }
 }
