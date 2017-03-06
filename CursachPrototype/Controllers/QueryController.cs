@@ -33,7 +33,7 @@ namespace CursachPrototype.Controllers
 
             //TODO: Think, if i need different executors for each DBMS or not
 
-            using (IQueryExecutor executor = new SqlServerExecutor(foundDb.ConnectionString))
+            using (QueryExecutor executor = new SqlServerExecutor(foundDb.ConnectionString))
             {
                 vm.DataTable = executor.ExecuteQueryAsDataTable(vm.Query);
             }
@@ -56,7 +56,7 @@ namespace CursachPrototype.Controllers
                 return PartialView("QueryResults", vm.DataTable);
             }
             //Try to establish connection
-            IQueryExecutor executor = null;
+            QueryExecutor executor = null;
             try
             {
                 executor = new SqlServerExecutor(connectionString);

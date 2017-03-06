@@ -49,6 +49,9 @@ namespace DataProxy
                 case DbmsType.SqlServer:
                     helper = new SqlServerHelper();
                     break;
+                    case DbmsType.MySql:
+                    helper = new MySqlHelper();
+                    break;
             }
 
             return helper.IsDataBaseExists(dataBaseName);
@@ -69,7 +72,7 @@ namespace DataProxy
 
         public static string ExecuteQuery(string query, string connectionString, DbmsType type)
         {
-            IQueryExecutor executor = null;
+            QueryExecutor executor = null;
             switch (type)
             {
                 case DbmsType.SqlServer:

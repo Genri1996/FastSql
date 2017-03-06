@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -11,31 +12,52 @@ namespace DataProxy.Executors
     /// <summary>
     /// Provides interface for raw queries
     /// </summary>
-    public interface IQueryExecutor:IDisposable
+    public abstract class QueryExecutor:IDisposable
     {
+        protected DbConnection _connection;
+
         /// <summary>
         /// Executes string quey and returns datatable
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        DataTable ExecuteQueryAsDataTable(String command);
+        public abstract DataTable ExecuteQueryAsDataTable(String command);
         /// <summary>
         /// Executes string quey and returns string
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        String ExecuteQueryAsString(String command);
+        public abstract String ExecuteQueryAsString(String command);
         /// <summary>
         /// Executes SqlCommand and returns string
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        String ExecuteCommandAsString(SqlCommand command);
+        public abstract String ExecuteCommandAsString(SqlCommand command);
         /// <summary>
         /// Executes SqlCommand and returns DataTable
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        DataTable ExecuteCommandAsDataTable(SqlCommand command);
+        public abstract DataTable ExecuteCommandAsDataTable(SqlCommand command);
+
+        protected void Open()
+        {
+            try
+            {
+                _connection.Open();
+            }
+            catch (SqlException ex)
+            {
+                _connection.Dispose();
+                throw new Exception("Unable to open connection.", ex);
+            }
+        }
+
+        public void Dispose()
+        {
+            _connection.Close();
+            _connection.Dispose();
+        }
     }
 }

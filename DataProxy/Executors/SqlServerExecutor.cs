@@ -8,10 +8,8 @@ namespace DataProxy.Executors
     /// <summary>
     /// Provides an ability to execute query to SQL server
     /// </summary>
-    public class SqlServerExecutor : IQueryExecutor
+    public class SqlServerExecutor : QueryExecutor
     {
-        private readonly SqlConnection _connection;
-
         /// <summary>
         /// Opens connection imeddiately.
         /// </summary>
@@ -27,7 +25,7 @@ namespace DataProxy.Executors
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public DataTable ExecuteQueryAsDataTable(string command)
+        public override DataTable ExecuteQueryAsDataTable(string command)
         {
             SqlCommand cmd = new SqlCommand(command);
             return ExecuteCommandAsDataTable(cmd);
@@ -38,7 +36,7 @@ namespace DataProxy.Executors
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public string ExecuteQueryAsString(string command)
+        public override string ExecuteQueryAsString(string command)
         {
             SqlCommand cmd = new SqlCommand(command);
             return ExecuteCommandAsString(cmd);
@@ -49,10 +47,10 @@ namespace DataProxy.Executors
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public string ExecuteCommandAsString(SqlCommand command)
+        public override string ExecuteCommandAsString(SqlCommand command)
         {
             StringBuilder builder = new StringBuilder();
-            command.Connection = _connection;
+            command.Connection = _connection as SqlConnection;
 
             //Result collector
             SqlDataReader reader = null;
@@ -84,10 +82,10 @@ namespace DataProxy.Executors
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public DataTable ExecuteCommandAsDataTable(SqlCommand command)
+        public override DataTable ExecuteCommandAsDataTable(SqlCommand command)
         {
             DataTable dt = new DataTable();
-            command.Connection = _connection;
+            command.Connection = _connection as SqlConnection;
             SqlDataAdapter sda = new SqlDataAdapter();
             command.CommandType = CommandType.Text;
             try
@@ -113,25 +111,6 @@ namespace DataProxy.Executors
             {
                 sda.Dispose();
             }
-        }
-
-        private void Open()
-        {
-            try
-            {
-                _connection.Open();
-            }
-            catch (SqlException ex)
-            {
-                _connection.Dispose();
-                throw new Exception("Unable to open connection.", ex);
-            }
-        }
-
-        public void Dispose()
-        {
-            _connection.Close();
-            _connection.Dispose();
         }
     }
 }
