@@ -20,5 +20,10 @@ namespace DataProxy.Executors
             DataAdapter = new SqlDataAdapter();
             Open();
         }
+
+        protected override DbCommand GetCommand(string command)
+        {
+            return new SqlCommand(command);
+        }
     }
 }

@@ -14,5 +14,10 @@ namespace DataProxy.Executors
             DataAdapter = new MySqlDataAdapter();
             Open();
         }
+
+        protected override DbCommand GetCommand(string command)
+        {
+            return new MySqlCommand(command);
+        }
     }
 }

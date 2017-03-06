@@ -67,16 +67,17 @@ namespace DataProxy.Creators
             StringBuilder result = new StringBuilder();
 
             var loginTimeStamp = DateTime.Now.Ticks % 100000;
+            login += loginTimeStamp;
 
             using (SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString))
             {
-                string createLoginQuery = $"USE MASTER CREATE LOGIN {login + loginTimeStamp} WITH PASSWORD = '{password}'";
+                string createLoginQuery = $"USE MASTER CREATE LOGIN {login} WITH PASSWORD = '{password}'";
                 result.Append(executor.ExecuteQueryAsString(createLoginQuery));
 
                 string createDbQuery = $"USE MASTER CREATE DATABASE {_dataBaseName}";
-                string createUserQuery = $"USE {_dataBaseName} CREATE USER {login + loginTimeStamp} FOR LOGIN {login + loginTimeStamp}";
+                string createUserQuery = $"USE {_dataBaseName} CREATE USER {login} FOR LOGIN {login}";
                 //Apply protection rules
-                string grantPermissionQuery = $"USE {_dataBaseName} EXEC sp_addrolemember 'db_owner', {login + loginTimeStamp}";
+                string grantPermissionQuery = $"USE {_dataBaseName} EXEC sp_addrolemember 'db_owner', {login}";
 
                 result.Append(executor.ExecuteQueryAsString(createDbQuery));
                 result.Append(executor.ExecuteQueryAsString(createUserQuery));

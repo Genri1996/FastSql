@@ -23,10 +23,16 @@ namespace DataProxy
         public static string CreateDatabase(DataBaseInfo obj, string connectionString, string login = null, string password = null)
         {
             IDbCreator creator = null;
+            string localHostName = null;
             switch (obj.DbmsType)
             {
                 case DbmsType.SqlServer:
                     creator = new SqlServerCreator(obj.Name);
+                    localHostName = ".\\SQLEXPRESS";
+                    break;
+                case DbmsType.MySql:
+                    creator = new MySqlCreator(obj.Name);
+                    localHostName = "localhost";
                     break;
             }
             string cs;
@@ -37,7 +43,8 @@ namespace DataProxy
             else
                 throw new ArgumentException("Lack of arguments.");
 
-            cs = cs.Replace("SERVERNAME", connectionString);
+
+            cs = cs.Replace("SERVERNAME", string.Equals(connectionString, "LOCALHOST") ? localHostName : connectionString);
             return cs;
         }
 
@@ -49,7 +56,7 @@ namespace DataProxy
                 case DbmsType.SqlServer:
                     helper = new SqlServerHelper();
                     break;
-                    case DbmsType.MySql:
+                case DbmsType.MySql:
                     helper = new MySqlHelper();
                     break;
             }

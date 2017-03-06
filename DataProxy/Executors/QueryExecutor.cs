@@ -21,7 +21,7 @@ namespace DataProxy.Executors
         /// <returns></returns>
         public DataTable ExecuteQueryAsDataTable(string command)
         {
-            SqlCommand cmd = new SqlCommand(command);
+            DbCommand cmd = GetCommand(command);
             return ExecuteCommandAsDataTable(cmd);
         }
 
@@ -32,7 +32,7 @@ namespace DataProxy.Executors
         /// <returns></returns>
         public string ExecuteQueryAsString(string command)
         {
-            SqlCommand cmd = new SqlCommand(command);
+            DbCommand cmd = GetCommand(command);
             return ExecuteCommandAsString(cmd);
         }
 
@@ -117,6 +117,8 @@ namespace DataProxy.Executors
 
         protected abstract DbDataAdapter DataAdapter { get; set; }
 
+        protected abstract DbCommand GetCommand(string command);
+
         protected void Open()
         {
             try
@@ -129,6 +131,7 @@ namespace DataProxy.Executors
                 throw new Exception("Unable to open connection.", ex);
             }
         } 
+
 
     }
 }

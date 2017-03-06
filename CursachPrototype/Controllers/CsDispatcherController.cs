@@ -109,7 +109,7 @@ namespace CursachPrototype.Controllers
             //Try to create database
             try
             {
-                tempDbInfo.ConnectionString = DataService.CreateDatabase(tempDbInfo, GetSqlServerAddress(), user.UserNickName, vm.DataBasePassword);
+                tempDbInfo.ConnectionString = DataService.CreateDatabase(tempDbInfo, GetHostAddress(), user.UserNickName, vm.DataBasePassword);
             }
             catch (Exception e)
             {
@@ -145,7 +145,7 @@ namespace CursachPrototype.Controllers
             String connectionString;
             try
             {
-                connectionString = DataService.CreateDatabase(tempObj, GetSqlServerAddress());
+                connectionString = DataService.CreateDatabase(tempObj, GetHostAddress());
             }
             catch (Exception e)
             {
@@ -169,15 +169,13 @@ namespace CursachPrototype.Controllers
             return availableServers;
         }
 
-        private string GetSqlServerAddress()
+        private string GetHostAddress()
         {
             var req = $"{Request.Url.Authority}";
             if (req.Contains("localhost"))
-                return @".\SQLEXPRESS";
+                return @"LOCALHOST";
             return
                 req;
         }
-
-       
     }
 }
