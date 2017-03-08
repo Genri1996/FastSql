@@ -45,16 +45,7 @@ namespace CursachPrototype.Controllers
             return PartialView(foundDb);
         }
 
-        ///// <summary>
-        ///// Removes Database after confiramtion
-        ///// </summary>
-        ///// <returns></returns>
-        //[HttpPost, ActionName("Delete")]
-        //public ActionResult DeleteConfirmed(DataBaseInfo dbInfo)
-        //{
-           
-        //}
-
+     
         [HttpGet]
         public ActionResult ExecuteQuery(int id)
         {

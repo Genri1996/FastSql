@@ -42,14 +42,14 @@ namespace DataProxy.Helpers
         public bool DropDataBase(DataBaseInfo dbInfo)
         {
             string strQuery = $" USE MASTER ALTER DATABASE[{dbInfo.Name}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;  DROP DATABASE[{dbInfo.Name}];";
-            string deleteUser = $"DROP USER IF EXISTS {dbInfo.Name}";
-            string deleteLogin = $"DROP LOGIN {dbInfo.Name}";
+            string deleteUser = $"USE MASTER DROP USER IF EXISTS {dbInfo.Name}";
+            string deleteLogin = $"USE MASTER DROP LOGIN {dbInfo.Name}";
             string queryResult;
             using (SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString))
             {
                 queryResult=executor.ExecuteQueryAsString(strQuery);
                 executor.ExecuteQueryAsString(deleteLogin);
-                executor.ExecuteQueryAsDataTable(deleteUser);
+                executor.ExecuteQueryAsString(deleteUser);
             }
             if (queryResult != string.Empty)
                 return false;

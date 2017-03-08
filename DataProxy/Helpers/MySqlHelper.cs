@@ -30,7 +30,18 @@ namespace DataProxy.Helpers
 
         public bool DropDataBase(DataBaseInfo dbInfo)
         {
-            throw new System.NotImplementedException();
+            string strQuery = $"DROP DATABASE {dbInfo.Name}";
+            string deleteUser = $"DROP USER '{dbInfo.Login}'@'%';";
+            string queryResult;
+            using (MySqlExecutor executor = new MySqlExecutor(_masterConnectionString))
+            {
+                queryResult = executor.ExecuteQueryAsString(strQuery);
+                executor.ExecuteQueryAsString(deleteUser);
+            }
+            if (queryResult != string.Empty)
+                return false;
+
+            return true;
         }
 
         public bool IsLoginExists(string login)

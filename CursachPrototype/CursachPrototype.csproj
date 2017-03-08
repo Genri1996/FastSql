@@ -291,6 +291,7 @@
     <Content Include="Content\DarkTheme\vendor\font-awesome\scss\_stacked.scss" />
     <Content Include="Content\DarkTheme\vendor\font-awesome\scss\_variables.scss" />
     <None Include="Properties\PublishProfiles\FastSql - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\IIS.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
