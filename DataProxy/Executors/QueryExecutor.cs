@@ -6,13 +6,14 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace DataProxy.Executors
 {
     /// <summary>
     /// Provides interface for raw queries
     /// </summary>
-    public abstract class QueryExecutor:IDisposable
+    public abstract class QueryExecutor : IDisposable
     {
         /// <summary>
         /// Executes string quey and returns datatable
@@ -101,6 +102,16 @@ namespace DataProxy.Executors
 
                 return dt;
             }
+            catch (MySqlException e)
+            {
+                var errorDataColumn = new DataColumn("FastSqlQueryErrMessages", typeof(string));
+                dt.Columns.Add(errorDataColumn);
+                var row = dt.NewRow();
+                row[0] = e.Message;
+                dt.Rows.Add(row);
+
+                return dt;
+            }
             finally
             {
                 sda.Dispose();
@@ -130,7 +141,7 @@ namespace DataProxy.Executors
                 Connection.Dispose();
                 throw new Exception("Unable to open connection.", ex);
             }
-        } 
+        }
 
 
     }

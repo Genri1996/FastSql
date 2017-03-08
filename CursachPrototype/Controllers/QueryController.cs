@@ -49,23 +49,19 @@ namespace CursachPrototype.Controllers
                 vm.DataTable.Rows.Add(row);
                 return PartialView("QueryResults", vm.DataTable);
             }
-            //Try to establish connection
-            QueryExecutor executor = null;
+
+            //Try to establish connection and receive data
             try
             {
-                executor = new SqlServerExecutor(connectionString);
+                vm.DataTable = DataService.ExecuteQueryAsDataTable(vm.Query, connectionString, vm.DbmsType);
             }
             catch
             {
                 var row = vm.DataTable.NewRow();
                 row[0] = "Не удалось установить соеденение.";
                 vm.DataTable.Rows.Add(row);
-                executor?.Dispose();
                 return PartialView("QueryResults", vm.DataTable);
             }
-            //receive data
-            vm.DataTable = executor.ExecuteQueryAsDataTable(vm.Query);
-            executor.Dispose();
 
             return PartialView("QueryResults", vm.DataTable);
         }
