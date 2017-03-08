@@ -3,7 +3,7 @@ using DataProxy.DbManangment;
 
 namespace CursachPrototype.QueryHelpers
 {
-    class SqlServerHelper : IHelper
+    class SqlServerHelper : IQueryHelper
     {
         private CreateColumnVm _cvm;
         private readonly DataBaseInfo _dbInf;
@@ -35,7 +35,7 @@ namespace CursachPrototype.QueryHelpers
             }
             query += type;
 
-            var result = DataProxy.DataService.ExecuteQuery(query, _dbInf.ConnectionString, _dbInf.DbmsType);
+            var result = DataProxy.DataService.ExecuteQueryAsString(query, _dbInf.ConnectionString, _dbInf.DbmsType);
 
             if (!string.IsNullOrWhiteSpace(result))
                 return result;
@@ -73,7 +73,7 @@ namespace CursachPrototype.QueryHelpers
 
                 defaultQuery += $"FOR {_cvm.ColumnName}";
 
-                var defaultQueryResult = DataProxy.DataService.ExecuteQuery(defaultQuery, _dbInf.ConnectionString,
+                var defaultQueryResult = DataProxy.DataService.ExecuteQueryAsString(defaultQuery, _dbInf.ConnectionString,
                     _dbInf.DbmsType);
                 if (!string.IsNullOrWhiteSpace(defaultQueryResult))
                 {
@@ -91,7 +91,7 @@ namespace CursachPrototype.QueryHelpers
             {
                 var defaultQuery = $"ALTER TABLE {_cvm.TableName} ADD UNIQUE ({_cvm.ColumnName})";
 
-                var defaultQueryResult = DataProxy.DataService.ExecuteQuery(defaultQuery, _dbInf.ConnectionString,
+                var defaultQueryResult = DataProxy.DataService.ExecuteQueryAsString(defaultQuery, _dbInf.ConnectionString,
                     _dbInf.DbmsType);
 
                 if (!string.IsNullOrWhiteSpace(defaultQueryResult))
@@ -126,7 +126,7 @@ namespace CursachPrototype.QueryHelpers
                 }
 
                 defaultQuery += " NOT NULL";
-                var defaultQueryResult = DataProxy.DataService.ExecuteQuery(defaultQuery, _dbInf.ConnectionString,
+                var defaultQueryResult = DataProxy.DataService.ExecuteQueryAsString(defaultQuery, _dbInf.ConnectionString,
                     _dbInf.DbmsType);
                 if (!string.IsNullOrWhiteSpace(defaultQueryResult))
                 {
@@ -149,13 +149,13 @@ namespace CursachPrototype.QueryHelpers
                                $"IF @ConstraintName IS NOT NULL " +
                                $"EXEC('ALTER TABLE {vm.TableName} DROP CONSTRAINT ' + @ConstraintName) " +
                                $"ALTER TABLE {vm.TableName} DROP COLUMN {vm.ColumnName}";
-            return DataProxy.DataService.ExecuteQuery(dropQuery, _dbInf.ConnectionString, _dbInf.DbmsType);
+            return DataProxy.DataService.ExecuteQueryAsString(dropQuery, _dbInf.ConnectionString, _dbInf.DbmsType);
         }
 
         public string CreateTable(string tableName)
         {
             string createTableQuery = $"CREATE TABLE {tableName} (ID int NOT NULL PRIMARY KEY)";
-            return DataProxy.DataService.ExecuteQuery(createTableQuery, _dbInf.ConnectionString, _dbInf.DbmsType);
+            return DataProxy.DataService.ExecuteQueryAsString(createTableQuery, _dbInf.ConnectionString, _dbInf.DbmsType);
         }
 
         public string DeleteTable(string tableName)
@@ -168,12 +168,12 @@ namespace CursachPrototype.QueryHelpers
                 $" WHERE referenced_object_id = object_id('{tableName}')";
 
 
-            var dropConstraintQuery = DataProxy.DataService.ExecuteQuery(dropConstraintQueryGenerator, _dbInf.ConnectionString, _dbInf.DbmsType);
+            var dropConstraintQuery = DataProxy.DataService.ExecuteQueryAsString(dropConstraintQueryGenerator, _dbInf.ConnectionString, _dbInf.DbmsType);
             if(!string.IsNullOrEmpty(dropConstraintQuery))
-                DataProxy.DataService.ExecuteQuery(dropConstraintQuery, _dbInf.ConnectionString, _dbInf.DbmsType);
+                DataProxy.DataService.ExecuteQueryAsString(dropConstraintQuery, _dbInf.ConnectionString, _dbInf.DbmsType);
 
             string dropTableQuery = $"DROP TABLE {tableName}";
-            return DataProxy.DataService.ExecuteQuery(dropTableQuery, _dbInf.ConnectionString, _dbInf.DbmsType);
+            return DataProxy.DataService.ExecuteQueryAsString(dropTableQuery, _dbInf.ConnectionString, _dbInf.DbmsType);
         }
     }
 }

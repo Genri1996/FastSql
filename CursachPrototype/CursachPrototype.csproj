@@ -330,7 +330,7 @@
     <Compile Include="Models\Accounting\AppUserManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryHelpers\SqlServerHelper.cs" />
-    <Compile Include="QueryHelpers\IHelper.cs" />
+    <Compile Include="QueryHelpers\IQueryHelper.cs" />
     <Compile Include="ViewModels\AnonymousDbVm.cs" />
     <Compile Include="ViewModels\CreateColumnVm.cs" />
     <Compile Include="ViewModels\DbVm.cs" />

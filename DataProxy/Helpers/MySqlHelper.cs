@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using System.Data;
+using DataProxy.DbManangment;
 using DataProxy.Executors;
 
 namespace DataProxy.Helpers
@@ -13,10 +14,10 @@ namespace DataProxy.Helpers
             _masterConnectionString = ConfigurationManager.ConnectionStrings["MySqlMaster"].ConnectionString;
         }
 
-        public bool IsDataBaseExists(string dbName)
+        public bool IsDataBaseExists(DataBaseInfo dbInf)
         {
             string checkExistanceQuery =
-                $"SELECT count(*) as 'exists' FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{dbName}'";
+                $"SELECT count(*) as 'exists' FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{dbInf.Name}'";
 
             DataTable dt;
             using (QueryExecutor executor = new MySqlExecutor(_masterConnectionString))
@@ -27,7 +28,7 @@ namespace DataProxy.Helpers
             return (long)dt.Rows[0][0] != 0;
         }
 
-        public bool DropDataBase(string dbName)
+        public bool DropDataBase(DataBaseInfo dbInfo)
         {
             throw new System.NotImplementedException();
         }

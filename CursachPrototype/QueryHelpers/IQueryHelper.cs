@@ -7,7 +7,7 @@ using DataProxy.DbManangment;
 
 namespace CursachPrototype.QueryHelpers
 {
-    public interface IHelper
+    public interface IQueryHelper
     {
         string InsertNewColumn(CreateColumnVm vm);
         string DropColumn(DeleteColumnVm vm);

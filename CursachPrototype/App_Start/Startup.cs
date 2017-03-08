@@ -16,7 +16,7 @@ namespace CursachPrototype
     {
         public void Configuration(IAppBuilder app)
         {
-            DataService.ExecuteQuery("USE MASTER CREATE DATABASE HANGFIRE",
+            DataService.ExecuteQueryAsString("USE MASTER CREATE DATABASE HANGFIRE",
                 ConfigurationManager.ConnectionStrings["SqlServerMaster"].ConnectionString, DbmsType.SqlServer);
 
             GlobalConfiguration.Configuration.UseSqlServerStorage("Hangfire");

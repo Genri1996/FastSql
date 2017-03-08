@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Configuration;
 using System.Text;
+using DataProxy.DbManangment;
 using DataProxy.Executors;
-using DataProxy.Helpers;
 
 namespace DataProxy.Creators
 {
@@ -26,23 +26,23 @@ namespace DataProxy.Creators
         /// Creates database without ptotection
         /// </summary>
         /// <returns></returns>
-        public string CreateNewDatabaseWithRandomLogin()
+        public string CreateNewDatabaseWithRandomLogin(DataBaseInfo dbInfo)
         {
             //errors collector
             StringBuilder result = new StringBuilder();
 
-            var login = "login" + DateTime.Now.Ticks;
-            var password = "pass" + DateTime.Now.Ticks % 10000 * 37;
+            dbInfo.Login = "login" + DateTime.Now.Ticks;
+            dbInfo.Password = "pass" + DateTime.Now.Ticks % 10000 * 37;
 
             using (SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString))
             {
-                string createLoginQuery = $"USE MASTER CREATE LOGIN {login} WITH PASSWORD = '{password}'";
+                string createLoginQuery = $"USE MASTER CREATE LOGIN {dbInfo.Login} WITH PASSWORD = '{dbInfo.Password}'";
                 result.Append(executor.ExecuteQueryAsString(createLoginQuery));
 
                 string createDbQuery = $"USE MASTER CREATE DATABASE {_dataBaseName}";
-                string createUserQuery = $"USE {_dataBaseName} CREATE USER {login} FOR LOGIN {login}";
+                string createUserQuery = $"USE {_dataBaseName} CREATE USER {dbInfo.Login} FOR LOGIN {dbInfo.Login}";
                 //Apply protection rules
-                string grantPermissionQuery = $"USE {_dataBaseName} EXEC sp_addrolemember 'db_owner', {login}";
+                string grantPermissionQuery = $"USE {_dataBaseName} EXEC sp_addrolemember 'db_owner', {dbInfo.Login}";
 
                 result.Append(executor.ExecuteQueryAsString(createDbQuery));
                 result.Append(executor.ExecuteQueryAsString(createUserQuery));
@@ -52,7 +52,7 @@ namespace DataProxy.Creators
             if (result.ToString() != string.Empty)
                 throw new Exception(result.ToString());
 
-            return $"Data Source={LocalSqlServerName};Initial Catalog={_dataBaseName};User Id={login};Password={password}";
+            return $"Data Source={LocalSqlServerName};Initial Catalog={_dataBaseName};User Id={dbInfo.Login};Password={dbInfo.Password}";
         }
 
         /// <summary>
@@ -61,23 +61,23 @@ namespace DataProxy.Creators
         /// <param name="login"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public string CreateNewDatabaseWithProtection(string login, string password)
+        public string CreateNewDatabaseWithProtection(DataBaseInfo dbInfo)
         {
             //errors collector
             StringBuilder result = new StringBuilder();
 
             var loginTimeStamp = DateTime.Now.Ticks % 100000;
-            login += loginTimeStamp;
+            dbInfo.Login += loginTimeStamp;
 
             using (SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString))
             {
-                string createLoginQuery = $"USE MASTER CREATE LOGIN {login} WITH PASSWORD = '{password}'";
+                string createLoginQuery = $"USE MASTER CREATE LOGIN {dbInfo.Login} WITH PASSWORD = '{dbInfo.Password}'";
                 result.Append(executor.ExecuteQueryAsString(createLoginQuery));
 
                 string createDbQuery = $"USE MASTER CREATE DATABASE {_dataBaseName}";
-                string createUserQuery = $"USE {_dataBaseName} CREATE USER {login} FOR LOGIN {login}";
+                string createUserQuery = $"USE {_dataBaseName} CREATE USER {dbInfo.Login} FOR LOGIN {dbInfo.Login}";
                 //Apply protection rules
-                string grantPermissionQuery = $"USE {_dataBaseName} EXEC sp_addrolemember 'db_owner', {login}";
+                string grantPermissionQuery = $"USE {_dataBaseName} EXEC sp_addrolemember 'db_owner', {dbInfo.Login}";
 
                 result.Append(executor.ExecuteQueryAsString(createDbQuery));
                 result.Append(executor.ExecuteQueryAsString(createUserQuery));
@@ -87,7 +87,7 @@ namespace DataProxy.Creators
             if (result.ToString() != string.Empty)
                 throw new Exception(result.ToString());
 
-            return $"Data Source={LocalSqlServerName};Initial Catalog={_dataBaseName};User Id={login + loginTimeStamp};Password={password}";
+            return $"Data Source={LocalSqlServerName};Initial Catalog={_dataBaseName};User Id={dbInfo.Login};Password={dbInfo.Password}";
         }
     }
 }

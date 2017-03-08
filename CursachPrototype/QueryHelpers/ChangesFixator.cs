@@ -43,7 +43,7 @@ namespace CursachPrototype.QueryHelpers
                     query = GenerateDeleteQuery(primaryKeyRowName, rowId);
                     break;
             }
-            return DataProxy.DataService.ExecuteQuery(query, _dbInfo.ConnectionString, _dbInfo.DbmsType);
+            return DataProxy.DataService.ExecuteQueryAsString(query, _dbInfo.ConnectionString, _dbInfo.DbmsType);
         }
 
         private string GenerateDeleteQuery(int primaryKeyRowId, int rowId)

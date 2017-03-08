@@ -1,4 +1,6 @@
-﻿namespace DataProxy.Creators
+﻿using DataProxy.DbManangment;
+
+namespace DataProxy.Creators
 {
     /// <summary>
     /// Helps To Create database
@@ -9,12 +11,12 @@
         /// Creates database and returns connection string
         /// </summary>
         /// <returns></returns>
-        string CreateNewDatabaseWithRandomLogin();
+        string CreateNewDatabaseWithRandomLogin(DataBaseInfo dbInfo);
         
         /// <summary>
         /// Creates database and returns connection string with preotection
         /// </summary>
         /// <returns></returns>
-        string CreateNewDatabaseWithProtection(string login, string password);
+        string CreateNewDatabaseWithProtection(DataBaseInfo dbInfo);
     }
 }

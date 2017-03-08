@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using DataProxy.DbManangment;
 using DataProxy.Executors;
 
 namespace DataProxy.Creators
@@ -21,36 +19,42 @@ namespace DataProxy.Creators
             _masterConnectionString = ConfigurationManager.ConnectionStrings["MySqlMaster"].ConnectionString;
         }
 
-        public string CreateNewDatabaseWithRandomLogin()
+        public string CreateNewDatabaseWithRandomLogin(DataBaseInfo dbInfo)
         {
             var login = "login" + DateTime.Now.Ticks;
             var password = "pass" + DateTime.Now.Ticks % 10000 * 37;
 
-            return CreateNewDatabaseWithProtection(login, password);
+            dbInfo.Login = login;
+            dbInfo.Password = password;
+
+            return CreateNewDatabaseWithProtection(dbInfo);
         }
 
-        public string CreateNewDatabaseWithProtection(string login, string password)
+        public string CreateNewDatabaseWithProtection(DataBaseInfo dbInfo)
         {
             //errors collector
             StringBuilder result = new StringBuilder();
 
+            var loginTimeStamp = DateTime.Now.Ticks % 100000;
+            dbInfo.Login += loginTimeStamp;
+
             using (QueryExecutor executor = new MySqlExecutor(_masterConnectionString))
             {
-                string createLoginQuery = $"CREATE USER '{login}'@'{LocalSqlServerName}' IDENTIFIED BY '{password}';";
-                string grantPermissionsQuery = $"GRANT ALL PRIVILEGES ON {_dataBaseName} . * TO '{login}'@'{LocalSqlServerName}';";
+                string createLoginQuery = $"CREATE USER '{dbInfo.Login}'@'%' IDENTIFIED BY '{dbInfo.Password}';";
+                string grantPermissionsQuery = $"GRANT ALL PRIVILEGES ON {_dataBaseName}.* TO '{dbInfo.Login}'@'%';";
                 string flushQuery = "FLUSH PRIVILEGES;";
                 string createDbQuery = $"CREATE DATABASE {_dataBaseName}";
 
                 result.Append(executor.ExecuteQueryAsString(createLoginQuery));
+                result.Append(executor.ExecuteQueryAsString(createDbQuery));
                 result.Append(executor.ExecuteQueryAsString(grantPermissionsQuery));
                 result.Append(executor.ExecuteQueryAsString(flushQuery));
-                result.Append(executor.ExecuteQueryAsString(createDbQuery));
             }
 
             if (result.ToString() != string.Empty)
                 throw new Exception(result.ToString());
 
-            return $"Server={LocalSqlServerName};Database={_dataBaseName};Uid={login};Pwd={password};";
+            return $"Server={LocalSqlServerName}; Database={_dataBaseName}; Uid={dbInfo.Login}; Pwd={dbInfo.Password};";
         }
     }
 }

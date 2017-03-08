@@ -86,7 +86,7 @@ namespace CursachPrototype.Controllers
             //Remove db info from DbInfos
             DataBasesManager.RemoveDbInfo(foundDb);
             //Delete database
-            DataService.DropDataBase(foundDb.DbmsType, foundDb.Name);
+            DataService.DropDataBase(foundDb);
 
             return RedirectToAction("Index");
         }
