@@ -10,7 +10,12 @@
         }else if (obj is double)
         {
             var doub = (double) obj;
-            doub.ToString("##.#####");
+            @doub.ToString("##.#####")
+        }
+        else if (obj is float)
+        {
+            var floati = (float)obj;
+            @floati.ToString("##.#####")
         }
         else
         {

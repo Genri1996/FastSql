@@ -165,7 +165,6 @@ namespace CursachPrototype.Controllers
         /// <returns></returns>
         private List<string> GetAvailableDbmsAsListString()
         {   var availableServers = DataService.AvailableServers.Select(dbmsType => dbmsType.ToString()).ToList();
-            availableServers.Add("MySql");
             return availableServers;
         }
 
