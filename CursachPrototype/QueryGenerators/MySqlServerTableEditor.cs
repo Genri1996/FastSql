@@ -14,7 +14,7 @@ namespace CursachPrototype.QueryGenerators
         }
 
         public override string DeleteTable(string tableName)
-        {
+        { 
             throw new NotImplementedException();
         }
 

@@ -14,6 +14,7 @@ namespace CursachPrototype.Controllers
     [Authorize]
     public class DisplayTableController : Controller
     {
+        private readonly ChangesFixator _changesFixator;
 
         private OleDbDataBaseReader ModelReader
         {
@@ -37,7 +38,7 @@ namespace CursachPrototype.Controllers
             }
         }
 
-        private string UserId => User.Identity.GetUserId();
+        private string UserId => System.Web.HttpContext.Current.User.Identity.GetUserId();
 
         private int DbId
         {
@@ -53,6 +54,12 @@ namespace CursachPrototype.Controllers
                     Single(dbInf => dbInf.Id == DbId);
             }
         }
+
+        public DisplayTableController()
+        {
+            _changesFixator = new SqlServerChangesFixator(DataBaseInfo);
+        }
+
 
         [HttpGet]
         public ActionResult Index(int dbId, string defaultTableName = null)
@@ -112,8 +119,7 @@ namespace CursachPrototype.Controllers
         [HttpGet]
         public ActionResult DeleteRowConfirmed(int id)
         {
-            SqlServerChangesFixator cf = new SqlServerChangesFixator(DataBaseInfo);
-            var result = cf.FixateChanges(Model, QueryType.Delete, id);
+            var result = _changesFixator.FixateChanges(Model, QueryType.Delete, id);
             if (result == string.Empty)
                 result = "Ряд " + id + " успешно удалён.";
 
@@ -161,13 +167,13 @@ namespace CursachPrototype.Controllers
         public ActionResult EditRow()
         {
             DataTable dt = Model;
-            SqlServerChangesFixator changesHelper = new SqlServerChangesFixator(DataBaseInfo);
+
             int changedRowId = int.Parse(Request[dt.Columns[GetIdOrdinalIndex()].ColumnName]);
 
             foreach (DataColumn column in dt.Columns)
-                changesHelper.AddDataRowColumnValue(Request[column.ColumnName]);
+                _changesFixator.AddDataRowColumnValue(Request[column.ColumnName]);
 
-            var result = changesHelper.FixateChanges(dt, QueryType.Update, changedRowId);
+            var result = _changesFixator.FixateChanges(dt, QueryType.Update, changedRowId);
 
             if (result == string.Empty)
                 result = "Ряд " + changedRowId + " был успешно изменен!";
@@ -200,13 +206,13 @@ namespace CursachPrototype.Controllers
         public ActionResult UploadNewRow()
         {
             DataTable dt = Model;
-            SqlServerChangesFixator changesHelper = new SqlServerChangesFixator(DataBaseInfo);
+
             int changedRowId = int.Parse(Request[dt.Columns[GetIdOrdinalIndex()].ColumnName]);
 
             foreach (DataColumn column in dt.Columns)
-                changesHelper.AddDataRowColumnValue(Request[column.ColumnName]);
+                _changesFixator.AddDataRowColumnValue(Request[column.ColumnName]);
 
-            var result = changesHelper.FixateChanges(dt, QueryType.Insert);
+            var result = _changesFixator.FixateChanges(dt, QueryType.Insert);
 
             if (result == string.Empty)
                 result = "Ряд " + changedRowId + " был успешно добавлен!";
