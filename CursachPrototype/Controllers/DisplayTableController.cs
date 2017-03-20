@@ -2,9 +2,10 @@
 using System.Linq;
 using System.Web.Mvc;
 using CursachPrototype.ExtensionMethods;
+using CursachPrototype.ModelHelpers;
+using CursachPrototype.QueryGenerators;
 using DataProxy.DataBaseReaders;
 using DataProxy.DbManangment;
-using CursachPrototype.QueryHelpers;
 using CursachPrototype.ViewModels;
 using Microsoft.AspNet.Identity;
 
@@ -13,6 +14,8 @@ namespace CursachPrototype.Controllers
     [Authorize]
     public class DisplayTableController : Controller
     {
+        private readonly ChangesFixator _changesFixator;
+
         private OleDbDataBaseReader ModelReader
         {
             get
@@ -35,7 +38,7 @@ namespace CursachPrototype.Controllers
             }
         }
 
-        private string UserId => User.Identity.GetUserId();
+        private string UserId => System.Web.HttpContext.Current.User.Identity.GetUserId();
 
         private int DbId
         {
@@ -51,6 +54,12 @@ namespace CursachPrototype.Controllers
                     Single(dbInf => dbInf.Id == DbId);
             }
         }
+
+        public DisplayTableController()
+        {
+            _changesFixator = new SqlServerChangesFixator(DataBaseInfo);
+        }
+
 
         [HttpGet]
         public ActionResult Index(int dbId, string defaultTableName = null)
@@ -110,8 +119,7 @@ namespace CursachPrototype.Controllers
         [HttpGet]
         public ActionResult DeleteRowConfirmed(int id)
         {
-            ChangesFixator cf = new ChangesFixator(DataBaseInfo, Model);
-            var result = cf.FixateChanges(ChangesFixator.QueryType.Delete, GetIdOrdinalIndex(), id);
+            var result = _changesFixator.FixateChanges(Model, QueryType.Delete, id);
             if (result == string.Empty)
                 result = "Ряд " + id + " успешно удалён.";
 
@@ -159,13 +167,13 @@ namespace CursachPrototype.Controllers
         public ActionResult EditRow()
         {
             DataTable dt = Model;
-            ChangesFixator changesHelper = new ChangesFixator(DataBaseInfo, dt);
+
             int changedRowId = int.Parse(Request[dt.Columns[GetIdOrdinalIndex()].ColumnName]);
 
             foreach (DataColumn column in dt.Columns)
-                changesHelper.AddDataColumn(Request[column.ColumnName]);
+                _changesFixator.AddDataRowColumnValue(Request[column.ColumnName]);
 
-            var result = changesHelper.FixateChanges(ChangesFixator.QueryType.Update, GetIdOrdinalIndex(), changedRowId);
+            var result = _changesFixator.FixateChanges(dt, QueryType.Update, changedRowId);
 
             if (result == string.Empty)
                 result = "Ряд " + changedRowId + " был успешно изменен!";
@@ -180,7 +188,7 @@ namespace CursachPrototype.Controllers
             if (ModelState.IsValid)
             {
 
-                IQueryHelper helper = new SqlServerHelper(DataBaseInfo);
+                TableEditor helper = new SqlServerTableEditor(DataBaseInfo);
                 var result = helper.InsertNewColumn(vm);
 
                 if (result == string.Empty)
@@ -198,13 +206,13 @@ namespace CursachPrototype.Controllers
         public ActionResult UploadNewRow()
         {
             DataTable dt = Model;
-            ChangesFixator changesHelper = new ChangesFixator(DataBaseInfo, dt);
+
             int changedRowId = int.Parse(Request[dt.Columns[GetIdOrdinalIndex()].ColumnName]);
 
             foreach (DataColumn column in dt.Columns)
-                changesHelper.AddDataColumn(Request[column.ColumnName]);
+                _changesFixator.AddDataRowColumnValue(Request[column.ColumnName]);
 
-            var result = changesHelper.FixateChanges(ChangesFixator.QueryType.Insert);
+            var result = _changesFixator.FixateChanges(dt, QueryType.Insert);
 
             if (result == string.Empty)
                 result = "Ряд " + changedRowId + " был успешно добавлен!";
@@ -218,7 +226,7 @@ namespace CursachPrototype.Controllers
         {
             if (ModelState.IsValid)
             {
-                IQueryHelper helper = new SqlServerHelper(DataBaseInfo);
+                TableEditor helper = new SqlServerTableEditor(DataBaseInfo);
                 var result = helper.DropColumn(vm);
 
                 if (string.IsNullOrEmpty(result))
@@ -236,7 +244,7 @@ namespace CursachPrototype.Controllers
         {
             if (ModelState.IsValid)
             {
-                IQueryHelper helper = new SqlServerHelper(DataBaseInfo);
+                TableEditor helper = new SqlServerTableEditor(DataBaseInfo);
                 var result = helper.CreateTable(vm.TableName);
 
                 if (string.IsNullOrEmpty(result))
@@ -258,7 +266,7 @@ namespace CursachPrototype.Controllers
         {
             if (ModelState.IsValid)
             {
-                IQueryHelper helper = new SqlServerHelper(DataBaseInfo);
+                TableEditor helper = new SqlServerTableEditor(DataBaseInfo);
                 var result = helper.DeleteTable(vm.TableName);
 
                 if (string.IsNullOrEmpty(result))
