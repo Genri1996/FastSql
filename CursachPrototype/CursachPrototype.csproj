@@ -323,15 +323,21 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="ModelHelpers\IModelProvider.cs" />
+    <Compile Include="ModelHelpers\SqlServerResolver.cs" />
+    <Compile Include="QueryGenerators\ChangesFixator.cs" />
+    <Compile Include="QueryGenerators\MySqlChangesFixator.cs" />
+    <Compile Include="QueryGenerators\MySqlServerTableEditor.cs" />
+    <Compile Include="QueryGenerators\QueryType.cs" />
     <Compile Include="ViewModels\TableVm.cs" />
     <Compile Include="ViewModels\DeleteColumnVm.cs" />
-    <Compile Include="QueryHelpers\ChangesFixator.cs" />
+    <Compile Include="QueryGenerators\SqlServerChangesFixator.cs" />
     <Compile Include="Models\Accounting\AppIdentityContext.cs" />
     <Compile Include="Models\Accounting\AppUser.cs" />
     <Compile Include="Models\Accounting\AppUserManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QueryHelpers\SqlServerHelper.cs" />
-    <Compile Include="QueryHelpers\IQueryHelper.cs" />
+    <Compile Include="QueryGenerators\SqlServerTableEditor.cs" />
+    <Compile Include="QueryGenerators\TableEditor.cs" />
     <Compile Include="ViewModels\AnonymousDbVm.cs" />
     <Compile Include="ViewModels\CreateColumnVm.cs" />
     <Compile Include="ViewModels\DbVm.cs" />

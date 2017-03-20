@@ -1,19 +1,15 @@
 ﻿using CursachPrototype.ViewModels;
 using DataProxy.DbManangment;
 
-namespace CursachPrototype.QueryHelpers
+namespace CursachPrototype.QueryGenerators
 {
-    class SqlServerHelper : IQueryHelper
+    class SqlServerTableEditor : TableEditor
     {
-        private CreateColumnVm _cvm;
-        private readonly DataBaseInfo _dbInf;
-
-        public SqlServerHelper(DataBaseInfo dbInf)
+        public SqlServerTableEditor(DataBaseInfo dbInf) : base(dbInf)
         {
-            _dbInf = dbInf;
         }
 
-        public string InsertNewColumn(CreateColumnVm vm)
+        public override string InsertNewColumn(CreateColumnVm vm)
         {
             _cvm = vm;
             string query = $"ALTER TABLE {_cvm.TableName} ADD {_cvm.ColumnName} ";
@@ -59,6 +55,39 @@ namespace CursachPrototype.QueryHelpers
                 return notNullQueryResult;
 
             return string.Empty;
+        }
+
+        public override string DropColumn(DeleteColumnVm vm)
+        {
+            string dropQuery = $"DECLARE @ConstraintName nvarchar(200) " +
+                               $"SELECT @ConstraintName = Name " +
+                               $"FROM SYS.DEFAULT_CONSTRAINTS " +
+                               $"WHERE PARENT_OBJECT_ID = OBJECT_ID('{vm.TableName}') " +
+                               $"AND PARENT_COLUMN_ID = (SELECT column_id " +
+                               $"FROM sys.columns " +
+                               $"WHERE NAME = N'{vm.ColumnName}' AND object_id = OBJECT_ID(N'{vm.TableName}')) " +
+                               $"IF @ConstraintName IS NOT NULL " +
+                               $"EXEC('ALTER TABLE {vm.TableName} DROP CONSTRAINT ' + @ConstraintName) " +
+                               $"ALTER TABLE {vm.TableName} DROP COLUMN {vm.ColumnName}";
+            return DataProxy.DataService.ExecuteQueryAsString(dropQuery, _dbInf.ConnectionString, _dbInf.DbmsType);
+        }
+
+        public override string DeleteTable(string tableName)
+        {
+            string dropConstraintQuery =
+                $"SELECT " +
+                $"'ALTER TABLE ' + OBJECT_SCHEMA_NAME(parent_object_id) " +
+                $"+ '.[' + OBJECT_NAME(parent_object_id) + ']" +
+                $" DROP CONSTRAINT ' + name FROM sys.foreign_keys" +
+                $" WHERE referenced_object_id = object_id('{tableName}')";
+
+
+            var dropConstraintQueryResult = DataProxy.DataService.ExecuteQueryAsString(dropConstraintQuery, _dbInf.ConnectionString, _dbInf.DbmsType);
+            if (!string.IsNullOrEmpty(dropConstraintQueryResult))
+                DataProxy.DataService.ExecuteQueryAsString(dropConstraintQueryResult, _dbInf.ConnectionString, _dbInf.DbmsType);
+
+            string dropTableQuery = $"DROP TABLE {tableName}";
+            return DataProxy.DataService.ExecuteQueryAsString(dropTableQuery, _dbInf.ConnectionString, _dbInf.DbmsType);
         }
 
         private string SetDefaultIfRequired()
@@ -109,12 +138,13 @@ namespace CursachPrototype.QueryHelpers
             {
                 var defaultQuery = $"ALTER TABLE {_cvm.TableName} ALTER COLUMN ({_cvm.ColumnName}) ";
 
-                if (string.Compare(_cvm.TypeName,"String")==0)
+                if (string.Compare(_cvm.TypeName, "String") == 0)
                 {
                     defaultQuery += $"NVARCHAR({_cvm.TypeLength})";
-                }else if (string.Compare(_cvm.TypeName, "String") == 0)
+                }
+                else if (string.Compare(_cvm.TypeName, "String") == 0)
                 {
-                    defaultQuery +="INT"; 
+                    defaultQuery += "INT";
                 }
                 else if (string.Compare(_cvm.TypeName, "Double") == 0)
                 {
@@ -135,45 +165,6 @@ namespace CursachPrototype.QueryHelpers
                 }
             }
             return string.Empty;
-        }
-
-        public string DropColumn(DeleteColumnVm vm)
-        {
-            string dropQuery = $"DECLARE @ConstraintName nvarchar(200) " +
-                               $"SELECT @ConstraintName = Name " +
-                               $"FROM SYS.DEFAULT_CONSTRAINTS " +
-                               $"WHERE PARENT_OBJECT_ID = OBJECT_ID('{vm.TableName}') " +
-                               $"AND PARENT_COLUMN_ID = (SELECT column_id " +
-                               $"FROM sys.columns " +
-                               $"WHERE NAME = N'{vm.ColumnName}' AND object_id = OBJECT_ID(N'{vm.TableName}')) " +
-                               $"IF @ConstraintName IS NOT NULL " +
-                               $"EXEC('ALTER TABLE {vm.TableName} DROP CONSTRAINT ' + @ConstraintName) " +
-                               $"ALTER TABLE {vm.TableName} DROP COLUMN {vm.ColumnName}";
-            return DataProxy.DataService.ExecuteQueryAsString(dropQuery, _dbInf.ConnectionString, _dbInf.DbmsType);
-        }
-
-        public string CreateTable(string tableName)
-        {
-            string createTableQuery = $"CREATE TABLE {tableName} (ID int NOT NULL PRIMARY KEY)";
-            return DataProxy.DataService.ExecuteQueryAsString(createTableQuery, _dbInf.ConnectionString, _dbInf.DbmsType);
-        }
-
-        public string DeleteTable(string tableName)
-        {
-            string dropConstraintQueryGenerator =
-                $"SELECT " +
-                $"'ALTER TABLE ' + OBJECT_SCHEMA_NAME(parent_object_id) " +
-                $"+ '.[' + OBJECT_NAME(parent_object_id) + ']" +
-                $" DROP CONSTRAINT ' + name FROM sys.foreign_keys" +
-                $" WHERE referenced_object_id = object_id('{tableName}')";
-
-
-            var dropConstraintQuery = DataProxy.DataService.ExecuteQueryAsString(dropConstraintQueryGenerator, _dbInf.ConnectionString, _dbInf.DbmsType);
-            if(!string.IsNullOrEmpty(dropConstraintQuery))
-                DataProxy.DataService.ExecuteQueryAsString(dropConstraintQuery, _dbInf.ConnectionString, _dbInf.DbmsType);
-
-            string dropTableQuery = $"DROP TABLE {tableName}";
-            return DataProxy.DataService.ExecuteQueryAsString(dropTableQuery, _dbInf.ConnectionString, _dbInf.DbmsType);
         }
     }
 }
