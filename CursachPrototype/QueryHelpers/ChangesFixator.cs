@@ -43,7 +43,7 @@ namespace CursachPrototype.QueryHelpers
                     query = GenerateDeleteQuery(primaryKeyRowName, rowId);
                     break;
             }
-            return DataProxy.DataService.ExecuteQuery(query, _dbInfo.ConnectionString, _dbInfo.DbmsType);
+            return DataProxy.DataService.ExecuteQueryAsString(query, _dbInfo.ConnectionString, _dbInfo.DbmsType);
         }
 
         private string GenerateDeleteQuery(int primaryKeyRowId, int rowId)
@@ -166,7 +166,7 @@ namespace CursachPrototype.QueryHelpers
             string query =
                 $"SELECT COLUMN_DEFAULT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{_dataTable.TableName}' AND COLUMN_NAME = '{column.ColumnName}'";
             DataTable dtResult;
-            IQueryExecutor exe;
+            QueryExecutor exe;
             using (exe = new SqlServerExecutor(_dbInfo.ConnectionString))
             {
                 dtResult = exe.ExecuteQueryAsDataTable(query);

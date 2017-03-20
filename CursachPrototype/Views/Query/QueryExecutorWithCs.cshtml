@@ -1,4 +1,5 @@
-﻿@model CursachPrototype.ViewModels.QueryExecutorVm
+﻿@using DataProxy
+@model CursachPrototype.ViewModels.QueryExecutorVm
 
 <script type="text/javascript">
     onload($('#ModalExecute').modal('show'))
@@ -18,10 +19,24 @@
                     {
                         <label for="conStr">Строка подключения</label>
                         @Html.TextBox("conStr", "", new { @class = "form-control", @id = "conStr" })
-                        <br/>
+                        <br />
                         <label for="query">Запрос</label>
                         @Html.TextArea("query", new { @class = "form-control", @rows = "5", @id = "query" })
+                        <div class="col-md-6 col-md-offset-4 radio-inline">
+                            <br />
+                            @foreach (DbmsType server in Model.AvailableServers)
+                            {
+                                <div class="col-md-6">
+                                    <label>
+                                        @Html.RadioButtonFor(m => m.DbmsType, server)
+                                        @server
+                                    </label>
+                                </div>
+                            }
+                        </div>
                     }
+                    <br/>
+                    <br/>
                     <br />
                     <div id="results"></div>
                 </div>

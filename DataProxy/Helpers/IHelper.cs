@@ -1,13 +1,15 @@
-﻿namespace DataProxy.Helpers
+﻿using DataProxy.DbManangment;
+
+namespace DataProxy.Helpers
 {
     /// <summary>
     /// Different additional  functions
     /// </summary>
     public interface IHelper
     {
-        bool IsDataBaseExists(string dbName);
+        bool IsDataBaseExists(DataBaseInfo dbInfo);
 
-        bool DropDataBase(string dbName);
+        bool DropDataBase(DataBaseInfo dbInfo);
 
         bool IsLoginExists(string login);
     }

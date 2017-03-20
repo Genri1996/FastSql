@@ -22,6 +22,10 @@ namespace DataProxy.DbManangment
         public string ConnectionString { get; set; }
 
         public DbmsType DbmsType { get; set; }
+
+        public string Login { get; set; }
+
+        public string Password { get; set; }
         /// <summary>
         /// To User
         /// </summary>

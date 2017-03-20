@@ -45,16 +45,7 @@ namespace CursachPrototype.Controllers
             return PartialView(foundDb);
         }
 
-        ///// <summary>
-        ///// Removes Database after confiramtion
-        ///// </summary>
-        ///// <returns></returns>
-        //[HttpPost, ActionName("Delete")]
-        //public ActionResult DeleteConfirmed(DataBaseInfo dbInfo)
-        //{
-           
-        //}
-
+     
         [HttpGet]
         public ActionResult ExecuteQuery(int id)
         {
@@ -86,7 +77,7 @@ namespace CursachPrototype.Controllers
             //Remove db info from DbInfos
             DataBasesManager.RemoveDbInfo(foundDb);
             //Delete database
-            DataService.DropDataBase(foundDb.DbmsType, foundDb.Name);
+            DataService.DropDataBase(foundDb);
 
             return RedirectToAction("Index");
         }

@@ -180,7 +180,7 @@ namespace CursachPrototype.Controllers
             if (ModelState.IsValid)
             {
 
-                IHelper helper = new SqlServerHelper(DataBaseInfo);
+                IQueryHelper helper = new SqlServerHelper(DataBaseInfo);
                 var result = helper.InsertNewColumn(vm);
 
                 if (result == string.Empty)
@@ -218,7 +218,7 @@ namespace CursachPrototype.Controllers
         {
             if (ModelState.IsValid)
             {
-                IHelper helper = new SqlServerHelper(DataBaseInfo);
+                IQueryHelper helper = new SqlServerHelper(DataBaseInfo);
                 var result = helper.DropColumn(vm);
 
                 if (string.IsNullOrEmpty(result))
@@ -236,12 +236,16 @@ namespace CursachPrototype.Controllers
         {
             if (ModelState.IsValid)
             {
-                IHelper helper = new SqlServerHelper(DataBaseInfo);
+                IQueryHelper helper = new SqlServerHelper(DataBaseInfo);
                 var result = helper.CreateTable(vm.TableName);
 
                 if (string.IsNullOrEmpty(result))
                     result = $"Таблица {vm.TableName} создана успешно!";
-
+                else
+                {
+                    TempData["StatusMessage"] = "Были введены недопустимые данные.";
+                    return RedirectToAction("Index", new { dbId = DbId });
+                }
                 TempData["StatusMessage"] = result;
                 return RedirectToAction("Index", new { dbId = DbId, defaultTableName = vm.TableName });
             }
@@ -254,7 +258,7 @@ namespace CursachPrototype.Controllers
         {
             if (ModelState.IsValid)
             {
-                IHelper helper = new SqlServerHelper(DataBaseInfo);
+                IQueryHelper helper = new SqlServerHelper(DataBaseInfo);
                 var result = helper.DeleteTable(vm.TableName);
 
                 if (string.IsNullOrEmpty(result))

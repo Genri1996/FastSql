@@ -291,6 +291,7 @@
     <Content Include="Content\DarkTheme\vendor\font-awesome\scss\_stacked.scss" />
     <Content Include="Content\DarkTheme\vendor\font-awesome\scss\_variables.scss" />
     <None Include="Properties\PublishProfiles\FastSql - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\IIS.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
@@ -330,7 +331,7 @@
     <Compile Include="Models\Accounting\AppUserManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryHelpers\SqlServerHelper.cs" />
-    <Compile Include="QueryHelpers\IHelper.cs" />
+    <Compile Include="QueryHelpers\IQueryHelper.cs" />
     <Compile Include="ViewModels\AnonymousDbVm.cs" />
     <Compile Include="ViewModels\CreateColumnVm.cs" />
     <Compile Include="ViewModels\DbVm.cs" />

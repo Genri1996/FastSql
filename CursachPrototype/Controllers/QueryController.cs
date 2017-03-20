@@ -1,10 +1,10 @@
 ﻿using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CursachPrototype.Models.Accounting;
 using CursachPrototype.ViewModels;
+using DataProxy;
 using DataProxy.DbManangment;
 using DataProxy.Executors;
 using Microsoft.AspNet.Identity;
@@ -30,13 +30,7 @@ namespace CursachPrototype.Controllers
             //Find user
             AppUser user = _userManager.FindById(User.Identity.GetUserId());
             DataBaseInfo foundDb = DataBasesManager.GetDbInfos(user.Id).Single(m => m.Id == vm.DbId);
-
-            //TODO: Think, if i need different executors for each DBMS or not
-
-            using (IQueryExecutor executor = new SqlServerExecutor(foundDb.ConnectionString))
-            {
-                vm.DataTable = executor.ExecuteQueryAsDataTable(vm.Query);
-            }
+            vm.DataTable = DataService.ExecuteQueryAsDataTable(vm.Query, foundDb.ConnectionString, foundDb.DbmsType);
             return PartialView("QueryResults", vm.DataTable);
         }
 
@@ -55,23 +49,19 @@ namespace CursachPrototype.Controllers
                 vm.DataTable.Rows.Add(row);
                 return PartialView("QueryResults", vm.DataTable);
             }
-            //Try to establish connection
-            IQueryExecutor executor = null;
+
+            //Try to establish connection and receive data
             try
             {
-                executor = new SqlServerExecutor(connectionString);
+                vm.DataTable = DataService.ExecuteQueryAsDataTable(vm.Query, connectionString, vm.DbmsType);
             }
             catch
             {
                 var row = vm.DataTable.NewRow();
                 row[0] = "Не удалось установить соеденение.";
                 vm.DataTable.Rows.Add(row);
-                executor?.Dispose();
                 return PartialView("QueryResults", vm.DataTable);
             }
-            //receive data
-            vm.DataTable = executor.ExecuteQueryAsDataTable(vm.Query);
-            executor.Dispose();
 
             return PartialView("QueryResults", vm.DataTable);
         }

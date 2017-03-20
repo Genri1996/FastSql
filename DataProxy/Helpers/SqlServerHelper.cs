@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using System.Data;
+using DataProxy.DbManangment;
 using DataProxy.Executors;
 
 namespace DataProxy.Helpers
@@ -21,9 +22,9 @@ namespace DataProxy.Helpers
         /// </summary>
         /// <param name="dbName">name of database</param>
         /// <returns></returns>
-        public bool IsDataBaseExists(string dbName)
+        public bool IsDataBaseExists(DataBaseInfo dbInfo)
         {
-            string strQuery = $"USE MASTER SELECT [dbo].[DatabaseExists]('{dbName}') AS [exists]";
+            string strQuery = $"USE MASTER SELECT [dbo].[DatabaseExists]('{dbInfo.Name}') AS [exists]";
             DataTable dt;
 
             using (SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString))
@@ -38,14 +39,17 @@ namespace DataProxy.Helpers
         /// </summary>
         /// <param name="dbName">Name of database</param>
         /// <returns></returns>
-        public bool DropDataBase(string dbName)
+        public bool DropDataBase(DataBaseInfo dbInfo)
         {
-            string strQuery = $" USE MASTER ALTER DATABASE[{dbName}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;  DROP DATABASE[{dbName}];";
-
+            string strQuery = $" USE MASTER ALTER DATABASE[{dbInfo.Name}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;  DROP DATABASE[{dbInfo.Name}];";
+            string deleteUser = $"USE MASTER DROP USER IF EXISTS {dbInfo.Name}";
+            string deleteLogin = $"USE MASTER DROP LOGIN {dbInfo.Name}";
             string queryResult;
             using (SqlServerExecutor executor = new SqlServerExecutor(_masterConnectionString))
             {
                 queryResult=executor.ExecuteQueryAsString(strQuery);
+                executor.ExecuteQueryAsString(deleteLogin);
+                executor.ExecuteQueryAsString(deleteUser);
             }
             if (queryResult != string.Empty)
                 return false;

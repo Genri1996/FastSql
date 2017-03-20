@@ -55,6 +55,8 @@ namespace DataProxy.DbManangment
                               DateOfCreating = (DateTime)dbInfo["DATEOFCREATING"],
                               IsAnonymous = false,
                               DbmsType = (DbmsType)Enum.Parse(typeof(DbmsType), dbInfo.Field<string>("DBMSTYPE")),
+                              Login = dbInfo.Field<string>("LOGIN"),
+                              Password = dbInfo.Field<string>("PASSWORD"),
                               ForeignKey = dbInfo.Field<string>("USERKEY")
                           }).ToList();
 
@@ -76,6 +78,8 @@ namespace DataProxy.DbManangment
                               ConnectionString = dbInfo.Field<string>("CONNECTIONSTRING"),
                               DateOfCreating = (DateTime)dbInfo["DATEOFCREATING"],
                               DateOfDeleting = (DateTime)dbInfo["DATEOFDELETING"],
+                              Login = dbInfo.Field<string>("LOGIN"),
+                              Password = dbInfo.Field<string>("PASSWORD"),
                               IsAnonymous = true,
                               DbmsType = (DbmsType)Enum.Parse(typeof(DbmsType), dbInfo.Field<string>("DBMSTYPE"))
                           }).ToList();
@@ -90,10 +94,10 @@ namespace DataProxy.DbManangment
         public static void AddDbInfo(DataBaseInfo info)
         {
             string query = $"USE {DbName} INSERT INTO {DbInfosTableName} "
-                           + "(NAME, DATEOFCREATING, CONNECTIONSTRING, DBMSTYPE, USERKEY) "
+                           + "(NAME, DATEOFCREATING, CONNECTIONSTRING, DBMSTYPE, LOGIN, PASSWORD, USERKEY) "
                            +
                            $"VALUES('{info.Name}', CONVERT(DATETIME, '{info.DateOfCreating.ToString("yyyy-MM-dd HH:mm:ss")}', 120), "
-                           + $"'{info.ConnectionString}','{info.DbmsType}', '{info.ForeignKey}');";
+                           + $"'{info.ConnectionString}','{info.DbmsType}', '{info.Login}', '{info.Password}', '{info.ForeignKey}');";
 
             using (
                 SqlServerExecutor executor =
@@ -106,11 +110,11 @@ namespace DataProxy.DbManangment
         public static void AddAnonymousDbInfo(DataBaseInfo info)
         {
             string query = $"USE {DbName} INSERT INTO {AnonDbInfosTableName} "
-                           + "(NAME, DATEOFCREATING, DATEOFDELETING, CONNECTIONSTRING, DBMSTYPE) "
+                           + "(NAME, DATEOFCREATING, DATEOFDELETING, CONNECTIONSTRING, DBMSTYPE, LOGIN, PASSWORD) "
                            +
                            $"VALUES('{info.Name}', CONVERT(DATETIME, '{info.DateOfCreating.ToString("yyyy-MM-dd HH:mm:ss")}', 120), "
                            + $"CONVERT(DATETIME, '{info.DateOfDeleting.ToString("yyyy-MM-dd HH:mm:ss")}', 120),"
-                           + $"'{info.ConnectionString}','{info.DbmsType}');";
+                           + $"'{info.ConnectionString}','{info.DbmsType}', '{info.Login}', '{info.Password}');";
 
             using (
                 SqlServerExecutor executor =
@@ -170,7 +174,7 @@ namespace DataProxy.DbManangment
                 foreach (DataBaseInfo dataBaseInfo in result)
                 {
                     RemoveAnonymousDbInfo(dataBaseInfo);
-                    helper.DropDataBase(dataBaseInfo.Name);
+                    helper.DropDataBase(dataBaseInfo);
                 }
             }
             catch
@@ -203,6 +207,8 @@ namespace DataProxy.DbManangment
                                    + "CONNECTIONSTRING NVARCHAR(500) NOT NULL, "
                                    + "USERKEY NVARCHAR(128), "
                                    + "DBMSTYPE NVARCHAR(128), "
+                                   + "LOGIN NVARCHAR(128), "
+                                   + "PASSWORD NVARCHAR(128), "
                                    //Restrictions
                                    + "FOREIGN KEY (USERKEY) REFERENCES dbo.AspNetUsers(Id)"
                                    + ")";
@@ -232,6 +238,8 @@ namespace DataProxy.DbManangment
                                    + "DATEOFDELETING DATETIME NOT NULL, "
                                    + "CONNECTIONSTRING NVARCHAR(500) NOT NULL, "
                                    + "DBMSTYPE NVARCHAR(128), "
+                                   + "LOGIN NVARCHAR(128), "
+                                   + "PASSWORD NVARCHAR(128)"
                                    + ")";
 
                     executor.ExecuteQueryAsString(query);
