@@ -77,7 +77,7 @@ namespace CursachPrototype.Controllers
                    .First()
                    .Id;
 
-            return RedirectToAction("Index", "DisplayTable", new { dbId = id });
+            return RedirectToAction("Index","DisplayTable", new { dbId = id});
         }
 
         /// <summary>
@@ -98,20 +98,18 @@ namespace CursachPrototype.Controllers
             var tempDbInfo = vm.ToCreateDatabaseObject(user);
 
             //Check Db Exists
-            tempDbInfo.DbmsType = (DbmsType)Enum.Parse(typeof(DbmsType), vm.SelectedServer);
-            if (DataService.CheckDataBaseExists(tempDbInfo))
+            DbmsType selectedDbmsType = (DbmsType)Enum.Parse(typeof(DbmsType), vm.SelectedServer);
+            if (DataService.CheckDataBaseExists(selectedDbmsType, tempDbInfo.Name))
             {
                 string errorMessage = "База данных с таким именем уже существует в этой СУБД.";
                 ModelState.AddModelError("err", errorMessage);
                 return View(vm);
             }
 
-            tempDbInfo.Login = user.UserNickName;
-            tempDbInfo.Password = vm.DataBasePassword;
             //Try to create database
             try
             {
-                tempDbInfo = DataService.CreateDatabase(tempDbInfo, GetHostAddress());
+                tempDbInfo.ConnectionString = DataService.CreateDatabase(tempDbInfo, GetSqlServerAddress(), user.UserNickName, vm.DataBasePassword);
             }
             catch (Exception e)
             {
@@ -135,27 +133,29 @@ namespace CursachPrototype.Controllers
 
             var tempObj = vm.ToCreateDatabaseObject();
             //Check Db Exists
-            tempObj.DbmsType = (DbmsType)Enum.Parse(typeof(DbmsType), vm.SelectedServer);
-
-            if (DataService.CheckDataBaseExists(tempObj))
+            DbmsType selectedDbmsType = (DbmsType)Enum.Parse(typeof(DbmsType), vm.SelectedServer);
+            if (DataService.CheckDataBaseExists(selectedDbmsType, tempObj.Name))
             {
                 string errorMessage = "База данных с таким именем уже существует в этой СУБД.";
                 ModelState.AddModelError("err", errorMessage);
                 return View(vm);
             }
 
+            //Try to create database
+            String connectionString;
             try
             {
-                tempObj = DataService.CreateDatabase(tempObj, GetHostAddress());
-                DataBasesManager.AddAnonymousDbInfo(tempObj);
+                connectionString = DataService.CreateDatabase(tempObj, GetSqlServerAddress());
             }
             catch (Exception e)
             {
                 return View("CustomError", (object)e.ToString());
             }
-            
+            tempObj.ConnectionString = connectionString;
+            DataBasesManager.AddAnonymousDbInfo(tempObj);
+
             ViewBag.IsAnon = true;
-            return View("RequestConnectionString", (object)tempObj.ConnectionString);
+            return View("RequestConnectionString", (object)connectionString);
         }
 
         //TODO: Use Enum List instead
@@ -164,18 +164,19 @@ namespace CursachPrototype.Controllers
         /// </summary>
         /// <returns></returns>
         private List<string> GetAvailableDbmsAsListString()
-        {
-            var availableServers = DataService.AvailableServers.Select(dbmsType => dbmsType.ToString()).ToList();
+        {   var availableServers = DataService.AvailableServers.Select(dbmsType => dbmsType.ToString()).ToList();
             return availableServers;
         }
 
-        private string GetHostAddress()
+        private string GetSqlServerAddress()
         {
             var req = $"{Request.Url.Authority}";
             if (req.Contains("localhost"))
-                return @"LOCALHOST";
+                return @".\SQLEXPRESS";
             return
                 req;
         }
+
+       
     }
 }

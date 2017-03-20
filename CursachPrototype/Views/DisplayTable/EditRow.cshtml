@@ -47,22 +47,52 @@
                                 <label for="@dc.ColumnName">@dc.ColumnName:</label>
                                 if (dc.DataType == typeof(int))
                                 {
-                                    int temp = (int)itemValue;
+                                    int temp = 0;
+                                    if (!(itemValue is DBNull))
+                                    {
+                                        temp = (int)itemValue;
+                                    }
                                     <input type="number" class="form-control" id="@dc.ColumnName" name="@dc.ColumnName" value="@temp" />
                                 }
-                                else if (dc.DataType == typeof(double) || dc.DataType == typeof(float))
+                                else if (dc.DataType == typeof(double))
                                 {
-                                    double temp = (double)itemValue;
-                                    <input type="number" step="0.00001" class="form-control" id="@dc.ColumnName" name="@dc.ColumnName" value="@temp.ToString("##.#####")" />
+                                    double temp;
+                                    string strVal = "";
+                                    if (!(itemValue is DBNull))
+                                    {
+                                        temp = (double)itemValue;
+                                        strVal = temp.ToString("##.#####").Replace(',', '.');
+                                    }
+                                    <input type="number" step="0.00001" class="form-control" id="@dc.ColumnName" name="@dc.ColumnName" value="@strVal" />
+                                }
+                                else if (dc.DataType == typeof(float))
+                                {
+                                    float temp;
+                                    string strVal = "";
+                                    if (!(itemValue is DBNull))
+                                    {
+                                        temp = (float)itemValue;
+                                        strVal = temp.ToString("##.#####").Replace(',', '.');
+                                    }
+                                    <input type="number" step="0.00001" class="form-control" id="@dc.ColumnName" name="@dc.ColumnName" value="@strVal" />
                                 }
                                 else if (dc.DataType == typeof(DateTime))
                                 {
-                                    var dt = (DateTime)itemValue;
+                                    DateTime dt = DateTime.Now;
+                                    if (!(itemValue is DBNull))
+                                    {
+                                        dt = (DateTime)itemValue;
+                                    }
                                     <input type="datetime-local" class="form-control" id="@dc.ColumnName" name="@dc.ColumnName" value="@XmlConvert.ToString(dt, XmlDateTimeSerializationMode.Unspecified)" />
                                 }
                                 else
                                 {
-                                    <input type="text" class="form-control" id="@dc.ColumnName" name="@dc.ColumnName" value="@itemValue.ToString()" />
+                                    string strVal = "";
+                                    if (!(itemValue is DBNull))
+                                    {
+                                        strVal = itemValue.ToString();
+                                    }
+                                    <input type="text" class="form-control" id="@dc.ColumnName" name="@dc.ColumnName" value="@strVal" />
                                 }
                             }
                         </div>
