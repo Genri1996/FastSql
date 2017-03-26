@@ -9,7 +9,7 @@ namespace CursachPrototype.ModelHelpers
 {
     public class SqlServerResolver:IModelProvider
     {
-        public OleDbDataBaseReader GetDataBaseReader(DataBaseInfo dbInfo)
+        public OdbcDataBaseReader GetDataBaseReader(DataBaseInfo dbInfo)
         {
             throw new NotImplementedException();
         }

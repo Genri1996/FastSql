@@ -15,14 +15,14 @@ namespace CursachPrototype.Controllers
     [Authorize]
     public class DisplayTableController : Controller
     {
-        private OleDbDataBaseReader ModelReader
+        private OdbcDataBaseReader ModelReader
         {
             get
             {
                 //get users db connection string
                 string dbCs = DataBaseInfo.ConnectionString;
                 //load neccesary table from there
-                return new OleDbDataBaseReader(dbCs);
+                return new OdbcDataBaseReader(dbCs, DataBaseInfo.DbmsType);
             }
         }
 
@@ -150,7 +150,7 @@ namespace CursachPrototype.Controllers
         public ActionResult DeleteTable()
         {
             TableVm vm = new TableVm();
-            OleDbDataBaseReader reader = new OleDbDataBaseReader(DataBaseInfo.ConnectionString);
+            OdbcDataBaseReader reader = new OdbcDataBaseReader(DataBaseInfo.ConnectionString, DbmsType.SqlServer);
             var tables = reader.GetTableNames();
 
             var items = tables.Select(tableName => new SelectListItem { Text = tableName, Value = tableName }).ToArray();

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using System.Data.OleDb;
+using System.Data.Odbc;
 using System.Linq;
 using System.Text;
 
@@ -9,28 +9,39 @@ namespace DataProxy.DataBaseReaders
     /// <summary>
     /// Provides an ability to load several tables from ANY Dbms.
     /// </summary>
-    public class OleDbDataBaseReader : IDataBaseReader
+    public class OdbcDataBaseReader : IDataBaseReader
     {
-        private readonly OleDbConnection _connection;
+        private readonly OdbcConnection _connection;
 
         /// <summary>
         /// Opens connection immediately
         /// </summary>
         /// <param name="connectionString"></param>
-        public OleDbDataBaseReader(string connectionString)
+        public OdbcDataBaseReader(string connectionString, DbmsType dbType)
         {
-            connectionString = CheckProvider(connectionString);
-            _connection = new OleDbConnection(connectionString);
+            connectionString = CheckProvider(connectionString, dbType);
+            _connection = new OdbcConnection(connectionString);
             _connection.Open();
         }
 
-        private string CheckProvider(string connectionString)
+        private string CheckProvider(string connectionString, DbmsType dbType)
         {
-            if (connectionString.Contains("SQLOLEDB"))
+            //For localhost conenctions to identityDb
+            if (connectionString.Contains("Driver={SQL Server}"))
                 return connectionString;
-            if(connectionString.Contains("MySqlDb"))
-                return connectionString + ";Provider=MySqlProv;";
-            return connectionString + ";Provider=SQLOLEDB;";
+            if (dbType == DbmsType.SqlServer)
+                return connectionString + ";Driver={SQL Server};";
+            if (dbType == DbmsType.MySql)
+            {
+                var temp = "Driver={MySQL ODBC 5.3 ANSI Driver};";
+                temp += "DSN=MySql;";
+                temp += connectionString;
+                temp += "Option=3;";
+                temp = temp.Replace("Uid", "User");
+                temp = temp.Replace("Pwd", "Password");
+                return temp;
+            }
+            return null;
         }
 
         /// <summary>
@@ -53,7 +64,7 @@ namespace DataProxy.DataBaseReaders
             return LoadTablesWithAdapter(tableNames).Key;
         }
 
-        public KeyValuePair<DataSet, OleDbDataAdapter> LoadTablesWithAdapter(params string[] tableNames)
+        public KeyValuePair<DataSet, OdbcDataAdapter> LoadTablesWithAdapter(params string[] tableNames)
         {
             DataSet ds = new DataSet();
             StringBuilder query = new StringBuilder();
@@ -62,7 +73,7 @@ namespace DataProxy.DataBaseReaders
             foreach (var tableName in tableNames)
                 query.Append($" SELECT * FROM {tableName};");
 
-            OleDbDataAdapter adapter = new OleDbDataAdapter(query.ToString(), _connection);
+            OdbcDataAdapter adapter = new OdbcDataAdapter(query.ToString(), _connection);
 
             //Adding mapping with table names 
             for (int i = 0; i < tableNames.Length; i++)
@@ -70,7 +81,7 @@ namespace DataProxy.DataBaseReaders
 
             adapter.Fill(ds);
 
-            return new KeyValuePair<DataSet, OleDbDataAdapter>(ds, adapter);
+            return new KeyValuePair<DataSet, OdbcDataAdapter>(ds, adapter);
         }
 
         /// <summary>
@@ -80,7 +91,7 @@ namespace DataProxy.DataBaseReaders
         public string[] GetTableNames()
         {
             // Get the data table containing the schema
-            DataTable dt = _connection.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+            DataTable dt = _connection.GetSchema("Tables");
             string[] tableNames = (from DataRow row in dt.Rows
                                    let strSheetTableName = row["TABLE_NAME"].ToString()
                                    where row["TABLE_TYPE"].ToString() == "TABLE"

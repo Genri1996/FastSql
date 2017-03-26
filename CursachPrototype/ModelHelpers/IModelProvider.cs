@@ -5,6 +5,6 @@ namespace CursachPrototype.ModelHelpers
 {
     public interface IModelProvider
     {
-        OleDbDataBaseReader GetDataBaseReader(DataBaseInfo dbInfo);
+        OdbcDataBaseReader GetDataBaseReader(DataBaseInfo dbInfo);
     }
 }

@@ -40,8 +40,8 @@ namespace DataProxy.DbManangment
         public static List<DataBaseInfo> GetDbInfos(string userId)
         {
             //TODO Add public, add anonymous
-            OleDbDataBaseReader reader =
-                new OleDbDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString);
+            OdbcDataBaseReader reader =
+                new OdbcDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString, DbmsType.SqlServer);
             DataSet set = reader.LoadTables(DbInfosTableName, AspNetUserTable);
 
             //Selects DBInfos, that belongs to user
@@ -65,8 +65,8 @@ namespace DataProxy.DbManangment
 
         public static List<DataBaseInfo> GetAnonymousDbInfos()
         {
-            OleDbDataBaseReader reader =
-                new OleDbDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString);
+            OdbcDataBaseReader reader =
+                new OdbcDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString, DbmsType.SqlServer);
             DataSet set = reader.LoadTables(AnonDbInfosTableName);
 
             //Selects DBInfos, that belongs to user
@@ -156,7 +156,7 @@ namespace DataProxy.DbManangment
         {
             try
             {
-                OleDbDataBaseReader reader = new OleDbDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString);
+                OdbcDataBaseReader reader = new OdbcDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString, DbmsType.SqlServer);
                 DataSet set = reader.LoadTables(AnonDbInfosTableName);
 
                 var result = from dbRecord in set.Tables[AnonDbInfosTableName].AsEnumerable()
@@ -188,7 +188,7 @@ namespace DataProxy.DbManangment
         /// </summary>
         private static void CreateDbInfosIfNoExists()
         {
-            OleDbDataBaseReader reader = new OleDbDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString);
+            OdbcDataBaseReader reader = new OdbcDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString, DbmsType.SqlServer);
             try
             {
                 reader.LoadTables(DbInfosTableName);
@@ -219,7 +219,7 @@ namespace DataProxy.DbManangment
         }
         private static void CreateAnonDbInfosIfNoExists()
         {
-            OleDbDataBaseReader reader = new OleDbDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString);
+            OdbcDataBaseReader reader = new OdbcDataBaseReader(ConfigurationManager.ConnectionStrings["IdentityDbOleDb"].ConnectionString, DbmsType.SqlServer);
             try
             {
                 reader.LoadTables(AnonDbInfosTableName);

@@ -50,7 +50,7 @@
   <ItemGroup>
     <Compile Include="Creators\MySqlCreator.cs" />
     <Compile Include="DataBaseReaders\IDataBaseReader.cs" />
-    <Compile Include="DataBaseReaders\OleDbDataBaseReader.cs" />
+    <Compile Include="DataBaseReaders\OdbcDataBaseReader.cs" />
     <Compile Include="DataService.cs" />
     <Compile Include="Creators\IDbCreator.cs" />
     <Compile Include="DbManangment\DataBaseInfo.cs" />
