@@ -7,7 +7,7 @@ namespace CursachPrototype.QueryGenerators
 {
     public class SqlServerChangesFixator : ChangesFixator
     {
-        public SqlServerChangesFixator(DataBaseInfo dbInfo) : base(dbInfo)
+        public SqlServerChangesFixator(DataBaseInfo dbInfo, DataTable dataTable) : base(dbInfo, dataTable)
         {
         }
 

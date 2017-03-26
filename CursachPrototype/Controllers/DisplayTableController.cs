@@ -74,8 +74,6 @@ namespace CursachPrototype.Controllers
                 ViewBag.dataOfTheTable = Model;
             }
 
-
-
             return View(items);
         }
 
@@ -115,7 +113,7 @@ namespace CursachPrototype.Controllers
         [HttpGet]
         public ActionResult DeleteRowConfirmed(int id)
         {
-            var result = GetChagesFixator().FixateChanges(Model, QueryType.Delete, id);
+            var result = GetChagesFixator().FixateChanges(QueryType.Delete, id);
             if (result == string.Empty)
                 result = "Ряд " + id + " успешно удалён.";
 
@@ -165,11 +163,11 @@ namespace CursachPrototype.Controllers
             DataTable dt = Model;
 
             int changedRowId = int.Parse(Request[dt.Columns[GetIdOrdinalIndex()].ColumnName]);
-
+            var chagesFix = GetChagesFixator();
             foreach (DataColumn column in dt.Columns)
-                GetChagesFixator().AddDataRowColumnValue(Request[column.ColumnName]);
+                chagesFix.AddDataRowColumnValue(Request[column.ColumnName]);
 
-            var result = GetChagesFixator().FixateChanges(dt, QueryType.Update, changedRowId);
+            var result = chagesFix.FixateChanges(QueryType.Update, changedRowId);
 
             if (result == string.Empty)
                 result = "Ряд " + changedRowId + " был успешно изменен!";
@@ -183,7 +181,7 @@ namespace CursachPrototype.Controllers
         {
             if (ModelState.IsValid)
             {
-                TableEditor helper = new SqlServerTableEditor(DataBaseInfo);
+                TableEditor helper = GetTableEditor();
                 var result = helper.InsertNewColumn(vm);
 
                 if (result == string.Empty)
@@ -204,10 +202,12 @@ namespace CursachPrototype.Controllers
 
             int changedRowId = int.Parse(Request[dt.Columns[GetIdOrdinalIndex()].ColumnName]);
 
-            foreach (DataColumn column in dt.Columns)
-                GetChagesFixator().AddDataRowColumnValue(Request[column.ColumnName]);
+            var chagesFix = GetChagesFixator();
 
-            var result = GetChagesFixator().FixateChanges(dt, QueryType.Insert);
+            foreach (DataColumn column in dt.Columns)
+                chagesFix.AddDataRowColumnValue(Request[column.ColumnName]);
+
+            var result = chagesFix.FixateChanges(QueryType.Insert);
 
             if (result == string.Empty)
                 result = "Ряд " + changedRowId + " был успешно добавлен!";
@@ -221,7 +221,7 @@ namespace CursachPrototype.Controllers
         {
             if (ModelState.IsValid)
             {
-                TableEditor helper = new SqlServerTableEditor(DataBaseInfo);
+                TableEditor helper = GetTableEditor();
                 var result = helper.DropColumn(vm);
 
                 if (string.IsNullOrEmpty(result))
@@ -239,7 +239,7 @@ namespace CursachPrototype.Controllers
         {
             if (ModelState.IsValid)
             {
-                TableEditor helper = new SqlServerTableEditor(DataBaseInfo);
+                TableEditor helper = GetTableEditor();
                 var result = helper.CreateTable(vm.TableName);
 
                 if (string.IsNullOrEmpty(result))
@@ -261,7 +261,7 @@ namespace CursachPrototype.Controllers
         {
             if (ModelState.IsValid)
             {
-                TableEditor helper = new SqlServerTableEditor(DataBaseInfo);
+                TableEditor helper = GetTableEditor();
                 var result = helper.DeleteTable(vm.TableName);
 
                 if (string.IsNullOrEmpty(result))
@@ -308,9 +308,18 @@ namespace CursachPrototype.Controllers
         private ChangesFixator GetChagesFixator()
         {
             if (DataBaseInfo.DbmsType == DbmsType.SqlServer)
-                return new SqlServerChangesFixator(DataBaseInfo);
+                return new SqlServerChangesFixator(DataBaseInfo, Model);
             if (DataBaseInfo.DbmsType == DbmsType.MySql)
-                return new MySqlChangesFixator(DataBaseInfo);
+                return new MySqlChangesFixator(DataBaseInfo, Model);
+            return null;
+        }
+
+        private TableEditor GetTableEditor()
+        {
+            if (DataBaseInfo.DbmsType == DbmsType.SqlServer)
+                return new SqlServerTableEditor(DataBaseInfo);
+            if (DataBaseInfo.DbmsType == DbmsType.MySql)
+                return new MySqlServerTableEditor(DataBaseInfo);
             return null;
         }
     }

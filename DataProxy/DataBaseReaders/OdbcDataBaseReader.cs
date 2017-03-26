@@ -30,7 +30,15 @@ namespace DataProxy.DataBaseReaders
             if (connectionString.Contains("Driver={SQL Server}"))
                 return connectionString;
             if (dbType == DbmsType.SqlServer)
-                return connectionString + ";Driver={SQL Server};";
+            {
+                var temp = "Driver={SQL Server};";
+                temp += connectionString;
+                temp = temp.Replace("Data Source", "Server");
+                temp = temp.Replace("Initial Catalog", "Database");
+                temp = temp.Replace("User Id", "Uid");
+                temp = temp.Replace("Password", "Pwd");
+                return temp;
+            }
             if (dbType == DbmsType.MySql)
             {
                 var temp = "Driver={MySQL ODBC 5.3 ANSI Driver};";
@@ -97,7 +105,10 @@ namespace DataProxy.DataBaseReaders
                                    where row["TABLE_TYPE"].ToString() == "TABLE"
                                    select row["TABLE_NAME"].ToString()).ToArray();
 
-            return tableNames;
+            return tableNames
+                .Where(
+                    str => !(string.Equals(str, "trace_xe_event_map") || string.Equals(str, "trace_xe_action_map")))
+                .ToArray();
         }
 
         public void Dispose()

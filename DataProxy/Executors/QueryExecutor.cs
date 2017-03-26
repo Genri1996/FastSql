@@ -59,7 +59,7 @@ namespace DataProxy.Executors
                     builder.AppendLine();
                 }
             }
-            catch (SqlException exception)
+            catch (Exception exception)
             {
                 builder.AppendLine(exception.Message);
             }

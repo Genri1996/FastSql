@@ -12,19 +12,19 @@ namespace CursachPrototype.QueryGenerators
     public abstract class ChangesFixator
     {
         protected readonly DataBaseInfo _dbInfo;
-        protected DataTable _dataTable;
+        protected readonly DataTable _dataTable;
         private readonly IDictionary<string, string> _parametrsList = new Dictionary<string, string>();
         private int _columnIndex;
         private const string InvalidValue = "INVALID";
 
-        protected ChangesFixator(DataBaseInfo dbInfo)
+        protected ChangesFixator(DataBaseInfo dbInfo, DataTable dataTable)
         {
             _dbInfo = dbInfo;
+            _dataTable = dataTable;
         }
 
-        public string FixateChanges(DataTable dataTable, QueryType queryType, int rowId = 0)
+        public string FixateChanges(QueryType queryType, int rowId = 0)
         {
-            _dataTable = dataTable;
             var primaryKeyRowName = GetIdOrdinalIndex();
             string query = null;
             switch (queryType)
@@ -75,7 +75,7 @@ namespace CursachPrototype.QueryGenerators
             }
             else if (columnDataType == typeof(DateTime))
             {
-                if (value == string.Empty || !value.Match(@"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{2})?$"))
+                if (value == string.Empty || !value.Match(@"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{2,})?$"))
                 {
                     _parametrsList.Add(column.ColumnName, InvalidValue);
                     _columnIndex++;
@@ -166,5 +166,6 @@ namespace CursachPrototype.QueryGenerators
             return _dataTable.Columns.Cast<DataColumn>()
               .First(column => column.ColumnName.ContainsIgnoreCase("Id")).Ordinal;
         }
+
     }
 }
