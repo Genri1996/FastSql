@@ -28,6 +28,8 @@ namespace DataProxy.DataBaseReaders
         {
             if (connectionString.Contains("SQLOLEDB"))
                 return connectionString;
+            if(connectionString.Contains("MySqlDb"))
+                return connectionString + ";Provider=MySqlProv;";
             return connectionString + ";Provider=SQLOLEDB;";
         }
 
