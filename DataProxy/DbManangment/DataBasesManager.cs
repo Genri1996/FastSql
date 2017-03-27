@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.Odbc;
 using System.Data.OleDb;
 using System.Globalization;
 using System.Linq;
@@ -194,7 +195,7 @@ namespace DataProxy.DbManangment
                 reader.LoadTables(DbInfosTableName);
             }
             // if table DbInfos does not exist
-            catch (OleDbException)
+            catch (OdbcException)
             {
                 using (
                     SqlServerExecutor executor =
@@ -225,7 +226,7 @@ namespace DataProxy.DbManangment
                 reader.LoadTables(AnonDbInfosTableName);
             }
             // if table {AnonDbInfosTableName} does not exist
-            catch (OleDbException)
+            catch (OdbcException)
             {
                 using (
                     SqlServerExecutor executor =

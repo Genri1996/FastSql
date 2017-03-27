@@ -24,7 +24,7 @@ namespace CursachPrototype
             app.UseHangfireDashboard();
             app.UseHangfireServer();
 
-            RecurringJob.AddOrUpdate(() => DataBasesManager.DropOutdatedDbs(), Cron.Hourly);//TODO: Hourly
+            RecurringJob.AddOrUpdate(() => DataBasesManager.DropOutdatedDbs(), Cron.Hourly);
 
             // настраиваем контекст и менеджер
             app.CreatePerOwinContext<AppIdentityContext>(AppIdentityContext.Create);
