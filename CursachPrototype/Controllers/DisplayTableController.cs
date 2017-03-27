@@ -148,7 +148,7 @@ namespace CursachPrototype.Controllers
         public ActionResult DeleteTable()
         {
             TableVm vm = new TableVm();
-            OdbcDataBaseReader reader = new OdbcDataBaseReader(DataBaseInfo.ConnectionString, DbmsType.SqlServer);
+            OdbcDataBaseReader reader = new OdbcDataBaseReader(DataBaseInfo.ConnectionString, DataBaseInfo.DbmsType);
             var tables = reader.GetTableNames();
 
             var items = tables.Select(tableName => new SelectListItem { Text = tableName, Value = tableName }).ToArray();
