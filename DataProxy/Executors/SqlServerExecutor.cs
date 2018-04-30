@@ -19,6 +19,7 @@ namespace DataProxy.Executors
         public SqlServerExecutor(string connectionString)
         {
             _connection = new SqlConnection(connectionString);
+
             Open();
         }
 
