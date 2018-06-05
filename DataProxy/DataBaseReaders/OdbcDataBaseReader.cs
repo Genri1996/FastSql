@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.Odbc;
 using System.Linq;
 using System.Text;
+using NLog;
 
 namespace DataProxy.DataBaseReaders
 {
@@ -21,6 +22,10 @@ namespace DataProxy.DataBaseReaders
         {
             connectionString = CheckProvider(connectionString, dbType);
             _connection = new OdbcConnection(connectionString);
+
+            var logger = LogManager.GetCurrentClassLogger();
+            logger.Info(connectionString);
+
             _connection.Open();
         }
 
